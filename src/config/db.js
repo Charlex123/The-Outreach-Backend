@@ -8,7 +8,6 @@ const Db = mongoose.connect(config.DATABASE_URL,{
     useUnifiedTopology: true
   }
  );
-
  module.exports = Db
 
 

@@ -10,12 +10,11 @@ let envConfig;
 if (stage === "production") {
   //set config to production
   envConfig = require("./prod");
-} else if (stage === "testing") {
-  envConfig = require("./testing");
 } else {
   envConfig = require("./local");
 }
 // export along with marge
+
 module.exports=merge(
   {
     stage,
@@ -32,4 +31,3 @@ module.exports=merge(
   },
   envConfig
 );
-

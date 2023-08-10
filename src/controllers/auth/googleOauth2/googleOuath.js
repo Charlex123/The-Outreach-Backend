@@ -250,10 +250,11 @@ const googleOathController = (app) => {
 
         const oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({ access_token: newUser.accessToken });
-        const lebelData =  await createGmailLabels(oauth2Client);
-        newUser.emailLabels = lebelData;
+        const labelData =  await createGmailLabels(oauth2Client);
+        newUser.emailLabels = labelData;
         await newUser.save();
         return res.redirect(`${config.FRONTEND_URL}/social/?token=${userAppKey}`);
+        
       } else {
         if (existUser.tokenExpire <= moment().subtract(3, 'days')) {
           const newToken = await auth.getNewToken(existUser.refreshToken);

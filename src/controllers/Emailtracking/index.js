@@ -9,9 +9,9 @@ const updateViewEmails = async (trackingId, email, geolocationInfo) => {
     const index =  data.untrackedMails.findIndex((item) => item.to === email)
     if(data){
      if(index !== -1){
-       const emailDtails =  data.untrackedMails.splice(index,1)
-       if(emailDtails.length>0){
-        let  newData = JSON.parse(JSON.stringify(emailDtails[0]))
+       const emailDetails =  data.untrackedMails.splice(index,1)
+       if(emailDetails.length>0){
+        let  newData = JSON.parse(JSON.stringify(emailDetails[0]))
         newData.country = geolocationInfo.country || ""
         newData.clickCount = 1
         newData.region = geolocationInfo.region || ""
