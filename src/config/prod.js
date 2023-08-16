@@ -10,5 +10,5 @@ appSecret:process.env.PRODUCTION_APP_SECRET,
 port:process.env.PRODUCTION_PORT,
 TRACKING_URL:process.env.PRODUCTION_TRACKING_URL,
 };
-// console.log('prod ',FRONTEND_URL)
+console.log('prod ',FRONTEND_URL)
 console.log("running production mode");
