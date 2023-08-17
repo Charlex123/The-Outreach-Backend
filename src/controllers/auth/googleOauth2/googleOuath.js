@@ -216,7 +216,7 @@ const { genAppAccessToken,createGmailLabels } = require('../../../utils');
 const config = require('../../../config');
 const dotenv = require('dotenv');
 dotenv.config();
-
+console.log('configaaa frontend',config.FRONTEND_URL)
 const googleOathController = (app) => {
   app.get('/', (req, res) => {
     res.status(200).json({ code: 200, message: 'checked' });
