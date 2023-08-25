@@ -142,8 +142,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
         
           const mailOptions = {
             from: req.body.useremail,
-            to: req.body.emailrecipients,
-            subject: req.body.emailsubject,
+            to: req.body.mailcampaignrecipents,
+            subject: req.body.mailcampaignsubject,
             html: `<div><img src="${config.redirect_uris}"><p>${req.body.emailbody}</p></div>`,
           };
         
@@ -273,7 +273,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
         
           const mailOptions = {
             from: req.body.useremail,
-            to: req.body.emailrecipients,
+            to: req.body.mailcampaignrecipents,
             subject: req.body.emailsubject,
             html: `<div><img src="${config.redirect_uris}"><p>${req.body.emailbody}</p></div>`,
           };
