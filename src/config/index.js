@@ -31,3 +31,5 @@ module.exports=merge(
   },
   envConfig
 );
+
+console.log("env",envConfig)
