@@ -20,12 +20,14 @@ const verifyUser = asyncHandler(async (req, res) => {
         const email = verifiedUser.email;
         const userAppKey = verifiedUser.userAppKey;
         const accessToken = verifiedUser.accessToken;
+        const refreshToken = verifiedUser.refreshToken;
 
           res.json({
             _id: verifiedUser._id,
             googleId: verifiedUser.googleId,
             email: verifiedUser.email,
             accessToken: verifiedUser.accessToken,
+            refreshToken: verifiedUser.refreshToken,
             userAppKey: verifiedUser.userAppKey
           });
         } else {
@@ -56,12 +58,14 @@ const verifyUserData = asyncHandler(async (req, res) => {
         const email = verifiedUser.email;
         const userAppKey = verifiedUser.userAppKey;
         const accessToken = verifiedUser.accessToken;
+        const refreshToken = verifiedUser.refreshToken;
 
           res.json({
             _id: verifiedUser._id,
             googleId: verifiedUser.googleId,
             email: verifiedUser.email,
             accessToken: verifiedUser.accessToken,
+            refreshToken: verifiedUser.refreshToken,
             userAppKey: verifiedUser.userAppKey
           });
         } else {

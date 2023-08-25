@@ -8,28 +8,125 @@ const messageId = `${
 }`;
 
 const DraftSchema = new mongoose.Schema({
-  appLabelId: { type: String, required: true , unique: true, default:uuid.v4()},
-  userId: { type: String, required: true ,ref: 'user'},
-  name: { type: String },
-  messageId: { type: String, default: uuid.v4() },
-  threadId: { type: String},
-  emails:{type:Array,default:[]},
-  draft:String,
-  rt :String,
-  subject: { type: String},
-  body: { type: String, required: true },
-  createdAt: {
-    type: Date,
-    default: Date.now()
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   },
-  emails: Array,
-
-  campaigns:{
-    type: Array,
-    default: [CampaingSchema]
+  emailId: {
+    type: String,
+    required: true
+  },
+  emailsubject: {
+    type: String,
+    required: true
+  },
+  emailbody: {
+    type: String,
+    required: true
+  },
+  emailrecipients: {
+    type: String,
+    required: true
+  },
+  createdAt:{
+    type:Date,
+    default:Date.now()
+  },
+  tracking: {
+    isOpened: {
+      type: Boolean,
+      default: false
+    },
+    isClicked: {
+      type: Boolean,
+      default: false
+    }
+  },
+  action: {
+    type: Number
+  },
+  autofollowup: {
+    firstfollowup: {
+      reply1type: {
+        type: String,
+      },
+      reply1interval: {
+        type: Number
+      },
+      reply1time: {
+        type: String
+      },
+      reply1message: {
+        type: String
+      },
+    },
+    secondfollowup: {
+      reply2type: {
+        type: String,
+      },
+      reply2interval: {
+        type: Number,
+      },
+      reply2time: {
+        type: String,
+      },
+      reply2message: {
+        type: String
+      },
+    },      
+    thirdfollowup: {
+      reply3type: {
+        type: String,
+      },
+      reply3interval: {
+        type: Number,
+      },
+      reply3time: {
+        type: String,
+      },
+      reply3message: {
+        type: String
+      }
+    }
+  },  
+  schedule: {
+    scheduletime: {
+      type: String
+    },
+    skipweekends: {
+      type: String
+    },
+    speed: {
+      mailsPerDay: {
+        type: String
+      },
+      delay: {
+        type: String
+      }
+    },
+    repeat: {
+      repeatinterval: {
+        type: String
+      },
+      repeattimes: {
+        type: String
+      }
+    }
+  },
+  trackingId: {
+    type: String,
+    default: genTrackingId()
+  },
+  advance: {
+    sendas: {
+      type: String
+    },
+    verifyemail: {
+      type: Boolean
+    }
   }
 });
 
-const DraftModel = mongoose.model('emailLabel', DraftSchema);
+const DraftModel = mongoose.model('emailDrafts', DraftSchema);
 
 module.exports = DraftModel;

@@ -5,14 +5,38 @@ const messageId = `${
   Math.random().toString(36).substring(2, 15) +
   Math.random().toString(36).substring(2, 15)
 }`;
+const messageId2 = `${
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
+}`;
+const messageId3 = `${
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
+}`;
 
 const campaignSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  emailList: {
-    type: [String],
+  emailId: {
+    type: String,
+    required: true
+  },
+  emailaddress: {
+    type: String,
+    required: true
+  },
+  emailsubject: {
+    type: String,
+    required: true
+  },
+  emailbody: {
+    type: String,
+    required: true
+  },
+  emailrecipients: {
+    type: String,
     required: true
   },
   createdAt:{
@@ -22,125 +46,94 @@ const campaignSchema = new mongoose.Schema({
   tracking: {
     isOpened: {
       type: Boolean,
-      default: false
     },
     isClicked: {
       type: Boolean,
-      default: false
     }
   },
   action: {
-    type: String,
-    required: true
+    type: Number
   },
-  autofollowup: [
-    {
-      condition: {
-        type: String,
-        required: true
-      },
-      duration: {
-        type: String,
-        required: true
-      },
-      sendType: {
-        type: String,
-        required: true
-      },
-      message: {
-        type: String,
-        messageId: {
+  autofollowup: {
+      firstfollowup: {
+        reply1type: {
           type: String,
-          default: messageId
         },
-        required: true
+        reply1interval: {
+          type: Number
+        },
+        reply1time: {
+          type: String
+        },
+        reply1message: {
+          type: String
+        },
+      },
+      secondfollowup: {
+        reply2type: {
+          type: String,
+        },
+        reply2interval: {
+          type: Number,
+        },
+        reply2time: {
+          type: String,
+        },
+        reply2message: {
+          type: String
+        },
+      },      
+      thirdfollowup: {
+        reply3type: {
+          type: String,
+        },
+        reply3interval: {
+          type: Number,
+        },
+        reply3time: {
+          type: String,
+        },
+        reply3message: {
+          type: String
+        }
       }
-    }
-  ],
+    },  
   schedule: {
-    start: {
-      type: String,
-      required: true
+    scheduletime: {
+      type: String
     },
-    end: {
-      type: String,
-      required: true
-    },
-    days: [
-      {
-        type: String,
-        enum: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        required: true
-      }
-    ],
-    timezone: {
-      type: String,
-      required: true
+    skipweekends: {
+      type: String
     },
     speed: {
       mailsPerDay: {
-        type: String,
-        required: true
+        type: String
       },
       delay: {
-        type: String,
-        required: true
+        type: String
       }
     },
     repeat: {
-      type: String,
-      required: true
+      repeatinterval: {
+        type: String
+      },
+      repeattimes: {
+        type: String
+      }
     }
-  },
-  email: Array,
-  subject: {
-    type: String
-  },
-  message: {
-    type: String
-  },
-  lastRun: {
-    type: Date,
-    default: null
-  },
-  nextRun: {
-    type: Date,
-    default: null
   },
   trackingId: {
     type: String,
     default: genTrackingId()
   },
-  untrackedMails: [
-    {
-      threadId: String,
-      messageSentDate: Date,
-      from: String,
-      to: String,
-      messageId: String,
-      scheduleId: String
+  advance: {
+    sendas: {
+      type: String
+    },
+    verifyemail: {
+      type: Boolean
     }
-  ],
-  viewEmails: [
-    {
-      threadId: String,
-      messageSentDate: Date,
-      from: String,
-      to: String,
-      messageId: String,
-      scheduleId: String,
-      country: String,
-      region: String,
-      city: String,
-      latitude: String,
-      longitude: String,
-      firstOpen: Date,
-      lastOpen: Date,
-      opened: Boolean,
-      clickCount: Number
-    }
-  ],
-  repliedMails: Array
+  }
 });
 
 const Campaign = mongoose.model('Campaign', campaignSchema);

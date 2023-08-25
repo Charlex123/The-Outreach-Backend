@@ -38,8 +38,9 @@ const { Emailtracking } = require('./controllers/Emailtracking/index');
 
 // ::::::::::::: Routes ::::::::::::::::::::
 const scheduleRoute = require('./routes/sheduleRoute');
-const labelRoute= require('./routes/labelRoute')
-const authenticateuserRoute= require('./routes/verifyuserRoute')
+const labelRoute = require('./routes/labelRoute')
+const sendmailcampaignRoute = require('./routes/sendmailcampaignRoute')
+const authenticateuserRoute = require('./routes/verifyuserRoute')
 const checkfirstmailcampaign_Route = require('./routes/checkfirstmailcampaignRoute')
 const { cron } = require('./service/email/cron');
 const config = require('./config');
@@ -54,6 +55,7 @@ Emailtracking(app)
 app.use('/schedule', scheduleRoute);
 
 app.use('/label',labelRoute );
+app.use('/campaigns',sendmailcampaignRoute );
 app.use('/user',authenticateuserRoute );
 app.use('/campaigns',checkfirstmailcampaign_Route );
 app.listen(config.port, () => {

@@ -256,7 +256,7 @@ const googleOathController = (app) => {
         return res.redirect(`${config.FRONTEND_URL}/social/?token=${userAppKey}`);
         
       } else {
-        if (existUser.tokenExpire <= moment().subtract(3, 'days')) {
+        if(existUser.tokenExpire <= moment().subtract(3, 'days')) {
           const newToken = await auth.getNewToken(existUser.refreshToken);
           await User.updateOne(
             { googleId: existUser.sub },
