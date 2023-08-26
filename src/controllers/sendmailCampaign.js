@@ -128,33 +128,18 @@ const mailCampaign = asyncHandler(async (req, res) => {
         });
   
         if(newMailCampaign.save()) {
-          const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              type: 'OAuth2',
-              user: req.body.useremail,
-              clientId: config.client_id,
-              clientSecret: config.client_secret,
-              refreshToken: req.body.refreshToken,
-              accessToken: req.body.accessToken
-            }
-          });
-        
-          const mailOptions = {
-            from: req.body.useremail,
-            to: req.body.mailcampaignrecipents,
-            subject: req.body.mailcampaignsubject,
-            html: `<div><img src="${config.redirect_uris}"><p>${req.body.emailbody}</p></div>`,
-          };
-        
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+          let recipients_ = req.body.mailcampaignrecipents;
+          let recipientLists = recipients_.split(',');
 
+          console.log('rec  ',recipientLists)
+          for (const recipient of recipientLists) {
+            try {
+              const info = await sendmailCamp(recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail);
+              console.log(`Email sent to ${recipient}: ${info.response}`);
+            } catch (error) {
+              console.error(`Error sending email to ${recipient}: ${error}`);
+            }
+          }  
         }
 
       }else if(action === '2') {
@@ -259,47 +244,65 @@ const mailCampaign = asyncHandler(async (req, res) => {
         });
   
         if(newMailCampaign.save()) {
-          const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              type: 'OAuth2',
-              user: req.body.useremail,
-              clientId: config.client_id,
-              clientSecret: config.client_secret,
-              refreshToken: req.body.refreshToken,
-              accessToken: req.body.accessToken
-            }
-          });
-        
-          const mailOptions = {
-            from: req.body.useremail,
-            to: req.body.mailcampaignrecipents,
-            subject: req.body.emailsubject,
-            html: `<div><img src="${config.redirect_uris}"><p>${req.body.emailbody}</p></div>`,
-          };
-        
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+          let recipients_ = req.body.mailcampaignrecipents;
+          let recipientLists = recipients_.split(',');
 
+          console.log('rec  ',recipientLists)
+          for (const recipient of recipientLists) {
+            try {
+                sendmailCamp(recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail);
+                console.log(`Email sent to ${recipient}`);
+            } catch (error) {
+              console.error(`Error sending email to ${recipient}`);
+            }
+          }  
         }
       }
       // 385965910519
       if(followupreply1type) {
 
       }
+
+      
     }catch (error) {
       console.log('server error',error);
       // res.status(500).json({ message: error.message });
     }
+
+    
+    
   
 });
 
 
+async function sendmailCamp(recipient,body,subject,accesstoken,refreshtoken,useremail) {
+  console.log('recipientaaa',recipient)
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: useremail,
+      clientId: config.client_id,
+      clientSecret: config.client_secret,
+      refreshToken: refreshtoken,
+      accessToken: accesstoken
+    }
+  });
 
+  const mailOptions = {
+    from: useremail,
+    to: recipient,
+    subject: subject,
+    html: `<div><img src="${config.redirect_uris}" style="display: none"><p>${body}</p></div>`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
 
 module.exports = { mailCampaign,  };
