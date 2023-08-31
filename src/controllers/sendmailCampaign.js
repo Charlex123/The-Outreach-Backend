@@ -2,6 +2,7 @@ require("express");
 const asyncHandler = require("express-async-handler");
 const campaignSchema = require('../model/campaignSchema');
 const DraftSchema = require("../model/DraftSchema");
+const User = require("../model/user");
 const { generateTrackingLink } = require('../utils');
 const { google } = require('googleapis');
 const moment = require('moment');
@@ -155,197 +156,221 @@ const mailCampaign = asyncHandler(async (req, res) => {
       let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
       let campaignrecipients = email_recipt.toString();
       
-      if(action === '1') {
-        const newMailCampaign = await campaignSchema.create({
-          emailId: draftId,
-          emailaddress: useremail,
-          emailsubject: emailsubject,
-          emailbody: emailbody,
-          emailrecipients: campaignrecipients,
-          tracking: {
-            isOpened: trackbyopen,
-            isClicked: trackbyclicks,
-            redlinktext: redlinktext_,
-            redlinkurl: redlinkurl_,
-          },
-          action: action, // Or any valid number for the action
-          autofollowup: {
-            firstfollowup: {
-              reply1type: followupreply1type,
-              reply1interval: followupreply1interval,
-              reply1time: followupreply1time,
-              reply1message: followupreply1message,
-            },
-            secondfollowup: {
-              reply2type: followupreply2type,
-              reply2interval: followupreply2interval,
-              reply2time: followupreply2time,
-              reply2message: followupreply2message,
-            },
-            thirdfollowup: {
-              reply3type: followupreply3type,
-              reply3interval: followupreply3interval,
-              reply3time: followupreply3time,
-              reply3message: followupreply3message,
-            },
-          },
-          schedule: {
-            scheduletime: scheduletime, // or any time format you prefer
-            skipweekends: skipweekends,
-            speed: {
-              mailsPerDay: mailsperday, // or any valid number
-              delay: delay_, // or any valid time interval
-            },
-            repeat: {
-              repeatinterval: repeatinterval, // or any valid number
-              repeattimes: repeattimes, // or any valid string
-            },
-          },
-          advance: {
-            sendas: sendas,
-            verifyemail: verifyemail,
-          }
-        });
-  
-        if(newMailCampaign.save()) {
-          let recipients_ = campaignrecipients;
-          let recipientLists = recipients_.split(',');
+      let user_AppKey = req.body.userAppKey;
+      const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
 
-          console.log('rec  ',recipientLists)
-          for (const recipient of recipientLists) {
-            try {
-              sendmailCamp(draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey);
-              console.log(`Email sent to ${recipient}`);
-            } catch (error) {
-              console.error(`Error sending email to ${recipient}: ${error}`);
+    console.log('user p', verifyuserdata)
+
+      if (verifyuserdata) {
+        verifyuserdata.verified = true;
+        
+        const verifiedUser = await verifyuserdata.save();
+        const _id = verifiedUser._id;
+
+        if(action === '1') {
+          const newMailCampaign = await campaignSchema.create({
+            userId: _id,
+            emailId: draftId,
+            emailaddress: useremail,
+            emailsubject: emailsubject,
+            emailbody: emailbody,
+            emailrecipients: campaignrecipients,
+            tracking: {
+              isOpened: trackbyopen,
+              isClicked: trackbyclicks,
+              redlinktext: redlinktext_,
+              redlinkurl: redlinkurl_,
+            },
+            action: action, // Or any valid number for the action
+            autofollowup: {
+              firstfollowup: {
+                reply1type: followupreply1type,
+                reply1interval: followupreply1interval,
+                reply1time: followupreply1time,
+                reply1message: followupreply1message,
+              },
+              secondfollowup: {
+                reply2type: followupreply2type,
+                reply2interval: followupreply2interval,
+                reply2time: followupreply2time,
+                reply2message: followupreply2message,
+              },
+              thirdfollowup: {
+                reply3type: followupreply3type,
+                reply3interval: followupreply3interval,
+                reply3time: followupreply3time,
+                reply3message: followupreply3message,
+              },
+            },
+            schedule: {
+              scheduletime: scheduletime, // or any time format you prefer
+              skipweekends: skipweekends,
+              speed: {
+                mailsPerDay: mailsperday, // or any valid number
+                delay: delay_, // or any valid time interval
+              },
+              repeat: {
+                repeatinterval: repeatinterval, // or any valid number
+                repeattimes: repeattimes, // or any valid string
+              },
+            },
+            advance: {
+              sendas: sendas,
+              verifyemail: verifyemail,
             }
-          }  
+          });
+    
+          if(newMailCampaign.save()) {
+            let recipients_ = campaignrecipients;
+            let recipientLists = recipients_.split(',');
+  
+            console.log('rec  ',recipientLists)
+            for (const recipient of recipientLists) {
+              try {
+                sendmailCamp(draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl);
+                console.log(`Email sent to ${recipient}`);
+              } catch (error) {
+                console.error(`Error sending email to ${recipient}: ${error}`);
+              }
+            }  
+          }
+  
+        }else if(action === '2') {
+          const newMailCampaignDraft = await DraftSchema.create({
+            userId: _id,
+            emailId: draftId,
+            emailaddress: useremail,
+            emailsubject: emailsubject,
+            emailbody: emailbody,
+            emailrecipients: campaignrecipients,
+            tracking: {
+              isOpened: trackbyopen,
+              isClicked: trackbyclicks,
+              redlinktext: redlinktext_,
+              redlinkurl: redlinkurl_,
+            },
+            action: action, // Or any valid number for the action
+            autofollowup: {
+              firstfollowup: {
+                reply1type: followupreply1type,
+                reply1interval: followupreply1interval,
+                reply1time: followupreply1time,
+                reply1message: followupreply1message,
+              },
+              secondfollowup: {
+                reply2type: followupreply2type,
+                reply2interval: followupreply2interval,
+                reply2time: followupreply2time,
+                reply2message: followupreply2message,
+              },
+              thirdfollowup: {
+                reply3type: followupreply3type,
+                reply3interval: followupreply3interval,
+                reply3time: followupreply3time,
+                reply3message: followupreply3message,
+              },
+            },
+            schedule: {
+              scheduletime: scheduletime, // or any time format you prefer
+              skipweekends: skipweekends,
+              speed: {
+                mailsPerDay: mailsperday, // or any valid number
+                delay: delay_, // or any valid time interval
+              },
+              repeat: {
+                repeatinterval: repeatinterval, // or any valid number
+                repeattimes: repeattimes, // or any valid string
+              },
+            },
+            advance: {
+              sendas: sendas,
+              verifyemail: verifyemail,
+            }
+          });
+  
+          newMailCampaignDraft.save();
+        }else if(action === '') {
+          const newMailCampaign = await campaignSchema.create({
+            emailId: draftId,
+            emailaddress: useremail,
+            emailsubject: emailsubject,
+            emailbody: emailbody,
+            emailrecipients: campaignrecipients,
+            tracking: {
+              isOpened: trackbyopen,
+              isClicked: trackbyclicks,
+              redlinktext: redlinktext_,
+              redlinkurl: redlinkurl_,
+            },
+            action: action, // Or any valid number for the action
+            autofollowup: {
+              firstfollowup: {
+                reply1type: followupreply1type,
+                reply1interval: followupreply1interval,
+                reply1time: followupreply1time,
+                reply1message: followupreply1message,
+              },
+              secondfollowup: {
+                reply2type: followupreply2type,
+                reply2interval: followupreply2interval,
+                reply2time: followupreply2time,
+                reply2message: followupreply2message,
+              },
+              thirdfollowup: {
+                reply3type: followupreply3type,
+                reply3interval: followupreply3interval,
+                reply3time: followupreply3time,
+                reply3message: followupreply3message,
+              },
+            },
+            schedule: {
+              scheduletime: scheduletime, // or any time format you prefer
+              skipweekends: skipweekends,
+              speed: {
+                mailsPerDay: mailsperday, // or any valid number
+                delay: delay_, // or any valid time interval
+              },
+              repeat: {
+                repeatinterval: repeatinterval, // or any valid number
+                repeattimes: repeattimes, // or any valid string
+              },
+            },
+            advance: {
+              sendas: sendas,
+              verifyemail: verifyemail,
+            }
+          });
+    
+          if(newMailCampaign.save()) {
+            let recipients_ = campaignrecipients;
+            let recipientLists = recipients_.split(',');
+  
+            console.log('rec  ',recipientLists)
+            for (const recipient of recipientLists) {
+              try {
+                sendmailCamp(draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl);
+                console.log(`Email sent to ${recipient}`);
+              } catch (error) {
+                console.error(`Error sending email to ${recipient}: ${error}`);
+              }
+            }    
+          }
+        }
+        // 385965910519
+        if(followupreply1type && followupreply1type !== "" && followupreply1type !== null && followupreply1type !== undefined) {
+          if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
+
+          }else {
+            
+          }
         }
 
-      }else if(action === '2') {
-        const newMailCampaignDraft = await DraftSchema.create({
-          emailId: draftId,
-          emailaddress: useremail,
-          emailsubject: emailsubject,
-          emailbody: emailbody,
-          emailrecipients: campaignrecipients,
-          tracking: {
-            isOpened: trackbyopen,
-            isClicked: trackbyclicks,
-            redlinktext: redlinktext_,
-            redlinkurl: redlinkurl_,
-          },
-          action: action, // Or any valid number for the action
-          autofollowup: {
-            firstfollowup: {
-              reply1type: followupreply1type,
-              reply1interval: followupreply1interval,
-              reply1time: followupreply1time,
-              reply1message: followupreply1message,
-            },
-            secondfollowup: {
-              reply2type: followupreply2type,
-              reply2interval: followupreply2interval,
-              reply2time: followupreply2time,
-              reply2message: followupreply2message,
-            },
-            thirdfollowup: {
-              reply3type: followupreply3type,
-              reply3interval: followupreply3interval,
-              reply3time: followupreply3time,
-              reply3message: followupreply3message,
-            },
-          },
-          schedule: {
-            scheduletime: scheduletime, // or any time format you prefer
-            skipweekends: skipweekends,
-            speed: {
-              mailsPerDay: mailsperday, // or any valid number
-              delay: delay_, // or any valid time interval
-            },
-            repeat: {
-              repeatinterval: repeatinterval, // or any valid number
-              repeattimes: repeattimes, // or any valid string
-            },
-          },
-          advance: {
-            sendas: sendas,
-            verifyemail: verifyemail,
-          }
-        });
-
-        newMailCampaignDraft.save();
-      }else if(action === '') {
-        const newMailCampaign = await campaignSchema.create({
-          emailId: draftId,
-          emailaddress: useremail,
-          emailsubject: emailsubject,
-          emailbody: emailbody,
-          emailrecipients: campaignrecipients,
-          tracking: {
-            isOpened: trackbyopen,
-            isClicked: trackbyclicks,
-            redlinktext: redlinktext_,
-            redlinkurl: redlinkurl_,
-          },
-          action: action, // Or any valid number for the action
-          autofollowup: {
-            firstfollowup: {
-              reply1type: followupreply1type,
-              reply1interval: followupreply1interval,
-              reply1time: followupreply1time,
-              reply1message: followupreply1message,
-            },
-            secondfollowup: {
-              reply2type: followupreply2type,
-              reply2interval: followupreply2interval,
-              reply2time: followupreply2time,
-              reply2message: followupreply2message,
-            },
-            thirdfollowup: {
-              reply3type: followupreply3type,
-              reply3interval: followupreply3interval,
-              reply3time: followupreply3time,
-              reply3message: followupreply3message,
-            },
-          },
-          schedule: {
-            scheduletime: scheduletime, // or any time format you prefer
-            skipweekends: skipweekends,
-            speed: {
-              mailsPerDay: mailsperday, // or any valid number
-              delay: delay_, // or any valid time interval
-            },
-            repeat: {
-              repeatinterval: repeatinterval, // or any valid number
-              repeattimes: repeattimes, // or any valid string
-            },
-          },
-          advance: {
-            sendas: sendas,
-            verifyemail: verifyemail,
-          }
-        });
-  
-        if(newMailCampaign.save()) {
-          let recipients_ = campaignrecipients;
-          let recipientLists = recipients_.split(',');
-
-          console.log('rec  ',recipientLists)
-          for (const recipient of recipientLists) {
-            try {
-              sendmailCamp(draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey);
-              console.log(`Email sent to ${recipient}`);
-            } catch (error) {
-              console.error(`Error sending email to ${recipient}: ${error}`);
-            }
-          }    
+        } else {
+          res.status(404);
+          throw new Error("User Not Found");
         }
-      }
-      // 385965910519
-      if(followupreply1type) {
 
-      }
+      
 
       
     }catch (error) {
@@ -359,10 +384,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey) {
+async function sendmailCamp(draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla) {
 
-  let redlinktexter = req.body.redlinktext;
-  let redlinkurler = req.body.redlinkurl;
+  let redlinktexter = redlinktexta;
+  let redlinkurler = redlinkurla;
 
   let redlinker;
   if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {

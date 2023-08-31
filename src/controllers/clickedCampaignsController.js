@@ -12,6 +12,7 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
     const email_ID = req.params.email_Id;
     const redurllink = req.params.redlinkurl;
     console.log('user p', user_AppKey)
+    console.log('user red link', redurllink)
     
     const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
 
@@ -31,7 +32,12 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
         });
 
         await clickedcampaign_.save();
-        window.location.href = redurllink;
+        if ( redurllink.startsWith('http') ) {
+          res.redirect(`${redurllink}`);
+        } else {
+          res.redirect(`https://${redurllink}`);
+        }
+        
         } else {
           res.status(404);
           throw new Error("User Not Found");
