@@ -49,6 +49,12 @@ const campaignSchema = new mongoose.Schema({
     },
     isClicked: {
       type: Boolean,
+    },
+    redlinktext: {
+      type: String
+    },
+    redlinkurl: {
+      type: String
     }
   },
   action: {

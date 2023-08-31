@@ -31,12 +31,12 @@ const verifyUser = asyncHandler(async (req, res) => {
             userAppKey: verifiedUser.userAppKey
           });
         } else {
-          res.status(404);
-          throw new Error("User Not Found");
+          res.status(400).json({ message: "User Not Found" });
+          // throw new Error("User Not Found");
         }
   }catch (error) {
-    console.log('server error',error);
-    // res.status(500).json({ message: error.message });
+    // console.log('server error',error);
+    res.status(400).json({ message: "User Not Found" });
   }
   
 });
@@ -69,12 +69,11 @@ const verifyUserData = asyncHandler(async (req, res) => {
             userAppKey: verifiedUser.userAppKey
           });
         } else {
-          res.status(404);
-          throw new Error("User Not Found");
+          res.status(400).json({ message: "User Not Found" });
         }
   }catch (error) {
-    console.log('server error',error);
-    // res.status(500).json({ message: error.message });
+    // console.log('server error',error);
+    res.status(400).json({ message: "User Not Found" });
   }
   
 });

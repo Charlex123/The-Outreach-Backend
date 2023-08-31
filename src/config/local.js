@@ -3,7 +3,7 @@ dotenv.config();
 module.exports = {
 DATABASE_URL:process.env.DEVELOPMENT_DATABASE_URL,
 redirect_uris:process.env.DEVELOPMENT_REDIRECT_URIS,
-DEVELOPMENT_URL_BACKEND:process.env.DEVELOPMENT_URL_BACKEND,
+BACKEND_URL:process.env.DEVELOPMENT_URL_BACKEND,
 redirect_uris:process.env.DEVELOPMENT_REDIRECT_URIS,
 FRONTEND_URL:process.env.DEVELOPMENT_URL_FRONTEND,
 appSecret:process.env.DEVELOPMENT_APP_SECRET,

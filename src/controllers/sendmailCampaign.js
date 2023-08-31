@@ -11,20 +11,18 @@ const nodemailer = require("nodemailer");
 const v4 = require("uuid");
 
 dotenv.config();
-const email_Id = `${
-  Math.random().toString(36).substring(2, 15) +
-  Math.random().toString(36).substring(2, 15)
-}`;
+
 
 const mailCampaign = asyncHandler(async (req, res) => {
   try {
       
       const maildetails = req.body;
       console.log(maildetails);
+      const redlinktext_ = req.body.redlinktext;
+      const redlinkurl_ = req.body.redlinkurl;
       const useremail = req.body.useremail;
       const emailsubject = req.body.mailcampaignsubject;
       const emailbody = req.body.mailcampaignbody;
-      const emailrecipients = req.body.mailcampaignrecipents;
       const trackbyopen = req.body.trackbyopen;
       const trackbyclicks = req.body.trackbyclicks;
       const action = req.body.mailsendtesttype;
@@ -76,17 +74,99 @@ const mailCampaign = asyncHandler(async (req, res) => {
         version: 'v1',
         auth: oAuth2Client
       });
+
+      // Function to retrieve recipient email addresses
+      async function getRecipientEmails() {
+        return new Promise((resolve, reject) => {
+            gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                const drafts = res.data.drafts;
+                if (drafts) {
+                    const draftId = drafts[0].id; // Assuming you want the first draft's ID
+
+                    gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+
+                        // Extract the message ID
+                        const messageId = res.data.message.id;
+                        console.log('uuuuuuuuuuuuuuu po', messageId)
+
+                        const recipients = res.data.message.payload.headers
+                            .filter(header => header.name === 'To')
+                            .flatMap(header => header.value.split(','))
+                            .map(email => email.trim());
+
+                        resolve(recipients,messageId);
+                    });
+                } else {
+                    resolve([]);
+                }
+            });
+        });
+      } 
+      
+      // Function to retrieve recipient email addresses
+      async function getDraftId() {
+        return new Promise((resolve, reject) => {
+            gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                const drafts = res.data.drafts;
+                if (drafts) {
+                    const draftId = drafts[0].id; // Assuming you want the first draft's ID
+
+                    gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+
+                        // Extract the message ID
+                        const messageId = res.data.message.id;
+
+                        resolve(messageId);
+                    });
+                } else {
+                    resolve([]);
+                }
+            });
+        });
+      } 
+      
+
+      const recipientEmails = await getRecipientEmails();
+      console.log('Recipient Email Addresses:', recipientEmails);
+
+      const draftId = await getDraftId();
+      console.log('Draft Email Id:', draftId);
+      
+      let rec_recip = recipientEmails.toString();
+      console.log('Recipients: eerrrwwww', rec_recip);
+      let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
+      let campaignrecipients = email_recipt.toString();
       
       if(action === '1') {
         const newMailCampaign = await campaignSchema.create({
-          emailId: email_Id,
+          emailId: draftId,
           emailaddress: useremail,
           emailsubject: emailsubject,
           emailbody: emailbody,
-          emailrecipients: emailrecipients,
+          emailrecipients: campaignrecipients,
           tracking: {
             isOpened: trackbyopen,
             isClicked: trackbyclicks,
+            redlinktext: redlinktext_,
+            redlinkurl: redlinkurl_,
           },
           action: action, // Or any valid number for the action
           autofollowup: {
@@ -128,14 +208,14 @@ const mailCampaign = asyncHandler(async (req, res) => {
         });
   
         if(newMailCampaign.save()) {
-          let recipients_ = req.body.mailcampaignrecipents;
+          let recipients_ = campaignrecipients;
           let recipientLists = recipients_.split(',');
 
           console.log('rec  ',recipientLists)
           for (const recipient of recipientLists) {
             try {
-              const info = await sendmailCamp(recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail);
-              console.log(`Email sent to ${recipient}: ${info.response}`);
+              sendmailCamp(draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey);
+              console.log(`Email sent to ${recipient}`);
             } catch (error) {
               console.error(`Error sending email to ${recipient}: ${error}`);
             }
@@ -144,14 +224,16 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
       }else if(action === '2') {
         const newMailCampaignDraft = await DraftSchema.create({
-          emailId: email_Id,
+          emailId: draftId,
           emailaddress: useremail,
           emailsubject: emailsubject,
           emailbody: emailbody,
-          emailrecipients: emailrecipients,
+          emailrecipients: campaignrecipients,
           tracking: {
             isOpened: trackbyopen,
             isClicked: trackbyclicks,
+            redlinktext: redlinktext_,
+            redlinkurl: redlinkurl_,
           },
           action: action, // Or any valid number for the action
           autofollowup: {
@@ -195,14 +277,16 @@ const mailCampaign = asyncHandler(async (req, res) => {
         newMailCampaignDraft.save();
       }else if(action === '') {
         const newMailCampaign = await campaignSchema.create({
-          emailId: email_Id,
+          emailId: draftId,
           emailaddress: useremail,
           emailsubject: emailsubject,
           emailbody: emailbody,
-          emailrecipients: emailrecipients,
+          emailrecipients: campaignrecipients,
           tracking: {
             isOpened: trackbyopen,
             isClicked: trackbyclicks,
+            redlinktext: redlinktext_,
+            redlinkurl: redlinkurl_,
           },
           action: action, // Or any valid number for the action
           autofollowup: {
@@ -244,18 +328,18 @@ const mailCampaign = asyncHandler(async (req, res) => {
         });
   
         if(newMailCampaign.save()) {
-          let recipients_ = req.body.mailcampaignrecipents;
+          let recipients_ = campaignrecipients;
           let recipientLists = recipients_.split(',');
 
           console.log('rec  ',recipientLists)
           for (const recipient of recipientLists) {
             try {
-                sendmailCamp(recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail);
-                console.log(`Email sent to ${recipient}`);
+              sendmailCamp(draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey);
+              console.log(`Email sent to ${recipient}`);
             } catch (error) {
-              console.error(`Error sending email to ${recipient}`);
+              console.error(`Error sending email to ${recipient}: ${error}`);
             }
-          }  
+          }    
         }
       }
       // 385965910519
@@ -275,13 +359,23 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(recipient,body,subject,accesstoken,refreshtoken,useremail) {
-  console.log('recipientaaa',recipient)
+async function sendmailCamp(draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey) {
+
+  let redlinktexter = req.body.redlinktext;
+  let redlinkurler = req.body.redlinkurl;
+
+  let redlinker;
+  if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
+      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${draftId}/${redlinkurler}">${redlinktexter}</a>`;
+  }else {
+      redlinker = "";
+  }
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       type: 'OAuth2',
-      user: useremail,
+      user: "charlesmuoka1@gmail.com",
       clientId: config.client_id,
       clientSecret: config.client_secret,
       refreshToken: refreshtoken,
@@ -293,7 +387,7 @@ async function sendmailCamp(recipient,body,subject,accesstoken,refreshtoken,user
     from: useremail,
     to: recipient,
     subject: subject,
-    html: `<div><img src="${config.redirect_uris}" style="display: none"><p>${body}</p></div>`,
+    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${draftId}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -304,5 +398,7 @@ async function sendmailCamp(recipient,body,subject,accesstoken,refreshtoken,user
     }
   });
 }
+
+
 
 module.exports = { mailCampaign,  };

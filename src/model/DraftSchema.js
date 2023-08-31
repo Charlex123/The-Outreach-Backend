@@ -35,11 +35,15 @@ const DraftSchema = new mongoose.Schema({
   tracking: {
     isOpened: {
       type: Boolean,
-      default: false
     },
     isClicked: {
       type: Boolean,
-      default: false
+    },
+    redlinktext: {
+      type: String
+    },
+    redlinkurl: {
+      type: String
     }
   },
   action: {

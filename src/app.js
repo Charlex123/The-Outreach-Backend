@@ -34,6 +34,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ::::::::::::: Controllers ::::::::::::::::::::
 const { googleOathController } = require('./controllers/auth/googleOauth2/googleOuath');
 const { Emailtracking } = require('./controllers/Emailtracking/index');
+
+
 // ::::::::::::::End of Controllers::::::::::::::
 
 // ::::::::::::: Routes ::::::::::::::::::::
@@ -41,6 +43,8 @@ const scheduleRoute = require('./routes/sheduleRoute');
 const labelRoute = require('./routes/labelRoute')
 const sendmailcampaignRoute = require('./routes/sendmailcampaignRoute')
 const authenticateuserRoute = require('./routes/verifyuserRoute')
+const openedcampaignsRoute = require('./routes/openedcampaignsRoute')
+const clickedcampaignsRoute = require('./routes/clickedcampaignsRoute')
 const checkfirstmailcampaign_Route = require('./routes/checkfirstmailcampaignRoute')
 const { cron } = require('./service/email/cron');
 const config = require('./config');
@@ -57,6 +61,8 @@ app.use('/schedule', scheduleRoute);
 app.use('/label',labelRoute );
 app.use('/campaigns',sendmailcampaignRoute );
 app.use('/user',authenticateuserRoute );
+app.use('/campaignopens',openedcampaignsRoute );
+app.use('/campaignclicks',clickedcampaignsRoute );
 app.use('/campaigns',checkfirstmailcampaign_Route );
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
