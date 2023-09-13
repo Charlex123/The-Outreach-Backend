@@ -1,6 +1,7 @@
 require("express");
 const asyncHandler = require("express-async-handler");
 const openedCampaign = require('../model/openedCampaign');
+const CampaignSchema = require('../model/campaignSchema');
 const User = require('../model/user');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -30,6 +31,11 @@ const openedCampaigns = asyncHandler(async (req, res) => {
         });
 
         await openedcampaign_.save();
+
+        const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
+
+        const updateopencampain = await CampaignSchema.update({'useremail':from,'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        updateopencampain.save();
 
         } else {
           res.status(404);

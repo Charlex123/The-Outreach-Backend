@@ -350,34 +350,20 @@ async function createGmailLabels(auth) {
   const labelData = [
 
     {
-      name: "Outreach [Campaigns]",
-      subLabels: [
-        'Outreach [Campaigns]/Reports',
-        'Outreach [Campaigns]/Drafts',
-        'Outreach [Campaigns]/Sent', 
-        'Outreach [Campaigns]/Scheduled',
-
-      ]
+      name: "Outreach Reports",
     },
     {
-      name: 'Outreach Auto Followup',
-      subLabels: [
-        'Outreach Auto Followup/Reports',
-      
-      ],
+      name: "Outreach Drafts",
     },
     {
-      name: 'Outreach Reports',
-      subLabels: [
-        'Outreach Reports/[CAMPAIGNS]',
-        'Outreach Reports/Opens',
-        'Outreach Reports/Sent Copies',
-      ],
+      name: "Outreach Sent",
     },
     {
-      name: 'Outreach Scheduled',
-      subLabels: [],
+      name: "Outreach Scheduled",
     },
+    {
+      name: "Outreach Auto FollowUp",
+    }
   ];
 
   try {

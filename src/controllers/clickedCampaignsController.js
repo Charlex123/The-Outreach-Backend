@@ -1,6 +1,7 @@
 require("express");
 const asyncHandler = require("express-async-handler");
 const clickedCampaign = require('../model/clickedCampaign');
+const CampaignSchema = require('../model/campaignSchema');
 const User = require('../model/user');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -32,6 +33,11 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
         });
 
         await clickedcampaign_.save();
+        const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
+
+        const updateclickedcampain = await CampaignSchema.update({'useremail':from,'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        updateclickedcampain.save();
+
         if ( redurllink.startsWith('http') ) {
           res.redirect(`${redurllink}`);
         } else {

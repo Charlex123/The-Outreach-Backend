@@ -1,23 +1,15 @@
 
 const mongoose = require('mongoose');
 const { genTrackingId } = require('../utils');
-const messageId = `${
-  Math.random().toString(36).substring(2, 15) +
-  Math.random().toString(36).substring(2, 15)
-}`;
-const messageId2 = `${
-  Math.random().toString(36).substring(2, 15) +
-  Math.random().toString(36).substring(2, 15)
-}`;
-const messageId3 = `${
-  Math.random().toString(36).substring(2, 15) +
-  Math.random().toString(36).substring(2, 15)
-}`;
 
 const campaignSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  campaignId: {
+    type: Number,
+    required: true
   },
   emailId: {
     type: String,
@@ -43,12 +35,30 @@ const campaignSchema = new mongoose.Schema({
     type:Date,
     default:Date.now()
   },
+  Opens: {
+    type: Number,
+    default: 0
+  },
+  Clicks: {
+    type: Number,
+    default: 0
+  },
+  Bounces: {
+    type: Number,
+    default: 0
+  },
+  Replies: {
+    type: Number,
+    default: 0
+  },
   tracking: {
     isOpened: {
       type: Boolean,
+      default: true
     },
     isClicked: {
       type: Boolean,
+      default: true
     },
     redlinktext: {
       type: String
@@ -69,11 +79,16 @@ const campaignSchema = new mongoose.Schema({
           type: Number
         },
         reply1time: {
-          type: String
+          type: Date,
+          default: null
         },
         reply1message: {
           type: String
         },
+        status: {
+          type: String,
+          default: 'unsent'
+        }
       },
       secondfollowup: {
         reply2type: {
@@ -83,11 +98,16 @@ const campaignSchema = new mongoose.Schema({
           type: Number,
         },
         reply2time: {
-          type: String,
+          type: Date,
+          default: null
         },
         reply2message: {
           type: String
         },
+        status: {
+          type: String,
+          default: 'unsent'
+        }
       },      
       thirdfollowup: {
         reply3type: {
@@ -97,10 +117,15 @@ const campaignSchema = new mongoose.Schema({
           type: Number,
         },
         reply3time: {
-          type: String,
+          type: Date,
+          default: null
         },
         reply3message: {
           type: String
+        },
+        status: {
+          type: String,
+          default: 'unsent'
         }
       }
     },  
@@ -113,7 +138,8 @@ const campaignSchema = new mongoose.Schema({
     },
     speed: {
       mailsPerDay: {
-        type: String
+        type: Number,
+        default: null
       },
       delay: {
         type: String
@@ -124,7 +150,8 @@ const campaignSchema = new mongoose.Schema({
         type: String
       },
       repeattimes: {
-        type: String
+        type: Number,
+        default: null
       }
     }
   },
@@ -137,7 +164,7 @@ const campaignSchema = new mongoose.Schema({
       type: String
     },
     verifyemail: {
-      type: Boolean
+      type: String
     }
   }
 });

@@ -39,13 +39,17 @@ const { Emailtracking } = require('./controllers/Emailtracking/index');
 // ::::::::::::::End of Controllers::::::::::::::
 
 // ::::::::::::: Routes ::::::::::::::::::::
-const scheduleRoute = require('./routes/sheduleRoute');
 const labelRoute = require('./routes/labelRoute')
 const sendmailcampaignRoute = require('./routes/sendmailcampaignRoute')
-const authenticateuserRoute = require('./routes/verifyuserRoute')
+const autofollowupcampaignRoute = require('./routes/autofollowupmailRoute')
+const schedulecampaignRoute = require('./routes/schedulecampaignRoute')
+const authenticateuserRoute = require('./routes/verifyuserRoute') 
 const openedcampaignsRoute = require('./routes/openedcampaignsRoute')
 const clickedcampaignsRoute = require('./routes/clickedcampaignsRoute')
 const checkfirstmailcampaign_Route = require('./routes/checkfirstmailcampaignRoute')
+const campaigndetailsRoute = require('./routes/campaigncountRoute')
+const opencampaigncountRoute = require('./routes/opencampaigncountRoute')
+const draftcountRoute = require('./routes/draftcountRoute')
 const { cron } = require('./service/email/cron');
 const config = require('./config');
 // ::::::::::::::End of Routes::::::::::::::
@@ -55,14 +59,17 @@ const config = require('./config');
 
 // initailize google oath controller
 googleOathController(app)
-Emailtracking(app)
-app.use('/schedule', scheduleRoute);
-
+Emailtracking(app);
 app.use('/label',labelRoute );
 app.use('/campaigns',sendmailcampaignRoute );
+app.use('/campaigns',autofollowupcampaignRoute );
+app.use('/campaigns',schedulecampaignRoute );
 app.use('/user',authenticateuserRoute );
 app.use('/campaignopens',openedcampaignsRoute );
 app.use('/campaignclicks',clickedcampaignsRoute );
+app.use('/campaigns',campaigndetailsRoute );
+app.use('/campaigns',opencampaigncountRoute );
+app.use('/campaigns',draftcountRoute );
 app.use('/campaigns',checkfirstmailcampaign_Route );
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);

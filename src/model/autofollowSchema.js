@@ -1,18 +1,29 @@
+
 const mongoose = require('mongoose');
 const { genTrackingId } = require('../utils');
-const CampaingSchema = require('./campaignSchema');
-const uuid= require('uuid');
 const messageId = `${
   Math.random().toString(36).substring(2, 15) +
   Math.random().toString(36).substring(2, 15)
 }`;
+const messageId2 = `${
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
+}`;
+const messageId3 = `${
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
+}`;
 
-const DraftSchema = new mongoose.Schema({
+const autofollowupSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
   emailId: {
+    type: String,
+    required: true
+  },
+  threadId: {
     type: String,
     required: true
   },
@@ -24,13 +35,16 @@ const DraftSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  emailbody: {
-    type: String,
-    required: true
-  },
   emailrecipients: {
     type: String,
     required: true
+  },
+  emailrecipient: {
+    type: String,
+    required: true
+  },
+  mailsentDate:{
+    type:Date
   },
   createdAt:{
     type:Date,
@@ -39,9 +53,11 @@ const DraftSchema = new mongoose.Schema({
   tracking: {
     isOpened: {
       type: Boolean,
+      default: true
     },
     isClicked: {
       type: Boolean,
+      default: true
     },
     redlinktext: {
       type: String
@@ -49,9 +65,6 @@ const DraftSchema = new mongoose.Schema({
     redlinkurl: {
       type: String
     }
-  },
-  action: {
-    type: Number
   },
   autofollowup: {
     firstfollowup: {
@@ -62,11 +75,16 @@ const DraftSchema = new mongoose.Schema({
         type: Number
       },
       reply1time: {
-        type: String
+        type: Date,
+        default: null
       },
       reply1message: {
         type: String
       },
+      status: {
+        type: String,
+        default: 'unsent'
+      }
     },
     secondfollowup: {
       reply2type: {
@@ -76,11 +94,16 @@ const DraftSchema = new mongoose.Schema({
         type: Number,
       },
       reply2time: {
-        type: String,
+        type: Date,
+        default: null
       },
       reply2message: {
         type: String
       },
+      status: {
+        type: String,
+        default: 'unsent'
+      }
     },      
     thirdfollowup: {
       reply3type: {
@@ -90,51 +113,21 @@ const DraftSchema = new mongoose.Schema({
         type: Number,
       },
       reply3time: {
-        type: String,
+        type: Date,
+        default: null
       },
       reply3message: {
         type: String
-      }
-    }
-  },  
-  schedule: {
-    scheduletime: {
-      type: String
-    },
-    skipweekends: {
-      type: String
-    },
-    speed: {
-      mailsPerDay: {
-        type: String
       },
-      delay: {
-        type: String
+      status: {
+        type: String,
+        default: 'unsent'
       }
-    },
-    repeat: {
-      repeatinterval: {
-        type: String
-      },
-      repeattimes: {
-        type: String
-      }
-    }
-  },
-  trackingId: {
-    type: String,
-    default: genTrackingId()
-  },
-  advance: {
-    sendas: {
-      type: String
-    },
-    verifyemail: {
-      type: Boolean
     }
   }
+  
 });
 
-const DraftModel = mongoose.model('emailDrafts', DraftSchema);
+const Autofollowup = mongoose.model('Autofollowup', autofollowupSchema);
 
-module.exports = DraftModel;
+module.exports = Autofollowup;
