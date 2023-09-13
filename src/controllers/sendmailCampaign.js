@@ -573,7 +573,7 @@ async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken)
     from: "aliakbar512006@gmail.com",
     to: useremail,
     subject: subject,
-    html: `<html><body><div class="getap-op"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div></body></html>`,
+    html: `<html><body><div class="getap-op"><p>${body}</p></div></body></html>`,
     "gmail":gmail
   };
 
