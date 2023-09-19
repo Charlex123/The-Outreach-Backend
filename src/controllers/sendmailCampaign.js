@@ -545,14 +545,15 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
     subject: subject,
     html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${draftId}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
     "campaignrecipients":campaignrecipients,
-    "gmail":gmail
+    "gmail":gmail,
+    "body_": body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error(error);
     } else {
-      updateEmailCampaignId(mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.html)
+      updateEmailCampaignId(mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_)
     }
   });
 }

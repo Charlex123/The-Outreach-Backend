@@ -38,7 +38,6 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
           const userappkey = verifiedUser.userAppKey;
 
 
-          console.log('verified user',verifiedUser)
           const oAuth2Client = new google.auth.OAuth2(
             config.client_id,
             config.client_secret,
@@ -243,7 +242,7 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
 
 async function sendschedulemailCamp(cronExpression,message_Id,gmail,accesstoken,refreshtoken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla) {
 
-  console.log('mail send details',accesstoken,refreshtoken,userappkey,useremail,userappkey,redlinktexta,redlinkurla)
+  console.log('mail cron details',cronExpression)
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
 
