@@ -35,14 +35,15 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
         await clickedcampaign_.save();
         const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
 
-        const updateclickedcampain = await CampaignSchema.updateOne({'useremail':from,'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
-        updateclickedcampain.save();
-
-        if ( redurllink.startsWith('http') ) {
-          res.redirect(`${redurllink}`);
-        } else {
-          res.redirect(`https://${redurllink}`);
+        const updateclickedcampain = await CampaignSchema.updateOne({'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        if(updateclickedcampain) {
+          if ( redurllink.startsWith('http') ) {
+            res.redirect(`${redurllink}`);
+          } else {
+            res.redirect(`https://${redurllink}`);
+          }
         }
+        
         
         } else {
           res.status(404);

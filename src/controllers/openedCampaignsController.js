@@ -11,7 +11,6 @@ const openedCampaigns = asyncHandler(async (req, res) => {
       
     const user_AppKey = req.params.userAppKey;
     const email_ID = req.params.email_Id;
-    console.log('user p', user_AppKey)
     
     const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
 
@@ -34,9 +33,8 @@ const openedCampaigns = asyncHandler(async (req, res) => {
 
         const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
 
-        const updateopencampain = await CampaignSchema.updateOne({'useremail':from,'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
-        updateopencampain.save();
-
+        const updateopencampain = await CampaignSchema.updateOne({'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        
         } else {
           res.status(404);
           throw new Error("User Not Found");
