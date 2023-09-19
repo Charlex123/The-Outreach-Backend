@@ -37,13 +37,13 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
           const refreshToken = verifiedUser.refreshToken;
           const userappkey = verifiedUser.userAppKey;
 
+
+          console.log('verified user',verifiedUser)
           const oAuth2Client = new google.auth.OAuth2(
             config.client_id,
             config.client_secret,
             config.redirect_uris
           );
-      
-          console.log('Oauth', oAuth2Client)
       
           oAuth2Client.setCredentials({
             access_token: accessToken,
@@ -56,6 +56,18 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
             auth: oAuth2Client
           });
           
+          const checkfirstreportsent = await firstreportsentSchema.findOne({useremail: useremail});
+
+          console.log('check first schedule report sent length',Object.keys(checkfirstreportsent).length)
+          if(!checkfirstreportsent || Object.keys(checkfirstreportsent).length === 0) {
+            const newmailReport = await firstreportsentSchema.create({
+              userId: _id,
+              useremail: useremail
+            });
+          }else {
+            console.log('create d already')
+          }
+
           const getscheduledata = await scheduleSchema.find({"emailaddress":useremail});
           let timenow = moment();
 
@@ -209,8 +221,6 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
                   }
                 }
               }
-              
-              
             } catch (error) {
               console.error(`Ooops!!! something occurred: ${error}`);
             }
@@ -231,14 +241,15 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendschedulemailCamp(cronExpression,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla) {
+async function sendschedulemailCamp(cronExpression,message_Id,gmail,accesstoken,refreshtoken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla) {
 
+  console.log('mail send details',accesstoken,refreshtoken,userappkey,useremail,userappkey,redlinktexta,redlinkurla)
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
 
   let redlinker;
   if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
-      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${draftId}/${redlinkurler}">${redlinktexter}</a>`;
+      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${message_Id}/${redlinkurler}">${redlinktexter}</a>`;
   }else {
       redlinker = "";
   }
@@ -247,7 +258,7 @@ async function sendschedulemailCamp(cronExpression,draftId,recipient,body,subjec
     service: 'gmail',
     auth: {
       type: 'OAuth2',
-      user: "charlesmuoka1@gmail.com",
+      user: useremail,
       clientId: config.client_id,
       clientSecret: config.client_secret,
       refreshToken: refreshtoken,
@@ -259,11 +270,21 @@ async function sendschedulemailCamp(cronExpression,draftId,recipient,body,subjec
     from: useremail,
     to: recipient,
     subject: subject,
-    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${draftId}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
+    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${message_Id}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
   };
 
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.error(error);
+  //   } else {
+  //     console.log('Email sent: ' + info.response);
+
+  //     let query = mailOptions.subject+' to:'+mailOptions.to
+  //     console.log('queryyyyyyyy',query)
+  //         }
+  // });
+
   cron.schedule(cronExpression, function () {
-    console.log('---------------------');
     console.log('Running Cron Process');
     // Delivering mail with sendMail method
     transporter.sendMail(mailOptions, (error, info) => {

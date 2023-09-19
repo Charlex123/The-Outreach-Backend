@@ -42,7 +42,6 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
             config.redirect_uris
           );
       
-          console.log('Oauth', oAuth2Client)
       
           oAuth2Client.setCredentials({
             access_token: accessToken,
@@ -57,9 +56,8 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
 
           const checkfirstreportsent = await firstreportsentSchema.findOne({useremail: useremail});
 
-          console.log('check first report sent',checkfirstreportsent)
-          console.log('check first report sent length',checkfirstreportsent.length)
-          if(checkfirstreportsent.length === 0) {
+          console.log('check first report sent length',Object.keys(checkfirstreportsent).length)
+          if(!checkfirstreportsent || Object.keys(checkfirstreportsent).length === 0) {
             const newmailReport = await firstreportsentSchema.create({
               userId: _id,
               useremail: useremail
@@ -133,7 +131,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   // send first autofollowupreport
                   const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   console.log('get first sent report',getfirstautofol_upsentReport)
-                  if(getfirstautofol_upsentReport) {
+                  if(!getfirstautofol_upsentReport || Object.keys(getfirstautofol_upsentReport).length === 0) {
                     sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla);
                   }
                   
@@ -156,6 +154,15 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                 if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
                   const ffrplt2 = moment(campaignsenttime).add(`${followupreply2interval}`,'days');
                   freply2timer = moment(ffrplt2,followupreply2time);
+
+                  // send first autofollowupreport
+                  const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                  console.log('get first sent report',getfirstautofol_upsentReport)
+                  if(!getfirstautofol_upsentReport || Object.keys(getfirstautofol_upsentReport).length === 0) {
+                    sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla);
+                  }
+                  
+
                   if(timenow.isSame(freply2timer)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla)
                   }
@@ -174,6 +181,14 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   const ffrplt3 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
                   freply3timer = moment(ffrplt3,followupreply3time);
                   console.log('ffr timer 3 33',freply3timer)
+                  // send first autofollowupreport
+                  const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                  console.log('get first sent report',getfirstautofol_upsentReport)
+                  if(!getfirstautofol_upsentReport || Object.keys(getfirstautofol_upsentReport).length === 0) {
+                    sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla);
+                  }
+                  
+                  
                   if(timenow.isSame(freply3timer)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla)
                   }
@@ -351,7 +366,7 @@ async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
           if (err) {
             console.error('Error adding email to label:', err);
           } else {
-            console.log('Email added to label:', response);
+            console.log('Email added to label:');
             firstsentautofollowupreport_(to)
           }
         });
@@ -363,9 +378,8 @@ async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
 }
 
 async function firstsentautofollowupreport_(to) {
-  console.log('froma',to)
   const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstautofollowupemailreport: "unsent"});
-  console.log('check report det',checkreport)
+  // check if report details exists
   if (checkreport || Object.keys(checkreport).length > 0) {
       checkreport.verified = true;
       const updatedautofollowupfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to,'firstautofollowupemailreport': "unsent"},{$set: {firstautofollowupemailreport: 'sent'}});
@@ -378,10 +392,9 @@ async function firstsentautofollowupreport_(to) {
   }
 
   async function autofollowupsentSuccess(useremail,emailId,threadId,campaignId) {
-    console.log('u email aa',useremail)
     const updatedautofollowupcampaign = await campaignSchema.updateOne({'emailaddress':useremail,'emailId': emailId,'threadId': threadId,'campaignId': campaignId},{$set: {"autofollowup.status": 'sent'}});
     if(updatedautofollowupcampaign) {
-      console.log('updated autofollow up campaign success',updatedautofollowupfirstsentreport)
+      console.log('updated autofollow up campaign success')
     }
     
   }
