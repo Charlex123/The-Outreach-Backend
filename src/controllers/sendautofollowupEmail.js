@@ -20,8 +20,6 @@ dotenv.config();
 const autofollowUpCampaign = asyncHandler(async (req, res) => {
   try {
       
-    console.log('autofollowup request',req.body)  
-
     const useremail_ = req.body;
     const useremail = useremail_.toString();
     console.log('u email string', useremail);
@@ -59,9 +57,9 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
 
           const checkfirstreportsent = await firstreportsentSchema.findOne({useremail: useremail});
 
-          if(checkfirstreportsent) {
-
-          }else {
+          console.log('check first report sent',checkfirstreportsent)
+          console.log('check first report sent length',checkfirstreportsent.length)
+          if(checkfirstreportsent.length === 0) {
             const newmailReport = await firstreportsentSchema.create({
               userId: _id,
               useremail: useremail
@@ -98,31 +96,31 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
 
                   
               // Function to check if a message has a reply
-              function checkIfMessageHasReply() {
-                return new Promise((resolve, reject) => {
+              // function checkIfMessageHasReply() {
+              //   return new Promise((resolve, reject) => {
                   
-                  gmail.users.threads.list({
-                    userId: 'me',
-                    q: `in:inbox id:${message_Id}`, // Search for the thread containing the message
-                  }, (err, res) => {
-                    if (err) {
-                      reject(err);
-                      return;
-                    }
+              //     gmail.users.threads.list({
+              //       userId: 'me',
+              //       q: `in:inbox id:${message_Id}`, // Search for the thread containing the message
+              //     }, (err, res) => {
+              //       if (err) {
+              //         reject(err);
+              //         return;
+              //       }
 
-                    const threads = res.data.threads;
-                    console.log('res 00--', res)
-                    console.log('res data 00--', res.data)
-                    console.log('threads 00--', threads)
-                    const hasReply = threads;
-                    resolve(threads);
-                  });
-                });
-              }
+              //       const threads = res.data.threads;
+              //       console.log('res 00--', res)
+              //       console.log('res data 00--', res.data)
+              //       console.log('threads 00--', threads)
+              //       const hasReply = threads;
+              //       resolve(threads);
+              //     });
+              //   });
+              // }
 
-              const checkmessagereply = await checkIfMessageHasReply();
+              // const checkmessagereply = await checkIfMessageHasReply();
 
-              console.log('check reply',checkmessagereply)
+              // console.log('check reply',checkmessagereply)
 
 
               if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
@@ -134,7 +132,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   console.log('get first sent report',getfirstautofol_upsentReport)
                   if(getfirstautofol_upsentReport) {
-                    sendfirstautofollowupsentReport(gmail,useremail, accessToken, refreshToken);
+                    sendfirstautofollowupsentReport(message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla);
                   }
                   
                   if(timenow.isSame(freply1timer)) {
@@ -173,12 +171,13 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                 if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
                   const ffrplt3 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
                   freply3timer = moment(ffrplt3,followupreply3time);
-                  if(timenow.isSame(freply2timer)) {
+                  console.log('ffr timer 3 33',freply3timer)
+                  if(timenow.isSame(freply3timer)) {
                     sendautofollowupCamp(message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla)
                   }
                   
                 }else {
-                  const ffrplt2 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
+                  const ffrplt3 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
                   freply3timer = moment(ffrplt3);
                   if(timenow.isSame(freply3timer)) {
                     sendautofollowupCamp(message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla)
@@ -241,15 +240,27 @@ async function sendautofollowupCamp(message_Id,gmail,accessToken,refreshToken,su
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) console.log(error);
-    else console.log('Email sent: ' + info.response);
+    else {
+      console.log('Email sent: ' + info.response);
+      autofollowupsentSuccess()
+    }
   });
   
   
 }
 
 
-async function sendfirstautofollowupsentReport(gmail,useremail,accesstoken,refreshtoken) {
+async function sendfirstautofollowupsentReport(message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla) {
 
+  let redlinktexter = redlinktexta;
+  let redlinkurler = redlinkurla;
+
+  let redlinker;
+  if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
+      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${message_Id}/${redlinkurler}">${redlinktexter}</a>`;
+  }else {
+      redlinker = "";
+  }
   
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -321,10 +332,10 @@ async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
 
       const labelId = await getLabelIdByName(gmail,"Outreach Auto FollowUp");
       if(labelId) {
-        addEmailToLabel(labelId, messageId);
+        addEmailToLabel(labelId, messageId,to);
       }
       // Function to add an email to a label.
-      function addEmailToLabel(labelId, messageId) {
+      function addEmailToLabel(labelId, messageId, to) {
         // Specify the email ID and label you want to add the email to.
         const emailId = messageId;
 
@@ -339,19 +350,7 @@ async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
             console.error('Error adding email to label:', err);
           } else {
             console.log('Email added to label:', response);
-            firstreportsentSchema.update(
-              { 'useremail': from,'firstautofollowupemailreport': "unsent" },
-              {$set: {firstmailsentreport: 'sent'}},
-              { new: true }, // Return the updated document
-              (updateErr, updatedReport) => {
-                if (updateErr) {
-                  console.error(updateErr);
-                } else {
-                  console.log('Autofollow up sent report updated:', updatedReport);
-                }
-        
-              }
-            );
+            firstsentautofollowupreport_(to)
           }
         });
       }
@@ -360,5 +359,37 @@ async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
 
     }
 }
+
+async function firstsentautofollowupreport_(to) {
+  console.log('froma',to)
+  const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstautofollowupemailreport: "unsent"});
+  console.log('check report det',checkreport)
+  if (checkreport || Object.keys(checkreport).length > 0) {
+      checkreport.verified = true;
+      const updatedautofollowupfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to,'firstautofollowupemailreport': "unsent"},{$set: {firstautofollowupemailreport: 'sent'}});
+      if(updatedautofollowupfirstsentreport) {
+        console.log('updated autofollow up first sent report',updatedautofollowupfirstsentreport)
+      }
+      
+    }else {
+      console.log('no user in check report')
+    }
+  }
+
+  async function autofollowupsentSuccess(to) {
+    console.log('froma',to)
+    const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstautofollowupemailreport: "unsent"});
+    console.log('check report det',checkreport)
+    if (checkreport || Object.keys(checkreport).length > 0) {
+        checkreport.verified = true;
+        const updatedautofollowupfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to,'firstautofollowupemailreport': "unsent"},{$set: {firstautofollowupemailreport: 'sent'}});
+        if(updatedautofollowupfirstsentreport) {
+          console.log('updated autofollow up first sent report',updatedautofollowupfirstsentreport)
+        }
+        
+      }else {
+        console.log('no user in check report')
+      }
+    }
 
 module.exports = { autofollowUpCampaign  };

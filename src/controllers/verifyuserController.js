@@ -8,7 +8,6 @@ const verifyUser = asyncHandler(async (req, res) => {
   try {
       
       const email_ = req.body.email;
-
       const verifyuser = await User.findOne({email: email_});
 
       if (verifyuser) {

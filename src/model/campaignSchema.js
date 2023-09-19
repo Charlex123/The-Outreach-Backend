@@ -15,6 +15,9 @@ const campaignSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  threadId: {
+    type: String,
+  },
   emailaddress: {
     type: String,
     required: true

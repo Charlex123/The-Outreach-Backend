@@ -32,6 +32,6 @@ const firstreportSentSchema = new mongoose.Schema({
   }
   });
 
-const firstreportSent = mongoose.model('firstreportSent', firstreportSentSchema);
+const firstreportSents = mongoose.model('firstreportSents', firstreportSentSchema);
 
-module.exports = firstreportSent;
+module.exports = firstreportSents;

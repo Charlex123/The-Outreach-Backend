@@ -231,8 +231,9 @@ const googleOathController = (app) => {
     try {
       const { code } = req.query;
       const token = await auth.getAllTokens(code);
+      console.log('auth token code', code)
       const googleUser = await auth.getUserData(token.id_token);
-      
+      console.log('google auth user', googleUser)
       const existUser = await User.findOne({ googleId: googleUser.sub });
       if (!existUser) {
         const userAppKey = await genAppAccessToken();

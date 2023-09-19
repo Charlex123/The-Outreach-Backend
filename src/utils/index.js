@@ -348,12 +348,8 @@ async function createGmailLabels(auth) {
   const gmail = google.gmail({ version: 'v1', auth });
 
   const labelData = [
-
     {
       name: "Outreach Reports",
-    },
-    {
-      name: "Outreach Drafts",
     },
     {
       name: "Outreach Sent",
@@ -377,12 +373,7 @@ async function createGmailLabels(auth) {
         },
       });
 
-      //push the created label to the array
-      labels.push(createLabelResponse.data);
-      console.log(labels);
-      if (label.subLabels.length > 0) {
-          await createNestedLabels(gmail, createLabelResponse.data.id, label.subLabels);
-      }
+      
     }
     return labels;
   } catch (error) {
@@ -391,25 +382,25 @@ async function createGmailLabels(auth) {
 }
 
 // Create Nested Gmail Labels
-async function createNestedLabels(gmail, parentLabelId, subLabels) {
-  for (const subLabel of subLabels) {
-    const createSubLabelResponse = await gmail.users.labels.create({
-      userId: 'me',
-      requestBody: {
-        name: subLabel,
-        labelListVisibility: 'labelShow',
-        messageListVisibility: 'show',
-        parent: parentLabelId,
-      },
-    });
+// async function createNestedLabels(gmail, parentLabelId, subLabels) {
+//   for (const subLabel of subLabels) {
+//     const createSubLabelResponse = await gmail.users.labels.create({
+//       userId: 'me',
+//       requestBody: {
+//         name: subLabel,
+//         labelListVisibility: 'labelShow',
+//         messageListVisibility: 'show',
+//         parent: parentLabelId,
+//       },
+//     });
 
-    //push the created label to the array
+//     //push the created label to the array
 
-    labels.push(createSubLabelResponse.data);
-    console.log('Sub-label created:', createSubLabelResponse.data);
-  }
+//     labels.push(createSubLabelResponse.data);
+//     console.log('Sub-label created:', createSubLabelResponse.data);
+//   }
 
-}
+// }
 
 
 

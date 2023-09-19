@@ -27,9 +27,7 @@ module.exports=merge(
     "client_secret":process.env.client_secret,
     "redirect_uris":process.env.redirect_uris,
     "javascript_origins":process.env.javascript_origins,
-    appSecret:"blablabluethisismysecretkey"
+    'appSecret':process.env.appSecret
   },
   envConfig
 );
-
-console.log("env",envConfig)

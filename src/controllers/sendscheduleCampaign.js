@@ -19,8 +19,6 @@ dotenv.config();
 const scheduleCampaign = asyncHandler(async (req, res) => {
   try {
     
-    console.log('schedule request',req.body)
-      
     const useremail_ = req.body;
     const useremail = useremail_.toString();
     console.log('u email string', useremail);

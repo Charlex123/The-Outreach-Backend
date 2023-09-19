@@ -34,7 +34,7 @@ const openedCampaigns = asyncHandler(async (req, res) => {
 
         const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
 
-        const updateopencampain = await CampaignSchema.update({'useremail':from,'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        const updateopencampain = await CampaignSchema.updateOne({'useremail':from,'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
         updateopencampain.save();
 
         } else {
