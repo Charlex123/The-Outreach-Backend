@@ -273,9 +273,9 @@ const googleOathController = (app) => {
           oauth2Client.setCredentials({ access_token: newToken.access_token });
           await createGmailLabels(oauth2Client);
 
-          return res.redirect(`${config.FRONTEND_URL}social/?token=${existUser.userAppKey}`);
+          return res.redirect(`${config.FRONTEND_URL}/social/?token=${existUser.userAppKey}`);
         } else {
-          return res.redirect(`${config.FRONTEND_URL}social/?token=${existUser.userAppKey}`);
+          return res.redirect(`${config.FRONTEND_URL}/social/?token=${existUser.userAppKey}`);
         }
       }
     } catch (error) {
