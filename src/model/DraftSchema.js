@@ -51,7 +51,7 @@ const DraftSchema = new mongoose.Schema({
     }
   },
   action: {
-    type: Number
+    type: String
   },
   autofollowup: {
     firstfollowup: {
