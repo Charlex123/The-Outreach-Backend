@@ -663,9 +663,9 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 
 
 async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, to, body) {
-console.log('update email ran')
+console.log('update email ran --1')
   try{
-    console.log('update email ran')
+    console.log('update email ran --2')
     // Retrieve the email threads in the user's mailbox
     let query = subject; 
     const response = await gmail.users.messages.list({
