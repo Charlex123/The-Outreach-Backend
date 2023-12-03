@@ -124,6 +124,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
 
 
               if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
+                console.log('rrrrr1',followupreply1type)
                 if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
                   const ffrplt = moment(campaignsenttime).add(`${followupreply1interval}`,'days');
                   freply1timer = moment(ffrplt,followupreply1time);
