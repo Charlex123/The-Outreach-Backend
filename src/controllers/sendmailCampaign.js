@@ -177,7 +177,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
         }
         
 
-        if(action === '1') {
+        if(action === 1) {
           const newMailCampaign = await campaignSchema.create({
             userId: _id,
             campaignId: campagn_Id,
@@ -254,7 +254,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             }  
           }
   
-        }else if(action === '2') {
+        }else if(action === 2) {
           
           const recipient__ = 'charlesmuoka1@gmail.com';
           const subject = emailsubject;
