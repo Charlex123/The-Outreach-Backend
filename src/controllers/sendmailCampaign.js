@@ -176,6 +176,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           });
         }
         
+        console.log('mail send action here',req.body.mailsendtesttype)
 
         if(action == '1') {
           const newMailCampaign = await campaignSchema.create({
@@ -662,9 +663,9 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 
 
 async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, to, body) {
-
+console.log('update email ran')
   try{
-
+    console.log('update email ran')
     // Retrieve the email threads in the user's mailbox
     let query = subject; 
     const response = await gmail.users.messages.list({
@@ -726,7 +727,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
       
 
       const campaign = await campaignSchema.updateMany({'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients},{$set: {emailId: messageId, threadId: threadId}});
-  
+      console.log('frrrrrrrreeeee')
       if (campaign) {
         const getautofollowup = await campaignSchema.aggregate([ 
           {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
