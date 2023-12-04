@@ -244,7 +244,12 @@ const mailCampaign = asyncHandler(async (req, res) => {
             
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             console.log('get first sent report',getfirstreportSent)
-            if(getfirstreportSent.length > 0) {
+            console.log('get first sent report length',getfirstreportSent.length)
+            if(getfirstreportSent.length != 0) {
+              firstsentreport_(to)
+              console.log('first report already sent')
+            }else {
+              console.log('send first report')
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
@@ -369,8 +374,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
           }
           
           const getfirstdraftreport = await firstreportsentSchema.find({"useremail":useremail,"firstdraftreport":"unsent"});
-          console.log('get first draft report',getfirstdraftreport.length)
-          if(getfirstdraftreport.length > 0) {
+          // console.log('get first draft report',getfirstdraftreport.length)
+          if(getfirstdraftreport.length != 0) {
             let recipients_ = campaignrecipients;
             let recipientLists = recipients_.split(',');
           
@@ -487,7 +492,12 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             console.log('get first sent report',getfirstreportSent)
-            if(getfirstreportSent.length > 0) {
+            console.log('get first sent report length',getfirstreportSent.length)
+            if(getfirstreportSent.length != 0) {
+              firstsentreport_(to)
+              console.log('first report already sent')
+            }else {
+              console.log('send first report')
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
