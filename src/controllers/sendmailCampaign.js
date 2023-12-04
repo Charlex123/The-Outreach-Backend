@@ -183,6 +183,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             userId: _id,
             campaignId: campagn_Id,
             emailId: draftId,
+            threadId: draftId,
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
@@ -238,16 +239,18 @@ const mailCampaign = asyncHandler(async (req, res) => {
           if(newMailCampaign.save()) {
             let recipients_ = campaignrecipients;
             let recipientLists = recipients_.split(',');
+
+            let campaignId_ = newMailCampaign.campaignId;
             
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             console.log('get first sent report',getfirstreportSent)
             if(getfirstreportSent.length > 0) {
-              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken);
+              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl);
+                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -312,6 +315,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             const newMailCampaignDraft = await DraftSchema.create({
               userId: _id,
               emailId: draft_id,
+              threadId: draft_id,
               emailaddress: useremail,
               emailsubject: emailsubject,
               emailbody: emailbody,
@@ -425,6 +429,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             userId: _id,
             campaignId: campagn_Id,
             emailId: draftId,
+            threadId: draftId,
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
@@ -478,15 +483,17 @@ const mailCampaign = asyncHandler(async (req, res) => {
             let recipients_ = campaignrecipients;
             let recipientLists = recipients_.split(',');
             
+            let campaignId_ = newMailCampaign.campaignId;
+
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             console.log('get first sent report',getfirstreportSent)
             if(getfirstreportSent.length > 0) {
-              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken);
+              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl);
+                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -516,7 +523,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla) {
+async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -547,20 +554,21 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
     html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${draftId}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
     "campaignrecipients":campaignrecipients,
     "gmail":gmail,
-    "body_": body
+    "body_": body,
+    campaignId_: campaignId_
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error(error);
     } else {
-      updateEmailCampaignId(mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_)
+      updateEmailCampaignId(mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
     }
   });
 }
 
 
-async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken) {
+async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,campaignId_) {
 
   
   const transporter = nodemailer.createTransport({
@@ -662,10 +670,12 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, to, body) {
+async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, to, body,campaignId_) {
 console.log('update email ran --1')
+
   try{
     console.log('update email ran --2')
+    console.log('ucampain id',campaignId_)
     // Retrieve the email threads in the user's mailbox
     let query = subject; 
     const response = await gmail.users.messages.list({
@@ -726,62 +736,71 @@ console.log('update email ran --1')
       }
       
 
-      const campaign = await campaignSchema.updateMany({'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients},{$set: {emailId: messageId, threadId: threadId}});
-      console.log('frrrrrrrreeeee')
+      const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
+      console.log('frrrrrrrreeeee',campaign)
+      console.log('campaign Id frrrrrrrreeeee',campaignId_)
       if (campaign) {
-        const getautofollowup = await campaignSchema.aggregate([ 
-          {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
-          { $project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt" }},
-          {$sort: {"emailsubject": -1}},
-          {$limit: 1}
-        ])
+        campaign.emailId = messageId;
+        campaign.threadId = threadId; 
+        
+        const updatedCampgn = await campaign.save();
+        if(updatedCampgn) {
+          console.log('updated campaign true',updatedCampgn);
 
-        const getschedule = await campaignSchema.aggregate([ 
-          {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
-          { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt" }},
-          {$sort: {"emailsubject": -1}},
-          {$limit: 1}
-        ])
-
-        let getautofollowup_ = getautofollowup[0].autofollowup;
-        let _id = getautofollowup[0].userId;
-        let mailtsentdate  = getautofollowup[0].created;
-        let tracking_  = getautofollowup[0].tracking;
-
-        const newautofollowUp = await autofollowSchema.create({
-          userId: _id,
-          emailId: messageId,
-          threadId: threadId,
-          emailaddress: from,
-          emailsubject: subject,
-          emailrecipients: campaignrecipients,
-          emailrecipient: to,
-          mailsentDate: mailtsentdate,
-          tracking: tracking_,
-          autofollowup: getautofollowup_
-        })
-
-        let getschedule_ = getschedule[0].schedule;
-        let _id_ = getschedule[0].userId;
-        let scheduletracking_ = getschedule[0].tracking;
-        let mailtsentdate_  = getschedule[0].created;
-        const newSchedule = await scheduleSchema.create({
-          userId: _id_,
-          emailId: messageId,
-          threadId: threadId,
-          emailaddress: from,
-          emailsubject: subject,
-          emailbody: body,
-          emailrecipients: campaignrecipients,
-          emailrecipient: to,
-          mailsentDate: mailtsentdate_,
-          tracking: scheduletracking_,
-          schedule: getschedule_
-        })
-
-        newautofollowUp.save();
-
-        newSchedule.save();
+          const getautofollowup = await campaignSchema.aggregate([ 
+            {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
+            { $project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt" }},
+            {$sort: {"emailsubject": -1}},
+            {$limit: 1}
+          ])
+  
+          const getschedule = await campaignSchema.aggregate([ 
+            {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
+            { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt" }},
+            {$sort: {"emailsubject": -1}},
+            {$limit: 1}
+          ])
+  
+          let getautofollowup_ = getautofollowup[0].autofollowup;
+          let _id = getautofollowup[0].userId;
+          let mailtsentdate  = getautofollowup[0].created;
+          let tracking_  = getautofollowup[0].tracking;
+  
+          const newautofollowUp = await autofollowSchema.create({
+            userId: _id,
+            emailId: messageId,
+            threadId: threadId,
+            emailaddress: from,
+            emailsubject: subject,
+            emailrecipients: campaignrecipients,
+            emailrecipient: to,
+            mailsentDate: mailtsentdate,
+            tracking: tracking_,
+            autofollowup: getautofollowup_
+          })
+  
+          let getschedule_ = getschedule[0].schedule;
+          let _id_ = getschedule[0].userId;
+          let scheduletracking_ = getschedule[0].tracking;
+          let mailtsentdate_  = getschedule[0].created;
+          const newSchedule = await scheduleSchema.create({
+            userId: _id_,
+            emailId: messageId,
+            threadId: threadId,
+            emailaddress: from,
+            emailsubject: subject,
+            emailbody: body,
+            emailrecipients: campaignrecipients,
+            emailrecipient: to,
+            mailsentDate: mailtsentdate_,
+            tracking: scheduletracking_,
+            schedule: getschedule_
+          })
+  
+          newautofollowUp.save();
+  
+          newSchedule.save();
+        }
 
       } else {
         res.status(404);
