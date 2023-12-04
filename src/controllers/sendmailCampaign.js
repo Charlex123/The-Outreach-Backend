@@ -690,51 +690,6 @@ console.log('update email ran --1')
       const threadId = messages[0].threadId;
       console.log('messages Idsss',messages[0])
       // Function to get the labelId by label name.
-      async function getLabelIdByName(gmail,labelName) {
-        
-        try {
-          const response = await gmail.users.labels.list({
-            userId: 'me',
-          });
-          
-          const labels = response.data.labels;
-          const label = labels.find((l) => l.name === labelName);
-
-          if (label) {
-            return label.id;
-          } else {
-            throw new Error(`Label "${labelName}" not found.`);
-          }
-        } catch (err) {
-          throw new Error('Error listing labels:', err);
-        }
-      }
-
-      const labelId = await getLabelIdByName(gmail,"Outreach Sent");
-      if(labelId) {
-        addEmailToLabel(labelId, messageId,from);
-      }
-      // Function to add an email to a label.
-      function addEmailToLabel(labelId, messageId,from) {
-        // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
-
-        gmail.users.messages.modify({
-          userId: 'me',
-          id: emailId,
-          resource: {
-            addLabelIds: [labelId],
-          },
-        }, (err, response) => {
-          if (err) {
-            console.error('Error adding email to label:', err);
-          } else {
-            console.log('Email added to label:', response);
-            firstsentreport_(from)
-          }
-        });
-      }
-      
 
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
       console.log('frrrrrrrreeeee',campaign)
@@ -748,14 +703,14 @@ console.log('update email ran --1')
           console.log('updated campaign true',updatedCampgn);
 
           const getautofollowup = await campaignSchema.aggregate([ 
-            {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
+            {$match: {'campaignId':campaignId_}},
             { $project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt" }},
             {$sort: {"emailsubject": -1}},
             {$limit: 1}
           ])
   
           const getschedule = await campaignSchema.aggregate([ 
-            {$match: {'emailaddress':from,'emailsubject': subject,'emailrecipients': campaignrecipients}},
+            {$match: {'campaignId':campaignId_}},
             { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt" }},
             {$sort: {"emailsubject": -1}},
             {$limit: 1}
@@ -807,7 +762,51 @@ console.log('update email ran --1')
         throw new Error("User Not Found");
       }
 
-      
+      async function getLabelIdByName(gmail,labelName) {
+        
+        try {
+          const response = await gmail.users.labels.list({
+            userId: 'me',
+          });
+          
+          const labels = response.data.labels;
+          const label = labels.find((l) => l.name === labelName);
+
+          if (label) {
+            return label.id;
+          } else {
+            throw new Error(`Label "${labelName}" not found.`);
+          }
+        } catch (err) {
+          throw new Error('Error listing labels:', err);
+        }
+      }
+
+      const labelId = await getLabelIdByName(gmail,"Outreach Sent");
+      if(labelId) {
+        addEmailToLabel(labelId, messageId,from);
+      }
+      // Function to add an email to a label.
+      // function addEmailToLabel(labelId, messageId,from) {
+      //   // Specify the email ID and label you want to add the email to.
+      //   const emailId = messageId;
+
+      //   gmail.users.messages.modify({
+      //     userId: 'me',
+      //     id: emailId,
+      //     resource: {
+      //       addLabelIds: [labelId],
+      //     },
+      //   }, (err, response) => {
+      //     if (err) {
+      //       console.error('Error adding email to label:', err);
+      //     } else {
+      //       console.log('Email added to label:', response);
+      //       firstsentreport_(from)
+      //     }
+      //   });
+      // }
+
     } else {
       console.log('No messages found.');
     }
