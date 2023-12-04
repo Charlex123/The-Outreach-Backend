@@ -23,6 +23,9 @@ const autofollowup_Id = `${
 const schedule_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;
+const defaultthread_Id = `${
+  Math.floor(100000000 + Math.random() * 900000000)
+}`;
 
 dotenv.config();
 
@@ -189,7 +192,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             userId: _id,
             campaignId: campagn_Id,
             emailId: draftId,
-            threadId: draftId,
+            threadId: defaultthread_Id,
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
@@ -326,7 +329,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             const newMailCampaignDraft = await DraftSchema.create({
               userId: _id,
               emailId: draft_id,
-              threadId: draft_id,
+              threadId: defaultthread_Id,
               emailaddress: useremail,
               emailsubject: emailsubject,
               emailbody: emailbody,
@@ -440,7 +443,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             userId: _id,
             campaignId: campagn_Id,
             emailId: draftId,
-            threadId: draftId,
+            threadId: defaultthread_Id,
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
