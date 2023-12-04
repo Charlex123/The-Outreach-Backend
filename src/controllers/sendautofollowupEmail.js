@@ -128,18 +128,18 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                 if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
                   const ffrplt = moment(campaignsenttime).add(`${followupreply1interval}`,'days');
                   const freply1timer = moment(ffrplt,followupreply1time);
+                  console.log('campaign sent time',campaignsenttime)
                   console.log('ffrplt',ffrplt)
-                  console.log('ffrplt',freply1timer)
+                  console.log('ffrplt 11',freply1timer)
+                  if(timenow.isSameOrAfter(freply1timer)) {
+                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                    console.log('hella',moment().format('hh:mm:ss'))
+                  }
                   // send first autofollowupreport
                   const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
                   if(Object.keys(getfirstautofol_upsentReport).length > 0) {
                     sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  }
-                  
-                  if(timenow.isSameOrAfter(freply1timer)) {
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                    console.log('hella',moment().format('hh:mm:ss'))
                   }
                   
                 }else {
@@ -156,8 +156,13 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
               if(followupreply2type && followupreply2type !== "" && followupreply2type === "r") {
                 if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
                   const ffrplt2 = moment(campaignsenttime).add(`${followupreply2interval}`,'days');
-                  freply2timer = moment(ffrplt2,followupreply2time);
-
+                  const freply2timer = moment(ffrplt2,followupreply2time);
+                  console.log('campaign sent time',campaignsenttime)
+                  console.log('ffrplt 2',ffrplt2)
+                  console.log('ffrplt 22',freply2timer)
+                  if(timenow.isSameOrAfter(freply2timer)) {
+                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  }
                   // send first autofollowupreport
                   const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   console.log('get first sent report',getfirstautofol_upsentReport)
@@ -165,15 +170,10 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                     sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
                   }
                   
-
-                  if(timenow.isSameOrAfter(freply2timer)) {
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }
-                  
                 }else {
                   const ffrplt2 = moment(campaignsenttime).add(`${followupreply2interval}`,'days');
-                  freply2timer = moment(ffrplt2);
-                  if(timenow.isSameOrAfter(freply2timer)) {
+                  const freply2timer_ = moment(ffrplt2);
+                  if(timenow.isSameOrAfter(freply2timer_)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                 }
@@ -182,18 +182,19 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
               if(followupreply3type && followupreply3type !== "" && followupreply3type === "r") {
                 if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
                   const ffrplt3 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
-                  freply3timer = moment(ffrplt3,followupreply3time);
+                  const freply3timer = moment(ffrplt3,followupreply3time);
+                  console.log('ffrplt 3',ffrplt3)
                   console.log('ffr timer 3 33',freply3timer)
+                  console.log('campaign sent time',campaignsenttime)
+                  
+                  if(timenow.isSameOrAfter(freply3timer)) {
+                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  }
                   // send first autofollowupreport
                   const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   console.log('get first sent report',getfirstautofol_upsentReport)
                   if(Object.keys(getfirstautofol_upsentReport).length > 0) {
                     sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  }
-                  
-                  
-                  if(timenow.isSameOrAfter(freply3timer)) {
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   
                 }else {
@@ -302,8 +303,8 @@ async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,
     }
   });
 
-  let body = "Auto FollowUp Mail sent successful report body";
-  let subject = "Auto Follow Up Sent report success"; 
+  let body = "Auto followup mail sent successful ";
+  let subject = "Auto Follow Up Sent Report Success"; 
   const mailOptions = {
     from: "aliakbar512006@gmail.com",
     to: useremail,
