@@ -6,6 +6,9 @@ const firstreportSentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  campaignId: {
+    type: String
+  },
   useremail: {
     type: String,
     required: true

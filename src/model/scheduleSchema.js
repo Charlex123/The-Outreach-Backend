@@ -19,6 +19,9 @@ const ScheduleSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  campaignId: {
+    type: String
+  },
   emailId: {
     type: String,
     required: true

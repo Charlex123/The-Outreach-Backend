@@ -530,7 +530,7 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
 
   let redlinker;
   if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
-      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${draftId}/${redlinkurler}">${redlinktexter}</a>`;
+      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${campaignId_}/${redlinkurler}">${redlinktexter}</a>`;
   }else {
       redlinker = "";
   }
@@ -551,7 +551,7 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
     from: useremail,
     to: recipient,
     subject: subject,
-    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${draftId}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
+    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
     "campaignrecipients":campaignrecipients,
     "gmail":gmail,
     "body_": body,
@@ -597,10 +597,25 @@ async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,
     if (error) {
       console.error(error);
     } else {
+      firstsentreport_(mailOptions.to)
       addfirstreportsentmailtoLabel(mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.html)
     }
   });
 }
+
+
+async function firstsentreport_(to) {
+  const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstmailsentreport: "unsent"});
+  
+  if (checkreport) {
+    checkreport.verified = true;
+    const updatedfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to},{$set: {firstmailsentreport: 'sent'}});
+    if(updatedfirstsentreport) {
+      console.log('updated first sent report',updatedfirstsentreport)
+    }
+  }
+}
+
 
 async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
   try{
@@ -671,11 +686,8 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 
 
 async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, to, body,campaignId_) {
-console.log('update email ran --1')
 
   try{
-    console.log('update email ran --2')
-    console.log('ucampain id',campaignId_)
     // Retrieve the email threads in the user's mailbox
     let query = subject; 
     const response = await gmail.users.messages.list({
@@ -688,19 +700,15 @@ console.log('update email ran --1')
     if (messages[0]) {
       const messageId = messages[0].id;
       const threadId = messages[0].threadId;
-      console.log('messages Idsss',messages[0]);
       // Function to get the labelId by label name.
 
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
-      console.log('frrrrrrrreeeee',campaign)
-      console.log('campaign Id frrrrrrrreeeee',campaignId_)
       if (campaign) {
         campaign.emailId = messageId;
         campaign.threadId = threadId; 
         
         const updatedCampgn = await campaign.save();
         if(updatedCampgn) {
-          console.log('updated campaign true',updatedCampgn);
 
           const getautofollowup = await campaignSchema.aggregate([ 
             {$match: {'campaignId':campaignId_}},
@@ -723,6 +731,7 @@ console.log('update email ran --1')
   
           const newautofollowUp = await autofollowSchema.create({
             userId: _id,
+            campaignId: campaignId_,
             emailId: messageId,
             threadId: threadId,
             emailaddress: from,
@@ -740,6 +749,7 @@ console.log('update email ran --1')
           let mailtsentdate_  = getschedule[0].created;
           const newSchedule = await scheduleSchema.create({
             userId: _id_,
+            campaignId: campaignId_,
             emailId: messageId,
             threadId: threadId,
             emailaddress: from,
@@ -890,29 +900,29 @@ console.log('update email ran --1')
   
 // };
 
-async function firstdraftsentreport_(from) {
-  const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstdraftreport: "unsent"});
-  
-  if (checkreport.length > 0) {
-    checkreport.verified = true;
-    const updatedfirstsentdraftreport = await firstreportsentSchema.updateOne({ 'useremail': from, firstdraftreport: "unsent" },{$set: {firstdraftreport: 'sent'}});
-    if(updatedfirstsentdraftreport) {
-      console.log('updated first draft report',updatedfirstsentdraftreport)
-    }
+// async function firstdraftsentreport_(from) {
+//   const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstdraftreport: "unsent"});
+//   console.log('first report sent schemma')
+//   if (checkreport.length > 0) {
+//     checkreport.verified = true;
+//     const updatedfirstsentdraftreport = await firstreportsentSchema.updateOne({ 'useremail': from, firstdraftreport: "unsent" },{$set: {firstdraftreport: 'sent'}});
+//     if(updatedfirstsentdraftreport) {
+//       console.log('updated first draft report',updatedfirstsentdraftreport)
+//     }
     
-    }
-}
+//     }
+// }
 
-async function firstsentreport_(from) {
-  const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstmailsentreport: "unsent"});
+// async function firstsentreport_(from) {
+//   const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstmailsentreport: "unsent"});
   
-  if (checkreport.length > 0) {
-    checkreport.verified = true;
-    const updatedfirstsentreport = await firstreportsentSchema.updateOne({'useremail':from, firstmailsentreport: 'unsent'},{$set: {firstmailsentreport: 'sent'}});
-    if(updatedfirstsentreport) {
-      console.log('updated first sent report',updatedfirstsentreport)
-    }
-  }
-}
+//   if (checkreport.length > 0) {
+//     checkreport.verified = true;
+//     const updatedfirstsentreport = await firstreportsentSchema.updateOne({'useremail':from, firstmailsentreport: 'unsent'},{$set: {firstmailsentreport: 'sent'}});
+//     if(updatedfirstsentreport) {
+//       console.log('updated first sent report',updatedfirstsentreport)
+//     }
+//   }
+// }
 
 module.exports = { mailCampaign };

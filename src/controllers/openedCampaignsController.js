@@ -10,7 +10,7 @@ const openedCampaigns = asyncHandler(async (req, res) => {
   try {
       
     const user_AppKey = req.params.userAppKey;
-    const email_ID = req.params.email_Id;
+    const campaign_Id = req.params.campaignId;
     
     const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
 
@@ -25,15 +25,14 @@ const openedCampaigns = asyncHandler(async (req, res) => {
 
         const openedcampaign_ = await openedCampaign.create({
           userId: _id,
-          emailId: email_ID,
-          emailaddress: email,
+          campaignId: campaign_Id,
         });
 
         await openedcampaign_.save();
 
-        const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
+        const count = await CampaignSchema.countDocuments({campaignId: campaign_Id});
 
-        const updateopencampain = await CampaignSchema.updateOne({'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        const updateopencampain = await CampaignSchema.updateOne({'campaignId':campaign_Id},{$set: {Opens: count}});
         
         } else {
           res.status(404);

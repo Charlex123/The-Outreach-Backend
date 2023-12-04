@@ -10,7 +10,8 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
   try {
       
     const user_AppKey = req.params.userAppKey;
-    const email_ID = req.params.email_Id;
+    const campaign_Id = req.params.campaignId;
+    const email_ID = req.params.emailId;
     const redurllink = req.params.redlinkurl;
     console.log('user p', user_AppKey)
     console.log('user red link', redurllink)
@@ -28,14 +29,13 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
 
         const clickedcampaign_ = await clickedCampaign.create({
           userId: _id,
-          emailId: email_ID,
-          emailaddress: email,
+          campaignId: campaign_Id,
         });
 
         await clickedcampaign_.save();
-        const count = await CampaignSchema.countDocuments({emailaddress: email,emailId:email_ID});
+        const count = await CampaignSchema.countDocuments({campaignId: campaign_Id});
 
-        const updateclickedcampain = await CampaignSchema.updateOne({'emailaddress':email,'emailId':email_ID},{$set: {Opens: count}});
+        const updateclickedcampain = await CampaignSchema.updateOne({'campaignId':campaign_Id},{$set: {Opens: count}});
         if(updateclickedcampain) {
           if ( redurllink.startsWith('http') ) {
             res.redirect(`${redurllink}`);

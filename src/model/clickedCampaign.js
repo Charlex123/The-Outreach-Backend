@@ -6,13 +6,8 @@ const clickedcampaignSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  emailId: {
-    type: String,
-    required: true
-  },
-  emailaddress: {
-    type: String,
-    required: true
+  campaignId: {
+    type: String
   },
   createdAt:{
     type:Date,
