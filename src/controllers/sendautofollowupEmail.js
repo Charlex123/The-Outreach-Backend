@@ -136,11 +136,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                     console.log('hella',moment().format('hh:mm:ss'))
                   }
                   // send first autofollowupreport
-                  const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-                  console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
-                  if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-                    sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  }
+                  // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                  // console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
+                  // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+                  //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+                  // }
                   
                 }else {
                   const ffrplt = moment(campaignsenttime).add(`${followupreply1interval}`,'days');
