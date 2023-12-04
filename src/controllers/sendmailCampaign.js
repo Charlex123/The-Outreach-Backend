@@ -17,6 +17,12 @@ const { get } = require("lodash");
 const campagn_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;
+const autofollowup_Id = `${
+  Math.floor(100000000 + Math.random() * 900000000)
+}`;
+const schedule_Id = `${
+  Math.floor(100000000 + Math.random() * 900000000)
+}`;
 
 dotenv.config();
 
@@ -741,6 +747,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
   
           const newautofollowUp = await autofollowSchema.create({
             userId: _id,
+            autofollowupId: autofollowup_Id,
             campaignId: campaignId_,
             emailId: messageId,
             threadId: threadId,
@@ -759,6 +766,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
           let mailtsentdate_  = getschedule[0].created;
           const newSchedule = await scheduleSchema.create({
             userId: _id_,
+            scheduleId: schedule_Id,
             campaignId: campaignId_,
             emailId: messageId,
             threadId: threadId,

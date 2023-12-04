@@ -19,6 +19,9 @@ const autofollowupSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  autofollowupId: {
+    type: String
+  },
   campaignId: {
     type: String
   },
