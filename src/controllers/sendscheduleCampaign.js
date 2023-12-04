@@ -73,7 +73,9 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
           for (const schedule of getscheduledata) {
             try {
 
+              const schedule_Id = schedule.scheduleId;
               const message_Id = schedule.emailId;
+              const campaign_Id = schedule.campaignId;
               const recipient = schedule.emailrecipient;
               const subject = schedule.emailrecipient;
               const body = schedule.emailbody;
