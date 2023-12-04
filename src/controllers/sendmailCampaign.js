@@ -688,7 +688,7 @@ console.log('update email ran --1')
     if (messages[0]) {
       const messageId = messages[0].id;
       const threadId = messages[0].threadId;
-      console.log('messages Idsss',messages[0])
+      console.log('messages Idsss',messages[0]);
       // Function to get the labelId by label name.
 
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
