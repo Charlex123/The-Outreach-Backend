@@ -164,11 +164,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // send first autofollowupreport
-                  const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-                  console.log('get first sent report',getfirstautofol_upsentReport)
-                  if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-                    sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  }
+                  // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                  // console.log('get first sent report',getfirstautofol_upsentReport)
+                  // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+                  //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+                  // }
                   
                 }else {
                   const ffrplt2 = moment(campaignsenttime).add(`${followupreply2interval}`,'days');
@@ -191,11 +191,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // send first autofollowupreport
-                  const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-                  console.log('get first sent report',getfirstautofol_upsentReport)
-                  if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-                    sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  }
+                  // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                  // console.log('get first sent report',getfirstautofol_upsentReport)
+                  // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+                  //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+                  // }
                   
                 }else {
                   const ffrplt3 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
@@ -264,7 +264,7 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
     if (error) console.log(error);
     else {
       console.log('Email sent: ' + info.response);
-      updateautofollowupsentStatus(mailOptions.from,thread_Id,campaign_Id,message_Id,mailOptions.autofollowupId)
+      updateautofollowupsentStatus(mailOptions.from,campaign_Id,mailOptions.autofollowupId)
       autofollowupsentSuccess(mailOptions.from,thread_Id,campaign_Id,message_Id)
     }
   });
@@ -272,136 +272,144 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
   
 }
 
-async function updateautofollowupsentStatus(useremail,threadId,campaignId,messageId,autofollowupId) {
+async function updateautofollowupsentStatus(useremail,campaignId,autofollowupId) {
   const updautofollowupstat = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.firstfollowup.status":"sent"}});
   if(updautofollowupstat) {
     console.log('updautofollowupstat status: success')
   }
 }
 
-async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla,autofollowup_Id) {
+// async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla,autofollowup_Id) {
 
-  let redlinktexter = redlinktexta;
-  let redlinkurler = redlinkurla;
+//   let redlinktexter = redlinktexta;
+//   let redlinkurler = redlinkurla;
 
-  let redlinker;
-  if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
-      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${campaign_Id}/${message_Id}/${redlinkurler}">${redlinktexter}</a>`;
-  }else {
-      redlinker = "";
-  }
+//   let redlinker;
+//   if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
+//       redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${campaign_Id}/${message_Id}/${redlinkurler}">${redlinktexter}</a>`;
+//   }else {
+//       redlinker = "";
+//   }
   
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      type: 'OAuth2',
-      user: useremail,
-      clientId: config.client_id,
-      clientSecret: config.client_secret,
-      refreshToken: refreshtoken,
-      accessToken: accesstoken
-    }
-  });
+//   const transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//       type: 'OAuth2',
+//       user: useremail,
+//       clientId: config.client_id,
+//       clientSecret: config.client_secret,
+//       refreshToken: refreshtoken,
+//       accessToken: accesstoken
+//     }
+//   });
 
-  let body = "Auto followup mail sent successful ";
-  let subject = "Auto Follow Up Sent Report Success"; 
-  const mailOptions = {
-    from: "aliakbar512006@gmail.com",
-    to: useremail,
-    subject: subject,
-    html: `<html><body><div class="getap-op"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div></body></html>`,
-    "gmail":gmail
-  };
+//   let body = "Auto followup mail sent successful ";
+//   let subject = "Auto Follow Up Sent Report Success"; 
+//   const mailOptions = {
+//     from: "aliakbar512006@gmail.com",
+//     to: useremail,
+//     subject: subject,
+//     html: `<html><body><div class="getap-op"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div></body></html>`,
+//     "gmail":gmail
+//   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);
-    } else {
-      addfirstautofollowupreporttoLabel(mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.html)
-    }
-  });
-}
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error(error);
+//     } else {
+//       updateautofollowupsentfirstreportStatus(mailOptions.from,campaign_Id,mailOptions.autofollowupId)
+//       addfirstautofollowupreporttoLabel(mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.html)
+//     }
+//   });
+// }
 
-async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
-  try{
+// async function updateautofollowupsentfirstreportStatus(useremail,campaignId,autofollowupId) {
+//   const updautofollowupstat = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.firstfollowup.status":"sent"}});
+//   if(updautofollowupstat) {
+//     console.log('updautofollowupstat status: success')
+//   }
+// }
 
-    // Retrieve the email threads in the user's mailbox
-    let query = subject; 
-    const response = await gmail.users.messages.list({
-      userId: 'me',
-      q: query,
-    });
+// async function addfirstautofollowupreporttoLabel(gmail,from,subject,to,body) {
+//   try{
 
-    const messages = response.data.messages;
+//     // Retrieve the email threads in the user's mailbox
+//     let query = subject; 
+//     const response = await gmail.users.messages.list({
+//       userId: 'me',
+//       q: query,
+//     });
 
-    if (messages[0]) {
-      const messageId = messages[0].id;
-      const threadId = messages[0].threadId;
+//     const messages = response.data.messages;
 
-      // Function to get the labelId by label name.
-      async function getLabelIdByName(gmail,labelName) {
+//     if (messages[0]) {
+//       const messageId = messages[0].id;
+//       const threadId = messages[0].threadId;
+
+//       // Function to get the labelId by label name.
+//       async function getLabelIdByName(gmail,labelName) {
         
-        try {
-          const response = await gmail.users.labels.list({
-            userId: 'me',
-          });
+//         try {
+//           const response = await gmail.users.labels.list({
+//             userId: 'me',
+//           });
           
-          const labels = response.data.labels;
-          const label = labels.find((l) => l.name === labelName);
+//           const labels = response.data.labels;
+//           const label = labels.find((l) => l.name === labelName);
 
-          if (label) {
-            return label.id;
-          } else {
-            throw new Error(`Label "${labelName}" not found.`);
-          }
-        } catch (err) {
-          throw new Error('Error listing labels:', err);
-        }
-      }
+//           if (label) {
+//             return label.id;
+//           } else {
+//             throw new Error(`Label "${labelName}" not found.`);
+//           }
+//         } catch (err) {
+//           throw new Error('Error listing labels:', err);
+//         }
+//       }
 
-      const labelId = await getLabelIdByName(gmail,"Outreach Auto FollowUp");
-      if(labelId) {
-        addEmailToLabel(labelId, messageId,to);
-      }
-      // Function to add an email to a label.
-      function addEmailToLabel(labelId, messageId, to) {
-        // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
+//       const labelId = await getLabelIdByName(gmail,"Outreach Auto FollowUp");
+//       if(labelId) {
+//         addEmailToLabel(labelId, messageId,to);
+//       }
+//       // Function to add an email to a label.
+//       function addEmailToLabel(labelId, messageId, to) {
+//         // Specify the email ID and label you want to add the email to.
+//         const emailId = messageId;
 
-        gmail.users.messages.modify({
-          userId: 'me',
-          id: emailId,
-          resource: {
-            addLabelIds: [labelId],
-          },
-        }, (err, response) => {
-          if (err) {
-            console.error('Error adding email to label:', err);
-          } else {
-            console.log('Email added to label');
-            firstsentautofollowupreport_(to)
-          }
-        });
-      }
-    }
-  }catch(error) {
+//         gmail.users.messages.modify({
+//           userId: 'me',
+//           id: emailId,
+//           resource: {
+//             addLabelIds: [labelId],
+//           },
+//         }, (err, response) => {
+//           if (err) {
+//             console.error('Error adding email to label:', err);
+//           } else {
+//             console.log('Email added to label');
+//             firstsentautofollowupreport_(to)
+//           }
+//         });
+//       }
+//     }
+//   }catch(error) {
 
-    }
-}
+//     }
+// }
 
-async function firstsentautofollowupreport_(to) {
-  const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstautofollowupemailreport: "unsent"});
-  // check if report details exists
-  if (checkreport || Object.keys(checkreport).length > 0) {
-      checkreport.verified = true;
-      const updatedautofollowupfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to,'firstautofollowupemailreport': "unsent"},{$set: {firstautofollowupemailreport: 'sent'}});
-      if(updatedautofollowupfirstsentreport) {
-      }
+// async function firstsentautofollowupreport_(to) {
+//   const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstautofollowupemailreport: "unsent"});
+//   // check if report details exists
+//   if (checkreport || Object.keys(checkreport).length > 0) {
+//       checkreport.verified = true;
+//       const updatedautofollowupfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to,'firstautofollowupemailreport': "unsent"},{$set: {firstautofollowupemailreport: 'sent'}});
+//       if(updatedautofollowupfirstsentreport) {
+//       }
       
-    }else {
-      console.log('no user in check report')
-    }
-  }
+//     }else {
+//       console.log('no user in check report')
+//     }
+//   }
 
   async function autofollowupsentSuccess(useremail,emailId,threadId,campaignId) {
     const updatedautofollowupcampaign = await campaignSchema.updateOne({'emailaddress':useremail,'emailId': emailId,'threadId': threadId,'campaignId': campaignId},{$set: {"autofollowup.status": 'sent'}});
