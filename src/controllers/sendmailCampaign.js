@@ -255,7 +255,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             console.log('get first sent report',getfirstreportSent)
             console.log('get first sent report length',getfirstreportSent.length)
             if(getfirstreportSent.length != 0) {
-              firstsentreport_(to)
+              firstsentreport_(useremail)
               console.log('first report already sent')
             }else {
               console.log('send first report')
@@ -423,7 +423,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     },
                     (sendErr, sendResponse) => {
                       // adddrafttodraftLabel(draft_id,campaignrecipients, gmail, subject, useremail);
-                      firstdraftsentreport_(useremail)
+                      // firstdraftsentreport_(useremail)
                       // if (sendErr) {
                       //   console.error('Error sending first draft report:', sendErr);
                       // } else {
