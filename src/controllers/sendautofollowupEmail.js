@@ -64,7 +64,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
             });
           }
 
-          const getautofollowups = await autofollowSchema.find({"emailaddress":useremail,"autofollowup.firstfollowup.status":"unsent"});
+          const getautofollowups = await autofollowSchema.find({"emailaddress":useremail,$or:[{"autofollowup.firstfollowup.status":"unsent"},{"autofollowup.secondfollowup.status":"unsent"},{"autofollowup.thirdfollowup.status":"unsent"}]});
           for (const autofollowup of getautofollowups) {
             try {
               const autofollowup_Id = autofollowup.autofollowupId;
@@ -200,24 +200,23 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
             }
           } 
 
-          console.log('auto follow up status update --')
           const getautofollupStat = await autofollowSchema.find({"campaignId": 147826144,"autofollowupId":311573948});
           if(getautofollupStat) {
-            console.log('getautofollupStat --',getautofollupStat)
             for(const gautofollowupStat of getautofollupStat) {
-              if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
+              if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status != "" && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
                 gautofollowupStat.autofollowup.firstfollowup.status = "sent";
                 const ausa1 = await gautofollowupStat.save();
                 console.log('ausa1',ausa1)
               }
-              if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
+              if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status != "" && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
                 gautofollowupStat.autofollowup.secondfollowup.status = "sent";
                 const ausa2 = await gautofollowupStat.save();
                 console.log('ausa2',ausa2)
               }
-              if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
-                // gautofollowupStat.autofollowup.thirdfollowupfollowup.status = "sent";
-                // await gautofollowupStat.save();
+              if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
+                gautofollowupStat.autofollowup.thirdfollowupfollowup.status = "sent";
+                const ausa3 = await gautofollowupStat.save();
+                console.log('ausa3',ausa3)
               }
             }
             
