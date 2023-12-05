@@ -201,9 +201,9 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
           } 
 
           console.log('auto follow up status update --')
-          const updautofollowupstat1 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.firstfollowup.status":"sent"}});
-          const updautofollowupstat2 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.secondfollowup.status":"sent"}});
-          const updautofollowupstat3 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.thirdfollowup.status":"sent"}});
+          const updautofollowupstat1 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": 147826144,"autofollowup":311573948},{$set: {"autofollowup.firstfollowup.status":"sent"}});
+          const updautofollowupstat2 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": 147826144,"autofollowup":311573948},{$set: {"autofollowup.secondfollowup.status":"sent"}});
+          const updautofollowupstat3 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": 147826144,"autofollowup":311573948},{$set: {"autofollowup.thirdfollowup.status":"sent"}});
           if(updautofollowupstat1) {
             console.log('updautofollowupstat status: success',updautofollowupstat1)
             console.log('updautofollowupstat status: success',updautofollowupstat2)
