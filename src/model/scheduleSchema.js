@@ -23,7 +23,7 @@ const ScheduleSchema = new mongoose.Schema({
     type: Number
   },
   scheduleId: {
-    type: String
+    type: Number
   },
   emailId: {
     type: String,

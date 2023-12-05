@@ -20,7 +20,7 @@ const autofollowupSchema = new mongoose.Schema({
     ref: 'User'
   },
   autofollowupId: {
-    type: String
+    type: Number
   },
   campaignId: {
     type: Number
