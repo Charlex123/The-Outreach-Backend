@@ -262,8 +262,8 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
     if (error) console.log(error);
     else {
       console.log('Email sent: ' + info.response);
-      updateautofollowupsentStatus(mailOptions.from,campaign_Id,mailOptions.autofollowupId)
-      autofollowupsentSuccess(mailOptions.from,thread_Id,campaign_Id)
+      updateautofollowupsentStatus(useremail,campaign_Id,autofollowupId)
+      autofollowupsentSuccess(useremail,campaign_Id,autofollowup_Id)
     }
   });
   
@@ -289,11 +289,23 @@ async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowup
               }
             }
             
-            const updatedgetautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144,"autofollowupId":311573948});
-            console.log('heater',updatedgetautofollupStat)
+            // const updatedgetautofollupStat = await autofollowSchema.findOne({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
+            
           }
 }
 
+async function autofollowupsentSuccess(emailaddress,campaignId,autofollowupId) {
+  const updatedgetautofollupStat = await autofollowSchema.findOne({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
+  if(updatedgetautofollupStat) {
+    if(updatedgetautofollupStat.autofollowup.firstfollowup.status == "sent" && updatedgetautofollupStat.autofollowup.secondfollowup.status == "sent" && updatedgetautofollupStat.autofollowup.thirdfollowup.status == "sent") {
+      const updatedautofollowupcampaign = await campaignSchema.find({'emailaddress':useremail,'campaignId': campaignId});
+      updatedautofollowupcampaign.autofollowup.firstfollowup.status = "sent";
+      updatedautofollowupcampaign.autofollowup.secondfollowup.status = "sent";
+      updatedautofollowupcampaign.autofollowup.thirdfollowup.status = "sent";
+    }
+      
+  }
+}
 // async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla,autofollowup_Id) {
 
 //   let redlinktexter = redlinktexta;
@@ -426,12 +438,12 @@ async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowup
 //     }
 //   }
 
-  async function autofollowupsentSuccess(useremail,emailId,threadId,campaignId) {
-    const updatedautofollowupcampaign = await campaignSchema.updateOne({'emailaddress':useremail,'emailId': emailId,'threadId': threadId,'campaignId': campaignId},{$set: {"autofollowup.status": 'sent'}});
-    if(updatedautofollowupcampaign) {
-      console.log('updated autofollow up campaign success')
-    }
+  // async function autofollowupsentSuccess(useremail,emailId,threadId,campaignId) {
+  //   const updatedautofollowupcampaign = await campaignSchema.updateOne({'emailaddress':useremail,'emailId': emailId,'threadId': threadId,'campaignId': campaignId},{$set: {"autofollowup.status": 'sent'}});
+  //   if(updatedautofollowupcampaign) {
+  //     console.log('updated autofollow up campaign success')
+  //   }
     
-  }
+  // }
 
 module.exports = { autofollowUpCampaign  };
