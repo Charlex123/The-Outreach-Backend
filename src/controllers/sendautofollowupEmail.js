@@ -201,7 +201,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
           } 
 
           console.log('auto follow up status update --')
-          const getautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144});
+          const getautofollupStat = await autofollowSchema.find({"campaignId": 147826144});
           if(getautofollupStat) {
             console.log('getautofollupStat --',getautofollupStat)
             if(getautofollupStat.autofollowup.firstfollowup.status != undefined && getautofollupStat.autofollowup.firstfollowup.status == "unsent") {
