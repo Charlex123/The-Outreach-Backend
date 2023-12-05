@@ -13,7 +13,7 @@ const DraftSchema = new mongoose.Schema({
     ref: 'User'
   },
   campaignId: {
-    type: String
+    type: Number
   },
   emailId: {
     type: String,

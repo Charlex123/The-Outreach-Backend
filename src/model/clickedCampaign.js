@@ -7,7 +7,7 @@ const clickedcampaignSchema = new mongoose.Schema({
     ref: 'User'
   },
   campaignId: {
-    type: String
+    type: Number
   },
   createdAt:{
     type:Date,
