@@ -200,31 +200,6 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
             }
           } 
 
-          const getautofollupStat = await autofollowSchema.find({"campaignId": 147826144,"autofollowupId":311573948});
-          if(getautofollupStat) {
-            for(const gautofollowupStat of getautofollupStat) {
-              if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status != "" && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.firstfollowup.status = "sent";
-                const ausa1 = await gautofollowupStat.save();
-                console.log('ausa1',ausa1)
-              }
-              if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status != "" && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.secondfollowup.status = "sent";
-                const ausa2 = await gautofollowupStat.save();
-                console.log('ausa2',ausa2)
-              }
-              if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
-                const ausa3 = await gautofollowupStat.save();
-                console.log('ausa3',ausa3)
-              }
-            }
-            
-            const updatedgetautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144,"autofollowupId":311573948});
-            console.log('heater',updatedgetautofollupStat)
-          }
-          
-          
         }else {
           console.log("user not found")
       }
@@ -296,7 +271,28 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
 }
 
 
-
+async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowupId) {
+  const getautofollupStat = await autofollowSchema.find({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
+          if(getautofollupStat) {
+            for(const gautofollowupStat of getautofollupStat) {
+              if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status != "" && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
+                gautofollowupStat.autofollowup.firstfollowup.status = "sent";
+                const ausa1 = await gautofollowupStat.save();
+              }
+              if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status != "" && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
+                gautofollowupStat.autofollowup.secondfollowup.status = "sent";
+                const ausa2 = await gautofollowupStat.save();
+              }
+              if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
+                gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
+                const ausa3 = await gautofollowupStat.save();
+              }
+            }
+            
+            const updatedgetautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144,"autofollowupId":311573948});
+            console.log('heater',updatedgetautofollupStat)
+          }
+}
 
 // async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla,autofollowup_Id) {
 
