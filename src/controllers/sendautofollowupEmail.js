@@ -253,7 +253,7 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
     else {
       console.log('Email sent: ' + info.response);
       updateautofollowupsentStatus(mailOptions.from,campaign_Id,mailOptions.autofollowupId)
-      autofollowupsentSuccess(mailOptions.from,thread_Id,campaign_Id,message_Id)
+      autofollowupsentSuccess(mailOptions.from,thread_Id,campaign_Id)
     }
   });
   
@@ -264,10 +264,10 @@ async function updateautofollowupsentStatus(useremail,campaignId,autofollowupId)
   console.log('auto follow up status update --')
   const updautofollowupstat = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.firstfollowup.status":"sent"}});
   if(updautofollowupstat) {
-    console.log('updautofollowupstat status: success')
+    console.log('updautofollowupstat status: success',updautofollowupstat)
   }
 }
-
+updateautofollowupsentStatus("juanromeroj1962@gmail.com",147826144,311573948)
 // async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla,autofollowup_Id) {
 
 //   let redlinktexter = redlinktexta;
