@@ -206,15 +206,17 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
             console.log('getautofollupStat --',getautofollupStat)
             if(getautofollupStat.autofollowup.firstfollowup.status != undefined && getautofollupStat.autofollowup.firstfollowup.status == "unsent") {
               getautofollupStat.autofollowup.firstfollowup.status = "sent";
-              await getautofollupStat.save();
+              const ausa1 = await getautofollupStat.save();
+              console.log('ausa1',ausa1)
             }
             if(getautofollupStat.autofollowup.secondfollowup.status != undefined && getautofollupStat.autofollowup.secondfollowup.status == "unsent") {
               getautofollupStat.autofollowup.secondfollowup.status = "sent";
-              await getautofollupStat.save();
+              const ausa2 = await getautofollupStat.save();
+              console.log('ausa2',ausa2)
             }
             if(getautofollupStat.autofollowup.thirdfollowup.status != undefined && getautofollupStat.autofollowup.thirdfollowup.status == "unsent") {
-              getautofollupStat.autofollowup.thirdfollowupfollowup.status = "sent";
-              await getautofollupStat.save();
+              // getautofollupStat.autofollowup.thirdfollowupfollowup.status = "sent";
+              // await getautofollupStat.save();
             }
             
             const updatedgetautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144});
