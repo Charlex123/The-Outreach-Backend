@@ -118,7 +118,6 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
                   }else {
                     const ffrplt = moment(campaignsenttime);
                     if(timenow.isSameOrAfter(ffrplt)) {
-                      cronExpression = `* * * * *`;
                       sendschedulemailCamp(cronExpression,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla)
                     }
                   }
@@ -126,13 +125,11 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
                   if(skipweekends !== "" && skipweekends == "true") {
                     const ffrplt = moment(campaignsenttime).add(5,'minutes');
                     if(timenow.isSameOrAfter(ffrplt)) {
-                      cronExpression = `* * * * 1-5`;
                       sendschedulemailCamp(cronExpression,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla)
                     }
                   }else {
                     const ffrplt = moment(campaignsenttime).add(5,'minutes');
                     if(timenow.isSameOrAfter(ffrplt)) {
-                      cronExpression = `* * * * *`;
                       sendschedulemailCamp(cronExpression,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla)
                     }
                   }
@@ -140,7 +137,6 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
                   if(skipweekends !== "" && skipweekends == "true") {
                     const ffrplt = moment(campaignsenttime).add(1,'hours');
                     if(timenow.isSameOrAfter(ffrplt)) {
-                      cronExpression = `* * * * 1-5`;
                       sendschedulemailCamp(cronExpression,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla)
                     }
                   }else {

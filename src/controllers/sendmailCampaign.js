@@ -285,6 +285,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 console.error(`Error sending email to ${recipient}: ${error}`);
               }
             }  
+
+            res.json({
+              message: "success"
+            })
           }
   
         }else if(action == '2') {
@@ -452,6 +456,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
             );
           }
         
+          res.json({
+            message: "success"
+          })
 
         }else if(action === '') {
           const newMailCampaign = await campaignSchema.create({
@@ -534,6 +541,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }
             }      
           }
+          res.json({
+            message: "success"
+          })
         }
         // 385965910519
         
