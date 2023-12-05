@@ -214,7 +214,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                 console.log('ausa2',ausa2)
               }
               if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.thirdfollowupfollowup.status = "sent";
+                gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
                 const ausa3 = await gautofollowupStat.save();
                 console.log('ausa3',ausa3)
               }

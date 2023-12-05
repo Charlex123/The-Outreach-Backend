@@ -67,7 +67,7 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
             console.log('create d already')
           }
 
-          const getscheduledata = await scheduleSchema.find({"emailaddress":useremail});
+          const getscheduledata = await scheduleSchema.find({"emailaddress":useremail,"schedule.status":"unsent"});
           let timenow = moment();
 
           for (const schedule of getscheduledata) {
