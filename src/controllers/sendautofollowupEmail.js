@@ -201,25 +201,27 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
           } 
 
           console.log('auto follow up status update --')
-          const getautofollupStat = await autofollowSchema.find({"campaignId": 147826144});
+          const getautofollupStat = await autofollowSchema.find({"campaignId": 147826144,"autofollowupId":311573948});
           if(getautofollupStat) {
             console.log('getautofollupStat --',getautofollupStat)
-            if(getautofollupStat.autofollowup.firstfollowup.status != undefined && getautofollupStat.autofollowup.firstfollowup.status == "unsent") {
-              getautofollupStat.autofollowup.firstfollowup.status = "sent";
-              const ausa1 = await getautofollupStat.save();
-              console.log('ausa1',ausa1)
-            }
-            if(getautofollupStat.autofollowup.secondfollowup.status != undefined && getautofollupStat.autofollowup.secondfollowup.status == "unsent") {
-              getautofollupStat.autofollowup.secondfollowup.status = "sent";
-              const ausa2 = await getautofollupStat.save();
-              console.log('ausa2',ausa2)
-            }
-            if(getautofollupStat.autofollowup.thirdfollowup.status != undefined && getautofollupStat.autofollowup.thirdfollowup.status == "unsent") {
-              // getautofollupStat.autofollowup.thirdfollowupfollowup.status = "sent";
-              // await getautofollupStat.save();
+            for(const gautofollowupStat of getautofollupStat) {
+              if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
+                gautofollowupStat.autofollowup.firstfollowup.status = "sent";
+                const ausa1 = await gautofollowupStat.save();
+                console.log('ausa1',ausa1)
+              }
+              if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
+                gautofollowupStat.autofollowup.secondfollowup.status = "sent";
+                const ausa2 = await gautofollowupStat.save();
+                console.log('ausa2',ausa2)
+              }
+              if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
+                // gautofollowupStat.autofollowup.thirdfollowupfollowup.status = "sent";
+                // await gautofollowupStat.save();
+              }
             }
             
-            const updatedgetautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144});
+            const updatedgetautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144,"autofollowupId":311573948});
             console.log('heater',updatedgetautofollupStat)
           }
           
