@@ -128,10 +128,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   if(moment().isSameOrAfter(followupreply1time)) {
                     console.log('hella after time',moment(followupreply1time))
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }else {
-                    console.log('hella before time',moment(followupreply1time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
+                  // else {
+                  //   console.log('hella before time',moment(followupreply1time))
+                  //   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  // }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   // console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
@@ -151,10 +152,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   if(moment().isSameOrAfter(followupreply2time)) {
                     console.log('hella after time 2',moment(followupreply2time))
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }else {
-                    console.log('hella before time 2',moment(followupreply2time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
+                  // else {
+                  //   console.log('hella before time 2',moment(followupreply2time))
+                  //   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  // }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   // console.log('get first sent report',getfirstautofol_upsentReport)
@@ -174,10 +176,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   if(moment().isSameOrAfter(followupreply3time)) {
                     console.log('hella after time 3',moment(followupreply3time))
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }else {
-                    console.log('hella before time 3',moment(followupreply3time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
+                  // else {
+                  //   console.log('hella before time 3',moment(followupreply3time))
+                  //   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  // }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
                   // console.log('get first sent report',getfirstautofol_upsentReport)
