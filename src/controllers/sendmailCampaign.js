@@ -33,6 +33,22 @@ const mailCampaign = asyncHandler(async (req, res) => {
   try {
       
       const maildetails = req.body;
+      const autofolinterval1 = req.body.followupreply1interval; 
+      const autofoltime1 = req.body.followupreply1time;
+      const autofollowuptime1 = moment().add({days:autofolinterval1,seconds: autofoltime1});
+
+      const autofolinterval2 = req.body.followupreply2interval; 
+      const autofoltime2 = req.body.followupreply2time;
+      const autofollowuptime2 = moment().add({days:autofolinterval2,seconds: autofoltime2});
+
+      const autofolinterval3 = req.body.followupreply3interval; 
+      const autofoltime3 = req.body.followupreply3time;
+      const autofollowuptime3 = moment().add({days:autofolinterval3,seconds: autofoltime3});
+      
+      console.log('autofollowuptime1',autofollowuptime1)
+      console.log('autofollowuptime2',autofollowuptime2)
+      console.log('autofollowuptime3',autofollowuptime3);
+
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
       const useremail = req.body.useremail;
@@ -43,15 +59,15 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const action = req.body.mailsendtesttype;
       const followupreply1type = req.body.followupreply1type;
       const followupreply1interval = req.body.followupreply1interval;
-      const followupreply1time = req.body.followupreply1time;
+      const followupreply1time = autofollowuptime1;
       const followupreply1message = req.body.followupreply1message;
       const followupreply2type = req.body.followupreply2type;
       const followupreply2interval = req.body.followupreply2interval;
-      const followupreply2time = req.body.followupreply2time;
+      const followupreply2time = autofollowuptime2;
       const followupreply2message = req.body.followupreply2message;
       const followupreply3type = req.body.followupreply3type;
       const followupreply3interval = req.body.followupreply3interval;
-      const followupreply3time = req.body.followupreply3time;
+      const followupreply3time = autofollowuptime3;
       const followupreply3message = req.body.followupreply3message;
       const scheduletime = req.body.scheduletime;
       const skipweekends = req.body.skipweekends;

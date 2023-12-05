@@ -65,8 +65,6 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
           }
 
           const getautofollowups = await autofollowSchema.find({"emailaddress":useremail,"autofollowup.firstfollowup.status":"unsent"});
-          let timenow = moment();
-          console.log(' time now ',timenow)
           for (const autofollowup of getautofollowups) {
             try {
               const autofollowup_Id = autofollowup.autofollowupId;
@@ -131,7 +129,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   console.log('campaign sent time',campaignsenttime)
                   console.log('ffrplt',ffrplt)
                   console.log('ffrplt 11',freply1timer)
-                  if(timenow.isSameOrAfter(freply1timer)) {
+                  if(moment().isSameOrAfter(freply1timer)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                     console.log('hella',moment().format('hh:mm:ss'))
                   }
@@ -146,7 +144,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   const ffrplt = moment(campaignsenttime).add(`${followupreply1interval}`,'days');
                   const freply1timer_ = moment(ffrplt);
                   console.log('ffrplt',freply1timer_)
-                  if(timenow.isSameOrAfter(freply1timer_)) {
+                  if(moment().isSameOrAfter(freply1timer_)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                     console.log('hella',moment().format('hh:mm:ss'))
                   }
@@ -160,7 +158,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   console.log('campaign sent time',campaignsenttime)
                   console.log('ffrplt 2',ffrplt2)
                   console.log('ffrplt 22',freply2timer)
-                  if(timenow.isSameOrAfter(freply2timer)) {
+                  if(moment().isSameOrAfter(freply2timer)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // send first autofollowupreport
@@ -173,7 +171,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                 }else {
                   const ffrplt2 = moment(campaignsenttime).add(`${followupreply2interval}`,'days');
                   const freply2timer_ = moment(ffrplt2);
-                  if(timenow.isSameOrAfter(freply2timer_)) {
+                  if(moment().isSameOrAfter(freply2timer_)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                 }
@@ -187,7 +185,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   console.log('ffr timer 3 33',freply3timer)
                   console.log('campaign sent time',campaignsenttime)
                   
-                  if(timenow.isSameOrAfter(freply3timer)) {
+                  if(moment().isSameOrAfter(freply3timer)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // send first autofollowupreport
@@ -200,7 +198,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                 }else {
                   const ffrplt3 = moment(campaignsenttime).add(`${followupreply3interval}`,'days');
                   freply3timer = moment(ffrplt3);
-                  if(timenow.isSameOrAfter(freply3timer)) {
+                  if(moment().isSameOrAfter(freply3timer)) {
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                 }
