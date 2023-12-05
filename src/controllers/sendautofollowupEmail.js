@@ -163,7 +163,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   // }
                   
                 }else {
-                  console.log('timer zz1 occurred')
+                  console.log('timer zz2 occurred')
                   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
               }
@@ -171,13 +171,12 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
               if(followupreply3type && followupreply3type !== "" && followupreply3type === "r") {
                 if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
                   
-                  console.log('timer zz3 occurred')
                   if(moment().isSameOrAfter(followupreply3time)) {
                     console.log('hella after time 3',moment(followupreply3time))
                     sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }else {
-                    console.log('hella after before 3',moment(followupreply3time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                    console.log('hella before time 3',moment(followupreply3time))
+                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
@@ -259,6 +258,7 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
 }
 
 async function updateautofollowupsentStatus(useremail,campaignId,autofollowupId) {
+  console.log('auto follow up status update --')
   const updautofollowupstat = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": campaignId,"autofollowup":autofollowupId},{$set: {"autofollowup.firstfollowup.status":"sent"}});
   if(updautofollowupstat) {
     console.log('updautofollowupstat status: success')
