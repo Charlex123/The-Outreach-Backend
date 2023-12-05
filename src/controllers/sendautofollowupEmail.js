@@ -201,14 +201,23 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
           } 
 
           console.log('auto follow up status update --')
-          const updautofollowupstat1 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": 147826144,"autofollowup":311573948},{$set: {"autofollowup.firstfollowup.status":"sent"}});
-          const updautofollowupstat2 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": 147826144,"autofollowup":311573948},{$set: {"autofollowup.secondfollowup.status":"sent"}});
-          const updautofollowupstat3 = await autofollowSchema.updateOne({"emailaddress":useremail,"campaignId": 147826144,"autofollowup":311573948},{$set: {"autofollowup.thirdfollowup.status":"sent"}});
-          if(updautofollowupstat1) {
-            console.log('updautofollowupstat status: success',updautofollowupstat1)
-            console.log('updautofollowupstat status: success',updautofollowupstat2)
-            console.log('updautofollowupstat status: success',updautofollowupstat3)
+          const getautofollupStat = await autofollowSchema.findOne({"campaignId": 147826144});
+          if(getautofollupStat) {
+            console.log('getautofollupStat --',getautofollupStat)
+            if(getautofollupStat.autofollowup.firstfollowup.status == "unsent") {
+              getautofollupStat.autofollowup.firstfollowup.status = "sent";
+            }
+            if(getautofollupStat.autofollowup.secondfollowup.status == "unsent") {
+              getautofollupStat.autofollowup.secondfollowup.status = "sent";
+            }
+            if(getautofollupStat.autofollowup.thirdfollowup.status == "unsent") {
+              getautofollupStat.autofollowup.thirdfollowupfollowup.status = "sent";
+            }
+            
+            const updatedgetautofollupStat = await getautofollupStat.save();
+            console.log('heater',updatedgetautofollupStat)
           }
+          
           
         }else {
           console.log("user not found")
