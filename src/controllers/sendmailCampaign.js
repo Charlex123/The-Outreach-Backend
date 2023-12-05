@@ -178,7 +178,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
       
       let rec_recip = recipientEmails.toString();
       let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
-      console.log('email recp',email_recipt)
       let campaignrecipients = email_recipt.toString();
       
       let user_AppKey = req.body.userAppKey;
