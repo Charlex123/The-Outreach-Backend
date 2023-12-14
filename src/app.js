@@ -41,6 +41,7 @@ const { Emailtracking } = require('./controllers/Emailtracking/index');
 // ::::::::::::: Routes ::::::::::::::::::::
 const labelRoute = require('./routes/labelRoute')
 const sendmailcampaignRoute = require('./routes/sendmailcampaignRoute')
+const sendtestmailRoute = require('./routes/sendtestmailRoute')
 const autofollowupcampaignRoute = require('./routes/autofollowupmailRoute')
 const schedulecampaignRoute = require('./routes/schedulecampaignRoute')
 const authenticateuserRoute = require('./routes/verifyuserRoute') 
@@ -58,9 +59,11 @@ const config = require('./config');
 // ::::::::::::::End of Database::::::::::::::
 
 // initailize google oath controller
+
 googleOathController(app)
 Emailtracking(app);
 app.use('/label',labelRoute );
+app.use('/testemails',sendtestmailRoute );
 app.use('/campaigns',sendmailcampaignRoute );
 app.use('/campaigns',autofollowupcampaignRoute );
 app.use('/campaigns',schedulecampaignRoute );

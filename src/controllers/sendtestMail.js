@@ -29,7 +29,7 @@ const defaultthread_Id = `${
 
 dotenv.config();
 
-const mailCampaign = asyncHandler(async (req, res) => {
+const testMail = asyncHandler(async (req, res) => {
   try {
       
       const maildetails = req.body;
@@ -54,6 +54,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const useremail = req.body.useremail;
       const emailsubject = req.body.mailcampaignsubject;
       const emailbody = req.body.mailcampaignbody;
+      const testmailrecipient = req.body.testmailrecipient;
       const trackbyopen = req.body.trackbyopen;
       const trackbyclicks = req.body.trackbyclicks;
       const action = req.body.mailsendtesttype;
@@ -105,80 +106,80 @@ const mailCampaign = asyncHandler(async (req, res) => {
       });
 
       // Function to retrieve recipient email addresses
-      async function getRecipientEmails() {
-        return new Promise((resolve, reject) => {
-            gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+    //   async function getRecipientEmails() {
+    //     return new Promise((resolve, reject) => {
+    //         gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
+    //             if (err) {
+    //                 reject(err);
+    //                 return;
+    //             }
 
-                const drafts = res.data.drafts;
-                if (drafts) {
-                    const draftId = drafts[0].id; // Assuming you want the first draft's ID
+    //             const drafts = res.data.drafts;
+    //             if (drafts) {
+    //                 const draftId = drafts[0].id; // Assuming you want the first draft's ID
 
-                    gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
+    //                 gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
+    //                     if (err) {
+    //                         reject(err);
+    //                         return;
+    //                     }
 
-                        // Extract the message ID
-                        const messageId = res.data.message.id;
+    //                     // Extract the message ID
+    //                     const messageId = res.data.message.id;
 
-                        const recipients = res.data.message.payload.headers
-                            .filter(header => header.name === 'To')
-                            .flatMap(header => header.value.split(','))
-                            .map(email => email.trim());
+    //                     const recipients = res.data.message.payload.headers
+    //                         .filter(header => header.name === 'To')
+    //                         .flatMap(header => header.value.split(','))
+    //                         .map(email => email.trim());
 
-                        resolve(recipients,messageId);
-                    });
-                } else {
-                    resolve([]);
-                }
-            });
-        });
-      } 
+    //                     resolve(recipients,messageId);
+    //                 });
+    //             } else {
+    //                 resolve([]);
+    //             }
+    //         });
+    //     });
+    //   } 
       
       // Function to retrieve recipient email addresses
-      async function getDraftId() {
-        return new Promise((resolve, reject) => {
-            gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+    //   async function getDraftId() {
+    //     return new Promise((resolve, reject) => {
+    //         gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
+    //             if (err) {
+    //                 reject(err);
+    //                 return;
+    //             }
 
-                const drafts = res.data.drafts;
-                if (drafts) {
-                    const draftId = drafts[0].id; // Assuming you want the first draft's ID
+    //             const drafts = res.data.drafts;
+    //             if (drafts) {
+    //                 const draftId = drafts[0].id; // Assuming you want the first draft's ID
 
-                    gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
+    //                 gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
+    //                     if (err) {
+    //                         reject(err);
+    //                         return;
+    //                     }
 
-                        // Extract the message ID
-                        const messageId = res.data.message.id;
+    //                     // Extract the message ID
+    //                     const messageId = res.data.message.id;
 
-                        resolve(messageId);
-                    });
-                } else {
-                    resolve([]);
-                }
-            });
-        });
-      } 
+    //                     resolve(messageId);
+    //                 });
+    //             } else {
+    //                 resolve([]);
+    //             }
+    //         });
+    //     });
+    //   } 
       
 
-      const recipientEmails = await getRecipientEmails();
+    //   const recipientEmails = await getRecipientEmails();
 
-      const draftId = await getDraftId();
+    //   const draftId = await getDraftId();
       
-      let rec_recip = recipientEmails.toString();
-      let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
-      let campaignrecipients = email_recipt.toString();
+    //   let rec_recip = recipientEmails.toString();
+    //   let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
+    //   let campaignrecipients = email_recipt.toString();
       
       let user_AppKey = req.body.userAppKey;
       const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
@@ -211,7 +212,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
-            emailrecipients: campaignrecipients,
+            emailrecipients: testmailrecipient,
             tracking: {
               isOpened: trackbyopen,
               isClicked: trackbyclicks,
@@ -261,7 +262,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           });
     
           if(newMailCampaign.save()) {
-            let recipients_ = campaignrecipients;
+            let recipients_ = testmailrecipient;
             let recipientLists = recipients_.split(',');
 
             let campaignId_ = newMailCampaign.campaignId;
@@ -279,7 +280,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(gmail,testmailrecipient,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -293,7 +294,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
   
         }else if(action == '2') {
           
-          const recipient__ = useremail;
+          const recipient__ = testmailrecipient;
           const subject = emailsubject;
           const messageContent = `<html><body><p>${emailbody}</p></body></html>`;
 
@@ -334,7 +335,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // } else {
                     //   console.log('Draft sent:', sendResponse.data);
                     //   createdraftModelSchema(draft_id)
-                    //   adddrafttodraftLabel(draft_id,campaignrecipients, gmail, subject, useremail);
+                    //   adddrafttodraftLabel(draft_id,testmailrecipient, gmail, subject, useremail);
                       
                     // }
                   }
@@ -352,7 +353,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               emailaddress: useremail,
               emailsubject: emailsubject,
               emailbody: emailbody,
-              emailrecipients: campaignrecipients,
+              emailrecipients: testmailrecipient,
               tracking: {
                 isOpened: trackbyopen,
                 isClicked: trackbyclicks,
@@ -404,7 +405,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           const getfirstdraftreport = await firstreportsentSchema.find({"useremail":useremail,"firstdraftreport":"unsent"});
           // console.log('get first draft report',getfirstdraftreport.length)
           if(getfirstdraftreport.length != 0) {
-            let recipients_ = campaignrecipients;
+            let recipients_ = testmailrecipient;
             let recipientLists = recipients_.split(',');
           
             const recipient = recipients_;
@@ -469,7 +470,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
-            emailrecipients: campaignrecipients,
+            emailrecipients: testmailrecipient,
             tracking: {
               isOpened: trackbyopen,
               isClicked: trackbyclicks,
@@ -516,7 +517,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           });
     
           if(newMailCampaign.save()) {
-            let recipients_ = campaignrecipients;
+            let recipients_ = testmailrecipient;
             let recipientLists = recipients_.split(',');
             
             let campaignId_ = newMailCampaign.campaignId;
@@ -534,7 +535,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(gmail,testmailrecipient,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -567,7 +568,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(gmail,testmailrecipient,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -581,9 +582,6 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    port: 465,
-    debug: true,
-    secure: true,
     auth: {
       type: 'OAuth2',
       user: useremail,
@@ -599,7 +597,7 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
     to: recipient,
     subject: subject,
     html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
-    "campaignrecipients":campaignrecipients,
+    "testmailrecipient":testmailrecipient,
     "gmail":gmail,
     "body_": body,
     campaignId_: campaignId_
@@ -609,7 +607,7 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
     if (error) {
       console.error(error);
     } else {
-      updateEmailCampaignId(mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+      updateEmailCampaignId(mailOptions.testmailrecipient,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
     }
   });
 }
@@ -620,9 +618,6 @@ async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,
   
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    port: 465,
-    debug: true,
-    secure: true,
     auth: {
       type: 'OAuth2',
       user: useremail,
@@ -735,7 +730,7 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, to, body,campaignId_) {
+async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to, body,campaignId_) {
 
   try{
     // Retrieve the email threads in the user's mailbox
@@ -787,7 +782,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
             threadId: threadId,
             emailaddress: from,
             emailsubject: subject,
-            emailrecipients: campaignrecipients,
+            emailrecipients: testmailrecipient,
             emailrecipient: to,
             mailsentDate: mailtsentdate,
             tracking: tracking_,
@@ -807,7 +802,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
             emailaddress: from,
             emailsubject: subject,
             emailbody: body,
-            emailrecipients: campaignrecipients,
+            emailrecipients: testmailrecipient,
             emailrecipient: to,
             mailsentDate: mailtsentdate_,
             tracking: scheduletracking_,
@@ -881,7 +876,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
 };
 
 
-// async function adddrafttodraftLabel(draftid,campaignrecipients, gmail, subject, from) {
+// async function adddrafttodraftLabel(draftid,testmailrecipient, gmail, subject, from) {
 
 //   try{
 
@@ -977,4 +972,4 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
 //   }
 // }
 
-module.exports = { mailCampaign };
+module.exports = { testMail };
