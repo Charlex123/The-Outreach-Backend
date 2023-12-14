@@ -256,6 +256,9 @@ async function sendschedulemailCamp(cronExpression,message_Id,gmail,accesstoken,
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
+    port: 587,
+    debug: true,
+    secure: true,
     auth: {
       type: 'OAuth2',
       user: useremail,

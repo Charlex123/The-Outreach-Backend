@@ -240,6 +240,9 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
+    port: 587,
+    debug: true,
+    secure: true,
     auth: {
       type: 'OAuth2',
       user: useremail,
