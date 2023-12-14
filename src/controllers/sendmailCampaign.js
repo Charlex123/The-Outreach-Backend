@@ -581,7 +581,6 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    port: 465,
     debug: true,
     secure: true,
     auth: {
@@ -620,7 +619,6 @@ async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,
   
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    port: 465,
     debug: true,
     secure: true,
     auth: {
