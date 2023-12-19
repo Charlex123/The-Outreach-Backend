@@ -240,7 +240,6 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
-    port: 587,
     debug: true,
     secure: true,
     auth: {
@@ -257,7 +256,39 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
     from: useremail,
     to: recipient,
     subject: subject,
-    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${message_Id}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
+    html: `<html>
+              <head>
+                <style>
+                  body {
+                    font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: 1rem auto 1rem auto;
+                    text-align: center;
+                  }
+                  p {
+                    text-align: left;
+                  }
+                  span {
+                    text-align: left;
+                  }
+                  a.redlink {
+                    text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                    color: white;
+                  }
+                  a.unsubscribe {
+                    text-align: left;color: #4682B4;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="getap-op">
+                  <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${message_Id}/image.png" style="display: none" class="kioper" alt="imager">
+                  <p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p>
+                  <br>
+                  <div style="margin-top: 2rem">
+                    You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
+                  </div>
+                </div>
+              </body>
+            </html>`,
     autofollowupId: autofollowup_Id
   };
 

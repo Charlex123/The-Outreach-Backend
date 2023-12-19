@@ -277,15 +277,28 @@ const mailCampaign = asyncHandler(async (req, res) => {
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
-            for (const recipient of recipientLists) {
-              try {
-                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                console.log(`Email sent to ${recipient}`);
-              } catch (error) {
-                console.error(`Error sending email to ${recipient}: ${error}`);
+            if(scheduletime === "Now") {
+              for (let r = 0; recipientLists <= mailsperday; r++) {
+                let recipient = recipientLists[r];
+                try {
+                  if(delay_ === "1") {
+                    setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 10000)
+                  }else if(delay_ === "2") {
+                    setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 60000)
+                  }else if(delay_ === "3") {
+                    setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 300000)
+                  }else if(delay_ === "5") {
+                    setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 600000)
+                  }
+                  console.log(`Email sent to ${recipientLists[r]}`);
+                } catch (error) {
+                  console.error(`Error sending email to ${recipientLists[r]}: ${error}`);
+                }
               }
-            }  
-
+            }else {
+              
+            }
+              
             res.json({
               message: "success"
             })
@@ -534,7 +547,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 5000)
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -597,7 +610,39 @@ async function sendmailCamp(gmail,campaignrecipients,draftId,recipient,body,subj
     from: useremail,
     to: recipient,
     subject: subject,
-    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
+    html: `<html>
+              <head>
+                <style>
+                  body {
+                    font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: 1rem auto 1rem auto;
+                    text-align: center;
+                  }
+                  p {
+                    text-align: left;
+                  }
+                  span {
+                    text-align: left;
+                  }
+                  a.redlink {
+                    text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                    color: white;
+                  }
+                  a.unsubscribe {
+                    text-align: left;color: #4682B4;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="getap-op">
+                  <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
+                  <p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p>
+                  <br>
+                  <div style="margin-top: 2rem">
+                    You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
+                  </div>
+                </div>
+              </body>
+            </html>`,
     "campaignrecipients":campaignrecipients,
     "gmail":gmail,
     "body_": body,

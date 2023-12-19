@@ -63,7 +63,7 @@ const config = require('./config');
 googleOathController(app)
 Emailtracking(app);
 app.use('/label',labelRoute );
-app.use('/testemails',sendtestmailRoute );
+app.use('/testmails',sendtestmailRoute );
 app.use('/campaigns',sendmailcampaignRoute );
 app.use('/campaigns',autofollowupcampaignRoute );
 app.use('/campaigns',schedulecampaignRoute );

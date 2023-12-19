@@ -34,6 +34,15 @@ const campaignSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  recipientscount: {
+    type: Number
+  },
+  deliveredto: {
+    type: Number
+  },
+  remaining: {
+    type: Number
+  },
   createdAt:{
     type:Date,
     default:Date.now()
