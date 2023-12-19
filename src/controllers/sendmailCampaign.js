@@ -178,7 +178,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
       let rec_recip = recipientEmails.toString();
       let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
       let campaignrecipients = email_recipt.toString();
-      console.log('recipients count ',count(campaignrecipients))
       
       let user_AppKey = req.body.userAppKey;
       const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
@@ -715,7 +714,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
       // Function to get the labelId by label name.
       let rmrecipients = [];
       const emailrecipts = campaignrecipients.split(',');
-      const reciptscount_ = count(campaignrecipients.split(','));
+      const reciptscount_ = emailrecipts.length;
       let rmrecipientscount;
       if((reciptscount_ - mailsperday) > 0) {
         rmrecipientscount = reciptscount_ - mailsperday;
@@ -730,7 +729,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
       if (campaign) {
         campaign.emailId = messageId;
         campaign.threadId = threadId; 
-        campaign.recipientscount = count(campaignrecipients.split(','));
+        campaign.recipientscount = reciptscount_;
         campaign.recipientsdeliveredto = senttorecipients;
         campaign.recipientsdeliveredtocount = mailsperday;
         campaign.remainingrecipientscount = rmrecipientscount;
