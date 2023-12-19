@@ -715,13 +715,17 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
       // Function to get the labelId by label name.
       let rmrecipients = [];
       const emailrecipts = campaignrecipients.split(',');
-      const remainreciptscount_ = count(campaignrecipients.split(','));
-      
-      for(let rr = mailsperday; rr <= emailrecipts.length; rr++) {
-        rmrecipients.push(emailrecipts[rr]);
+      const reciptscount_ = count(campaignrecipients.split(','));
+      let rmrecipientscount;
+      if((reciptscount_ - mailsperday) > 0) {
+        rmrecipientscount = reciptscount_ - mailsperday;
+        for(let rr = mailsperday; rr <= emailrecipts.length; rr++) {
+          rmrecipients.push(emailrecipts[rr]);
+        }
+      }else {
+        rmrecipientscount = 0;
       }
 
-      const remainreciptscount = remainreciptscount_ - mailsperday;
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
       if (campaign) {
         campaign.emailId = messageId;
@@ -729,7 +733,7 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
         campaign.recipientscount = count(campaignrecipients.split(','));
         campaign.recipientsdeliveredto = senttorecipients;
         campaign.recipientsdeliveredtocount = mailsperday;
-        campaign.remainingrecipientscount = remainreciptscount;
+        campaign.remainingrecipientscount = rmrecipientscount;
         campaign.remainingrecipients = rmrecipients;
           
         const updatedCampgn = await campaign.save();
