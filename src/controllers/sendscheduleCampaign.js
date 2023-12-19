@@ -307,33 +307,33 @@ async function sendschedulemailCamp(cronExpression,message_Id,gmail,accesstoken,
             </html>`,
   };
 
-  if(cronboolean === true) {
-    cron.schedule(cronExpression, function () {
-      console.log('Running Cron Process');
-      // Delivering mail with sendMail method
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error(error);
-        } else {
-          console.log('Email sent: ' + info.response);
+  // if(cronboolean === true) {
+  //   cron.schedule(cronExpression, function () {
+  //     console.log('Running Cron Process');
+  //     // Delivering mail with sendMail method
+  //     transporter.sendMail(mailOptions, (error, info) => {
+  //       if (error) {
+  //         console.error(error);
+  //       } else {
+  //         console.log('Email sent: ' + info.response);
   
-          let query = mailOptions.subject+' to:'+mailOptions.to
-          console.log('queryyyyyyyy',query)
-              }
-      });
-    });
-  }else {
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('Email sent: ' + info.response);
+  //         let query = mailOptions.subject+' to:'+mailOptions.to
+  //         console.log('queryyyyyyyy',query)
+  //             }
+  //     });
+  //   });
+  // }else {
+  //   transporter.sendMail(mailOptions, (error, info) => {
+  //     if (error) {
+  //       console.error(error);
+  //     } else {
+  //       console.log('Email sent: ' + info.response);
   
-        let query = mailOptions.subject+' to:'+mailOptions.to
-        console.log('queryyyyyyyy',query)
-      }
-    });
-  }
+  //       let query = mailOptions.subject+' to:'+mailOptions.to
+  //       console.log('queryyyyyyyy',query)
+  //     }
+  //   });
+  // }
   
 }
 

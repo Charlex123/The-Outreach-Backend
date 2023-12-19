@@ -37,10 +37,16 @@ const campaignSchema = new mongoose.Schema({
   recipientscount: {
     type: Number
   },
-  deliveredto: {
+  recipientsdeliveredto: {
+    type: String
+  },
+  recipientsdeliveredtocount: {
     type: Number
   },
-  remaining: {
+  remainingrecipients: {
+    type: String
+  },
+  remainingrecipientscount: {
     type: Number
   },
   createdAt:{

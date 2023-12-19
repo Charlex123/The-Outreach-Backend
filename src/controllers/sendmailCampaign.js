@@ -173,12 +173,12 @@ const mailCampaign = asyncHandler(async (req, res) => {
       
 
       const recipientEmails = await getRecipientEmails();
-
       const draftId = await getDraftId();
       
       let rec_recip = recipientEmails.toString();
       let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
       let campaignrecipients = email_recipt.toString();
+      console.log('recipients count ',count(campaignrecipients))
       
       let user_AppKey = req.body.userAppKey;
       const verifyuserdata = await User.findOne({userAppKey: user_AppKey});
@@ -201,6 +201,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
         }
         
         console.log('mail send action here',req.body.mailsendtesttype)
+        let senttorecipients = [];
 
         if(action == '1') {
           const newMailCampaign = await campaignSchema.create({
@@ -211,7 +212,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
-            emailrecipients: campaignrecipients,
+            emailrecipients: campaignrecipients.split(','),
             tracking: {
               isOpened: trackbyopen,
               isClicked: trackbyclicks,
@@ -278,8 +279,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
             }
 
             if(scheduletime === "Now") {
-              for (let r = 0; recipientLists <= mailsperday; r++) {
+              
+              for (let r = 0; r <= mailsperday; r++) {
                 let recipient = recipientLists[r];
+                senttorecipients.push(recipient);
                 try {
                   if(delay_ === "1") {
                     setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 10000)
@@ -473,90 +476,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
             message: "success"
           })
 
-        }else if(action === '') {
-          const newMailCampaign = await campaignSchema.create({
-            userId: _id,
-            campaignId: campagn_Id,
-            emailId: draftId,
-            threadId: defaultthread_Id,
-            emailaddress: useremail,
-            emailsubject: emailsubject,
-            emailbody: emailbody,
-            emailrecipients: campaignrecipients,
-            tracking: {
-              isOpened: trackbyopen,
-              isClicked: trackbyclicks,
-              redlinktext: redlinktext_,
-              redlinkurl: redlinkurl_,
-            },
-            action: action, // Or any valid number for the action
-            autofollowup: {
-              firstfollowup: {
-                reply1type: followupreply1type,
-                reply1interval: followupreply1interval,
-                reply1time: followupreply1time,
-                reply1message: followupreply1message,
-              },
-              secondfollowup: {
-                reply2type: followupreply2type,
-                reply2interval: followupreply2interval,
-                reply2time: followupreply2time,
-                reply2message: followupreply2message,
-              },
-              thirdfollowup: {
-                reply3type: followupreply3type,
-                reply3interval: followupreply3interval,
-                reply3time: followupreply3time,
-                reply3message: followupreply3message,
-              },
-            },
-            schedule: {
-              scheduletime: scheduletime, // or any time format you prefer
-              skipweekends: skipweekends,
-              speed: {
-                mailsPerDay: mailsperday, // or any valid number
-                delay: delay_, // or any valid time interval
-              },
-              repeat: {
-                repeatinterval: repeatinterval, // or any valid number
-                repeattimes: repeattimes, // or any valid string
-              },
-            },
-            advance: {
-              sendas: sendas,
-              verifyemail: verifyemail,
-            }
-          });
-    
-          if(newMailCampaign.save()) {
-            let recipients_ = campaignrecipients;
-            let recipientLists = recipients_.split(',');
-            
-            let campaignId_ = newMailCampaign.campaignId;
-
-            const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
-            console.log('get first sent report',getfirstreportSent)
-            console.log('get first sent report length',getfirstreportSent.length)
-            if(getfirstreportSent.length != 0) {
-              firstsentreport_(to)
-              console.log('first report already sent')
-            }else {
-              console.log('send first report')
-              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
-            }
-
-            for (const recipient of recipientLists) {
-              try {
-                setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 5000)
-                console.log(`Email sent to ${recipient}`);
-              } catch (error) {
-                console.error(`Error sending email to ${recipient}: ${error}`);
-              }
-            }      
-          }
-          res.json({
-            message: "success"
-          })
         }
         // 385965910519
         
@@ -794,12 +713,25 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
       const messageId = messages[0].id;
       const threadId = messages[0].threadId;
       // Function to get the labelId by label name.
+      let rmrecipients = [];
+      const emailrecipts = campaignrecipients.split(',');
+      const remainreciptscount_ = count(campaignrecipients.split(','));
+      
+      for(let rr = mailsperday; rr <= emailrecipts.length; rr++) {
+        rmrecipients.push(emailrecipts[rr]);
+      }
 
+      const remainreciptscount = remainreciptscount_ - mailsperday;
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
       if (campaign) {
         campaign.emailId = messageId;
         campaign.threadId = threadId; 
-        
+        campaign.recipientscount = count(campaignrecipients.split(','));
+        campaign.recipientsdeliveredto = senttorecipients;
+        campaign.recipientsdeliveredtocount = mailsperday;
+        campaign.remainingrecipientscount = remainreciptscount;
+        campaign.remainingrecipients = rmrecipients;
+          
         const updatedCampgn = await campaign.save();
         if(updatedCampgn) {
 
