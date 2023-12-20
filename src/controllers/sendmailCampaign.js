@@ -269,7 +269,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             console.log('get first sent report',getfirstreportSent)
             console.log('get first sent report length',getfirstreportSent.length)
-            if(getfirstreportSent.length != 0) {
+            if(getfirstreportSent.length === 0) {
               firstsentreport_(useremail)
               console.log('first report already sent')
             }else {
@@ -281,17 +281,17 @@ const mailCampaign = asyncHandler(async (req, res) => {
               let senttorecptscount;
               console.log('hollaaaaaa recpt count',recipientLists.length)
               if((recipientLists.length - mailsperday) <= 0) {
-                senttorecptscount = recipientLists.length - 1;
+                senttorecptscount = recipientLists.length;
               }else {
                 senttorecptscount = mailsperday;
               }
 
-              for (let sr = 0; sr <= senttorecptscount; sr++) {
+              for (let sr = 0; sr < senttorecptscount; sr++) {
                   console.log('recipient --- sent to 2',recipientLists[sr])
                   senttorecipients.push(recipientLists[sr]);
               }
               
-              for (let r = 0; r <= senttorecptscount; r++) {
+              for (let r = 0; r < senttorecptscount; r++) {
                 
                 try {
                   if(recipientLists[r] !== undefined) {
@@ -712,7 +712,7 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
           if (err) {
             console.error('Error adding email to label:', err);
           } else {
-            console.log('Email added to label:', response);
+            console.log('Email added to label:');
             firstsentreport_(from)
           }
         });
@@ -872,7 +872,7 @@ async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipi
           if (err) {
             console.error('Error adding email to label:', err);
           } else {
-            console.log('Email added to label:', response);
+            console.log('Email added to label:');
             firstsentreport_(from)
           }
         });
