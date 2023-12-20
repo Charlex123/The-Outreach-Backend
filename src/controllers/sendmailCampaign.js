@@ -598,7 +598,7 @@ async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipient
     if (error) {
       console.error(error);
     } else {
-      updateEmailCampaignId(mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+      updateEmailCampaignId(mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
     }
   });
 }
