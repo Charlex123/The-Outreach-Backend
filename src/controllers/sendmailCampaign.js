@@ -279,6 +279,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
             if(scheduletime === "Now") {
               let senttorecptscount;
+              console.log('hollaaaaaa recpt count',recipientLists.length)
               if((recipientLists.length - mailsperday) <= 0) {
                 senttorecptscount = recipientLists.length;
               }else {
@@ -286,30 +287,35 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }
 
               for (let r = 0; r <= senttorecptscount; r++) {
-                let recipient = recipientLists[r];
-                console.log('recipient ---',recipient)
-                senttorecipients.push(recipient);
+                
                 try {
-                  if(delay_ === "1") {
-                    setTimeout(function(){
-                      sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                    }, 10000)
-                  }else if(delay_ === "2") {
-                    setTimeout(function(){
-                      sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                    }, 60000)
-                  }else if(delay_ === "3") {
-                    setTimeout(function(){
-                      sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                    }, 300000)
-                  }else if(delay_ === "5") {
-                    setTimeout(function(){
-                      sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                    }, 600000)
+                  
+                  if(recipientLists[r] !== undefined) {
+                    let recipient = recipientLists[r];
+                    console.log('recipient ---',recipient)
+                    senttorecipients.push(recipient);
+                    if(delay_ === "1") {
+                      setTimeout(function(){
+                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                      }, 10000)
+                    }else if(delay_ === "2") {
+                      setTimeout(function(){
+                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                      }, 60000)
+                    }else if(delay_ === "3") {
+                      setTimeout(function(){
+                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                      }, 300000)
+                    }else if(delay_ === "5") {
+                      setTimeout(function(){
+                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                      }, 600000)
+                    }
+                    console.log(`Email sent to ${recipient}`);
                   }
-                  console.log(`Email sent to ${recipient}`);
+                  
                 } catch (error) {
-                  console.error(`Error sending email to ${recipient}: ${error}`);
+                  console.error(`Error sending email to : ${error}`);
                 }
                 console.log('sent to recipients',senttorecipients)
               }
