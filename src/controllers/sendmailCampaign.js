@@ -297,22 +297,21 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if(recipientLists[r] !== undefined) {
                     let recipient = recipientLists[r];
                     console.log('recipient ---',recipient)
-                    senttorecipients.push(recipient);
                     if(delay_ === "1") {
                       setTimeout(function(){
-                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                        sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
                       }, 10000)
                     }else if(delay_ === "2") {
                       setTimeout(function(){
-                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                        sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
                       }, 60000)
                     }else if(delay_ === "3") {
                       setTimeout(function(){
-                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                        sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
                       }, 300000)
                     }else if(delay_ === "5") {
                       setTimeout(function(){
-                        sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
+                        sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
                       }, 600000)
                     }
                     console.log(`Email sent to ${recipient}`);
@@ -524,7 +523,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -591,7 +590,8 @@ async function sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipie
     "gmail":gmail,
     "body_": body,
     campaignId_: campaignId_,
-    "mailsperday": mailsperday
+    "mailsperday": mailsperday,
+    "senttorecipients":senttorecipients
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -724,7 +724,7 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(mailsperday,campaignrecipients, gmail, from, subject, to, body,campaignId_) {
+async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipients, gmail, from, subject, to, body,campaignId_) {
 
   try{
     // Retrieve the email threads in the user's mailbox
