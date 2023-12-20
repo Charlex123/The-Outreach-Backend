@@ -297,7 +297,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               if(delay_ === "1") {
                   for (let r = 0; r < senttorecptscount; r++) {
                     (function(r) {
-                      setInterval(function() {
+                      setTimeout(function() {
                         try {
                           if(recipientLists[r] !== undefined) {
                             let recipient = recipientLists[r];
@@ -317,7 +317,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }else if(delay_ === "2") {
                 for (let r = 0; r < senttorecptscount; r++) {
                   (function(r) {
-                    setInterval(function() {
+                    setTimeout(function() {
                       try {
                         if(recipientLists[r] !== undefined) {
                           let recipient = recipientLists[r];
@@ -337,7 +337,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }else if(delay_ === "3") {
                 for (let r = 0; r < senttorecptscount; r++) {
                   (function(r) {
-                    setInterval(function() {
+                    setTimeout(function() {
                       try {
                         if(recipientLists[r] !== undefined) {
                           let recipient = recipientLists[r];
@@ -357,7 +357,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }else if(delay_ === "5") {
                 for (let r = 0; r < senttorecptscount; r++) {
                   (function(r) {
-                    setInterval(function() {
+                    setTimeout(function() {
                       try {
                         if(recipientLists[r] !== undefined) {
                           let recipient = recipientLists[r];
