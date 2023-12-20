@@ -278,7 +278,14 @@ const mailCampaign = asyncHandler(async (req, res) => {
             }
 
             if(scheduletime === "Now") {
-              for (let r = 0; r <= mailsperday; r++) {
+              let senttorecptscount;
+              if((recipientLists.length - mailsperday) <= 0) {
+                senttorecptscount = recipientLists.length;
+              }else {
+                senttorecptscount = mailsperday;
+              }
+
+              for (let r = 0; r <= senttorecptscount; r++) {
                 let recipient = recipientLists[r];
                 console.log('recipient ---',recipient)
                 senttorecipients.push(recipient);
@@ -623,8 +630,9 @@ async function firstsentreport_(to) {
   const checkreport = await firstreportsentSchema.findOne({'useremail': to},{firstmailsentreport: "unsent"});
   
   if (checkreport) {
-    checkreport.verified = true;
-    const updatedfirstsentreport = await firstreportsentSchema.updateOne({'useremail':to},{$set: {firstmailsentreport: 'sent'}});
+    checkreport.firstmailsentreport = "sent";
+
+    const updatedfirstsentreport = await checkreport.save();
     if(updatedfirstsentreport) {
       console.log('updated first sent report',updatedfirstsentreport)
     }
