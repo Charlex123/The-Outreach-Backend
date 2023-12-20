@@ -292,7 +292,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   }else if(delay_ === "5") {
                     setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 600000)
                   }else {
-                    setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 1000)
+                    setTimeout(sendmailCamp(gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 10000)
                   }
                   console.log(`Email sent to ${recipientLists[r]}`);
                 } catch (error) {
@@ -732,10 +732,10 @@ async function updateEmailCampaignId(campaignrecipients, gmail, from, subject, t
         campaign.emailId = messageId;
         campaign.threadId = threadId; 
         campaign.recipientscount = reciptscount_;
-        campaign.recipientsdeliveredto = senttorecipients;
+        campaign.recipientsdeliveredto = senttorecipients.toString();
         campaign.recipientsdeliveredtocount = mailsperday;
         campaign.remainingrecipientscount = rmrecipientscount;
-        campaign.remainingrecipients = rmrecipients;
+        campaign.remainingrecipients = rmrecipients.toString();
           
         const updatedCampgn = await campaign.save();
         if(updatedCampgn) {
