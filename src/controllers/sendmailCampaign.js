@@ -262,7 +262,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
     
           if(newMailCampaign.save()) {
             let recipients_ = campaignrecipients;
-            let recipientLists = recipients_.split(',');
+            let recipientLista = recipients_.split(',');
+            const uniqueSet = new Set(recipientLista);
+            // Convert the Set back to an array
+            const recipientLists = [...uniqueSet];
             console.log('mail recipients',recipientLists)
             let campaignId_ = newMailCampaign.campaignId;
             
