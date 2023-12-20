@@ -289,7 +289,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
               for (let r = 0; r <= senttorecptscount; r++) {
                 
                 try {
-                  
                   if(recipientLists[r] !== undefined) {
                     let recipient = recipientLists[r];
                     console.log('recipient ---',recipient)
@@ -313,7 +312,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     }
                     console.log(`Email sent to ${recipient}`);
                   }
-                  
+
                 } catch (error) {
                   console.error(`Error sending email to : ${error}`);
                 }
