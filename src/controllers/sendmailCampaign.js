@@ -211,7 +211,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
-            emailrecipients: campaignrecipients.split(','),
+            emailrecipients: campaignrecipients,
             tracking: {
               isOpened: trackbyopen,
               isClicked: trackbyclicks,
