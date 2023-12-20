@@ -281,14 +281,14 @@ const mailCampaign = asyncHandler(async (req, res) => {
               let senttorecptscount;
               console.log('hollaaaaaa recpt count',recipientLists.length)
               if((recipientLists.length - mailsperday) <= 0) {
-                senttorecptscount = recipientLists.length;
+                senttorecptscount = recipientLists.length - 1;
               }else {
                 senttorecptscount = mailsperday;
               }
 
               for (let sr = 0; sr <= senttorecptscount; sr++) {
-                    console.log('recipient --- sent to 2',recipientLists[sr])
-                    senttorecipients.push(recipientLists[sr]);
+                  console.log('recipient --- sent to 2',recipientLists[sr])
+                  senttorecipients.push(recipientLists[sr]);
               }
               
               for (let r = 0; r <= senttorecptscount; r++) {
@@ -744,13 +744,16 @@ async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipi
       const emailrecipts = campaignrecipients.split(',');
       const reciptscount_ = emailrecipts.length;
       let rmrecipientscount;
+      let deliveredto;
       if((reciptscount_ - mailsperday) > 0) {
         rmrecipientscount = reciptscount_ - mailsperday;
+        deliveredto = mailsperday;
         for(let rr = mailsperday; rr <= emailrecipts.length; rr++) {
           rmrecipients.push(emailrecipts[rr]);
         }
       }else {
         rmrecipientscount = 0;
+        deliveredto = reciptscount_; 
       }
 
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
@@ -759,7 +762,7 @@ async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipi
         campaign.threadId = threadId; 
         campaign.recipientscount = reciptscount_;
         campaign.recipientsdeliveredto = senttorecipients.toString();
-        campaign.recipientsdeliveredtocount = mailsperday;
+        campaign.recipientsdeliveredtocount = deliveredto;
         campaign.remainingrecipientscount = rmrecipientscount;
         campaign.remainingrecipients = rmrecipients.toString();
           
@@ -855,25 +858,25 @@ async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipi
         addEmailToLabel(labelId, messageId,from);
       }
       // Function to add an email to a label.
-      // function addEmailToLabel(labelId, messageId,from) {
-      //   // Specify the email ID and label you want to add the email to.
-      //   const emailId = messageId;
+      function addEmailToLabel(labelId, messageId,from) {
+        // Specify the email ID and label you want to add the email to.
+        const emailId = messageId;
 
-      //   gmail.users.messages.modify({
-      //     userId: 'me',
-      //     id: emailId,
-      //     resource: {
-      //       addLabelIds: [labelId],
-      //     },
-      //   }, (err, response) => {
-      //     if (err) {
-      //       console.error('Error adding email to label:', err);
-      //     } else {
-      //       console.log('Email added to label:', response);
-      //       firstsentreport_(from)
-      //     }
-      //   });
-      // }
+        gmail.users.messages.modify({
+          userId: 'me',
+          id: emailId,
+          resource: {
+            addLabelIds: [labelId],
+          },
+        }, (err, response) => {
+          if (err) {
+            console.error('Error adding email to label:', err);
+          } else {
+            console.log('Email added to label:', response);
+            firstsentreport_(from)
+          }
+        });
+      }
 
     } else {
       console.log('No messages found.');
