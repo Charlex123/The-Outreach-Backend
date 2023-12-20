@@ -286,6 +286,11 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 senttorecptscount = mailsperday;
               }
 
+              for (let sr = 0; sr <= senttorecptscount; sr++) {
+                    console.log('recipient --- sent to 2',recipientLists[sr])
+                    senttorecipients.push(recipientLists[sr]);
+              }
+              
               for (let r = 0; r <= senttorecptscount; r++) {
                 
                 try {
