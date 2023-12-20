@@ -263,7 +263,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           if(newMailCampaign.save()) {
             let recipients_ = campaignrecipients;
             let recipientLists = recipients_.split(',');
-
+            console.log('mail recipients',recipientLists)
             let campaignId_ = newMailCampaign.campaignId;
             
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
@@ -278,9 +278,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
             }
 
             if(scheduletime === "Now") {
-              
               for (let r = 0; r <= mailsperday; r++) {
                 let recipient = recipientLists[r];
+                console.log('recipient ---',recipient)
                 senttorecipients.push(recipient);
                 try {
                   if(delay_ === "1") {
@@ -294,10 +294,11 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   }else {
                     setTimeout(sendmailCamp(mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_), 10000)
                   }
-                  console.log(`Email sent to ${recipientLists[r]}`);
+                  console.log(`Email sent to ${recipient}`);
                 } catch (error) {
-                  console.error(`Error sending email to ${recipientLists[r]}: ${error}`);
+                  console.error(`Error sending email to ${recipient}: ${error}`);
                 }
+                console.log('sent to recipients',senttorecipients)
               }
             }else {
               

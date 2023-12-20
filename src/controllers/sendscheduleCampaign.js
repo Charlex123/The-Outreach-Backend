@@ -66,7 +66,14 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
             console.log('create d already')
           }
 
-          const getmailcampaign = await campaignSchema.find({"emailaddress":useremail,"schedule.status":"unsent"});
+          const getmailcampaign = await campaignSchema.find({"emailaddress":useremail});
+          if(getmailcampaign){
+            const camprecpts = getmailcampaign.emailrecipients;
+            const deliveredtorecpts = getmailcampaign.recipientsdeliveredto;
+            const deliveredtorecptscount = getmailcampaign.recipientsdeliveredtocount;
+            const remrecpts = getmailcampaign.remainingrecipients;
+            const remrecptscount = getmailcampaign.remainingrecipientscount;
+          }
           const getscheduledata = await scheduleSchema.find({"emailaddress":useremail,"schedule.status":"unsent"});
 
           for (const schedule of getscheduledata) {
