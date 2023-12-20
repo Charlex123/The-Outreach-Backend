@@ -74,6 +74,8 @@ const scheduleCampaign = asyncHandler(async (req, res) => {
             const remrecpts = getmailcampaign.remainingrecipients;
             const remrecptscount = getmailcampaign.remainingrecipientscount;
             const campcreationtime = getmailcampaign.createdAt;
+
+            
           }
           const getscheduledata = await scheduleSchema.find({"emailaddress":useremail,"schedule.status":"unsent"});
 

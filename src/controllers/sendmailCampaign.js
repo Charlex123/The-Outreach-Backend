@@ -296,7 +296,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               
               if(delay_ === "1") {
                   for (let r = 0; r < senttorecptscount; r++) {
-                    (function(i) {
+                    (function(r) {
                       setTimeout(function() {
                         try {
                           if(recipientLists[r] !== undefined) {
@@ -310,13 +310,13 @@ const mailCampaign = asyncHandler(async (req, res) => {
                           console.error(`Error sending email to : ${error}`);
                         }
                       }, 10000)
-                  })(i)
+                  })(r)
                     
                   }
                 
               }else if(delay_ === "2") {
                 for (let r = 0; r < senttorecptscount; r++) {
-                  (function(i) {
+                  (function(r) {
                     setTimeout(function() {
                       try {
                         if(recipientLists[r] !== undefined) {
@@ -330,13 +330,13 @@ const mailCampaign = asyncHandler(async (req, res) => {
                         console.error(`Error sending email to : ${error}`);
                       }
                     }, 60000)
-                })(i)
+                })(r)
                   
                 }
                 
               }else if(delay_ === "3") {
                 for (let r = 0; r < senttorecptscount; r++) {
-                  (function(i) {
+                  (function(r) {
                     setTimeout(function() {
                       try {
                         if(recipientLists[r] !== undefined) {
@@ -350,13 +350,13 @@ const mailCampaign = asyncHandler(async (req, res) => {
                         console.error(`Error sending email to : ${error}`);
                       }
                     }, 300000)
-                })(i)
+                })(r)
                   
                 }
                 
               }else if(delay_ === "5") {
                 for (let r = 0; r < senttorecptscount; r++) {
-                  (function(i) {
+                  (function(r) {
                     setTimeout(function() {
                       try {
                         if(recipientLists[r] !== undefined) {
@@ -370,7 +370,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                         console.error(`Error sending email to : ${error}`);
                       }
                     }, 600000)
-                })(i)
+                })(r)
                   
                 }
               }
