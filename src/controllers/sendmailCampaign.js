@@ -282,7 +282,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
             if(scheduletime === "Now") {
               let senttorecptscount;
-              console.log('hollaaaaaa recpt count',recipientLists.length)
               if((recipientLists.length - mailsperday) <= 0) {
                 senttorecptscount = recipientLists.length;
               }else {
@@ -290,7 +289,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }
 
               for (let sr = 0; sr < senttorecptscount; sr++) {
-                  console.log('recipient --- sent to 2',recipientLists[sr])
                   senttorecipients.push(recipientLists[sr]);
               }
               
@@ -303,7 +301,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
                       sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                      console.log(`Processing item: ${currentItem}`);
+                      console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
                       currentIndex++;
@@ -339,7 +337,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                    console.log(`Processing item: ${currentItem}`);
+                    console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
                     currentIndex++;
@@ -357,7 +355,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                    console.log(`Processing item: ${currentItem}`);
+                    console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
                     currentIndex++;
@@ -375,7 +373,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                    console.log(`Processing item: ${currentItem}`);
+                    console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
                     currentIndex++;
