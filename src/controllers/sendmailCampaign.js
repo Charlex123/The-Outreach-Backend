@@ -49,6 +49,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
       console.log('autofollowuptime2',autofollowuptime2)
       console.log('autofollowuptime3',autofollowuptime3);
 
+      const name = req.body.name;
+      const mailsenttime = req.body.mailsenttime;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
       const useremail = req.body.useremail;
@@ -270,13 +272,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
             let campaignId_ = newMailCampaign.campaignId;
             
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
-            console.log('get first sent report',getfirstreportSent)
-            console.log('get first sent report length',getfirstreportSent.length)
+            
             if(getfirstreportSent.length === 0) {
               firstsentreport_(useremail)
-              console.log('first report already sent')
             }else {
-              console.log('send first report')
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
@@ -300,7 +299,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -319,7 +318,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -338,7 +337,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -357,7 +356,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -434,7 +433,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
           );
 
           async function createdraftModelSchema(draft_id) {
-            console.log('create draft schema true/false')
             const newMailCampaignDraft = await DraftSchema.create({
               userId: _id,
               emailId: draft_id,
@@ -573,7 +571,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -600,7 +598,11 @@ async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipient
   });
 
   const mailOptions = {
-    from: useremail,
+    from: {
+      name: name,
+      address: useremail
+    },
+    "email": useremail,
     to: recipient,
     subject: subject,
     html: `<html>
@@ -630,7 +632,7 @@ async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipient
                   <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
                   <p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p>
                   <br>
-                  <div style="margin-top: 2rem">
+                  <div style="margin-top: .2rem">
                     You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
                   </div>
                 </div>
@@ -641,6 +643,7 @@ async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipient
     "body_": body,
     campaignId_: campaignId_,
     "mailsperday": mailsperday,
+    "name": name,
     "senttorecipients":senttorecipients
   };
 
@@ -648,7 +651,7 @@ async function sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipient
     if (error) {
       console.error(error);
     } else {
-      updateEmailCampaignId(mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.from,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+      updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
     }
   });
 }
@@ -674,7 +677,7 @@ async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,
   let body = "Mail sent successful report body";
   let subject = "Sent report success"; 
   const mailOptions = {
-    from: "aliakbar512006@gmail.com",
+    from: "Ali Akbar <aliakbar512006@gmail.com>",
     to: useremail,
     subject: subject,
     html: `<html><body><div class="getap-op"><p>${body}</p></div></body></html>`,
@@ -774,7 +777,7 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipients, gmail, from, subject, to, body,campaignId_) {
+async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignrecipients, gmail, email, subject, to, body,campaignId_) {
 
   try{
     // Retrieve the email threads in the user's mailbox
@@ -844,7 +847,8 @@ async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipi
             campaignId: campaignId_,
             emailId: messageId,
             threadId: threadId,
-            emailaddress: from,
+            emailaddress: email,
+            name: name,
             emailsubject: subject,
             emailrecipients: campaignrecipients,
             emailrecipient: to,
@@ -863,7 +867,8 @@ async function updateEmailCampaignId(senttorecipients,mailsperday,campaignrecipi
             campaignId: campaignId_,
             emailId: messageId,
             threadId: threadId,
-            emailaddress: from,
+            emailaddress: email,
+            name: name,
             emailsubject: subject,
             emailbody: body,
             emailrecipients: campaignrecipients,

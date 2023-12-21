@@ -33,6 +33,9 @@ const autofollowupSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  name: {
+    type: String
+  },
   emailaddress: {
     type: String,
     required: true

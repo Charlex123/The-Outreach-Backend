@@ -49,6 +49,7 @@ const testMail = asyncHandler(async (req, res) => {
       console.log('autofollowuptime2',autofollowuptime2)
       console.log('autofollowuptime3',autofollowuptime3);
 
+      const testmailsenttime = req.body.testmailsenttime;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
       const useremail = req.body.useremail;

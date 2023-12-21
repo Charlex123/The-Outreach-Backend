@@ -37,6 +37,9 @@ const ScheduleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  name: {
+    type: String
+  },
   emailsubject: {
     type: String,
     required: true

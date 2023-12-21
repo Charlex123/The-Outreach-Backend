@@ -25,6 +25,7 @@ const verifyUser = asyncHandler(async (req, res) => {
             _id: verifiedUser._id,
             googleId: verifiedUser.googleId,
             email: verifiedUser.email,
+            name: verifiedUser.name,
             accessToken: verifiedUser.accessToken,
             refreshToken: verifiedUser.refreshToken,
             userAppKey: verifiedUser.userAppKey
