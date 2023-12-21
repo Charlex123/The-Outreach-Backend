@@ -294,85 +294,98 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   senttorecipients.push(recipientLists[sr]);
               }
               
+              let currentIndex = 0;
+
               if(delay_ === "1") {
-                  for (let r = 0; r < senttorecptscount; r++) {
-                    (function(r) {
-                      setTimeout(function() {
-                        try {
-                          if(recipientLists[r] !== undefined) {
-                            let recipient = recipientLists[r];
-                            console.log('recipient ---',recipient)
-                            sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                            console.log(`Email sent to ${recipient}`);
-                          }
-        
-                        } catch (error) {
-                          console.error(`Error sending email to : ${error}`);
-                        }
-                      }, 10000)
-                  })(r)
-                    
+                
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`Processing item: ${currentItem}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
                   }
+                  const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+                  // for (let r = 0; r < senttorecptscount; r++) {
+                  //   (function(r) {
+                  //     setTimeout(function() {
+                  //       try {
+                  //         if(recipientLists[r] !== undefined) {
+                  //           let recipient = recipientLists[r];
+                  //           console.log('recipient ---',recipient)
+                  //           sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                  //           console.log(`Email sent to ${recipient}`);
+                  //         }
+        
+                  //       } catch (error) {
+                  //         console.error(`Error sending email to : ${error}`);
+                  //       }
+                  //     }, 10000)
+                  // })(r)
+                    
+                  // }
                 
               }else if(delay_ === "2") {
-                for (let r = 0; r < senttorecptscount; r++) {
-                  (function(r) {
-                    setTimeout(function() {
-                      try {
-                        if(recipientLists[r] !== undefined) {
-                          let recipient = recipientLists[r];
-                          console.log('recipient ---',recipient)
-                          sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                          console.log(`Email sent to ${recipient}`);
-                        }
-      
-                      } catch (error) {
-                        console.error(`Error sending email to : ${error}`);
-                      }
-                    }, 60000)
-                })(r)
-                  
+                function sendToEachRecipient() {
+                  // Check if there are more elements to process
+                  if (currentIndex < senttorecptscount) {
+                    const recipient = recipientLists[currentIndex];
+                    sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    console.log(`Processing item: ${currentItem}`);
+                    
+                    // Increment the index for the next iteration
+                    currentIndex++;
+                  } else {
+                    // If all elements have been processed, stop the interval
+                    clearInterval(intervalId);
+                    console.log("Finished processing all items.");
+                  }
                 }
+                const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
                 
               }else if(delay_ === "3") {
-                for (let r = 0; r < senttorecptscount; r++) {
-                  (function(r) {
-                    setTimeout(function() {
-                      try {
-                        if(recipientLists[r] !== undefined) {
-                          let recipient = recipientLists[r];
-                          console.log('recipient ---',recipient)
-                          sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                          console.log(`Email sent to ${recipient}`);
-                        }
-      
-                      } catch (error) {
-                        console.error(`Error sending email to : ${error}`);
-                      }
-                    }, 300000)
-                })(r)
-                  
+                function sendToEachRecipient() {
+                  // Check if there are more elements to process
+                  if (currentIndex < senttorecptscount) {
+                    const recipient = recipientLists[currentIndex];
+                    sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    console.log(`Processing item: ${currentItem}`);
+                    
+                    // Increment the index for the next iteration
+                    currentIndex++;
+                  } else {
+                    // If all elements have been processed, stop the interval
+                    clearInterval(intervalId);
+                    console.log("Finished processing all items.");
+                  }
                 }
+                const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
                 
               }else if(delay_ === "5") {
-                for (let r = 0; r < senttorecptscount; r++) {
-                  (function(r) {
-                    setTimeout(function() {
-                      try {
-                        if(recipientLists[r] !== undefined) {
-                          let recipient = recipientLists[r];
-                          console.log('recipient ---',recipient)
-                          sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_)
-                          console.log(`Email sent to ${recipient}`);
-                        }
-      
-                      } catch (error) {
-                        console.error(`Error sending email to : ${error}`);
-                      }
-                    }, 600000)
-                })(r)
-                  
+                function sendToEachRecipient() {
+                  // Check if there are more elements to process
+                  if (currentIndex < senttorecptscount) {
+                    const recipient = recipientLists[currentIndex];
+                    sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    console.log(`Processing item: ${currentItem}`);
+                    
+                    // Increment the index for the next iteration
+                    currentIndex++;
+                  } else {
+                    // If all elements have been processed, stop the interval
+                    clearInterval(intervalId);
+                    console.log("Finished processing all items.");
+                  }
                 }
+                const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 secs
               }
 
             }else {
