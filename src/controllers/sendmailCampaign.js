@@ -609,7 +609,7 @@ async function sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignreci
               <head>
                 <style>
                   body {
-                    font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: 1rem auto 1rem auto;
+                    font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: .5rem auto .5rem auto;
                     text-align: center;
                   }
                   p {
@@ -630,7 +630,7 @@ async function sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignreci
               <body>
                 <div class="getap-op">
                   <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
-                  <p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p>
+                  <p>${body}<div style="margin: 1rem auto 1rem auto">${redlinker}</div></p>
                   <br>
                   <div style="margin-top: .2rem">
                     You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link

@@ -72,6 +72,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
               const thread_Id = autofollowup.threadId;
               const campaign_Id = autofollowup.campaignId;
               const recipient = autofollowup.emailrecipient;
+              const name = autofollowup.name;
               const subject = autofollowup.emailrecipient;
               const campaignsenttime = autofollowup.mailsentDate;
               const redlinktexta = autofollowup.tracking.redlinktext;
@@ -127,11 +128,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   console.log('timer zz1 occurred')
                   if(moment().isSameOrAfter(followupreply1time)) {
                     console.log('hella after time',moment(followupreply1time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                    sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // else {
                   //   console.log('hella before time',moment(followupreply1time))
-                  //   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   // }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
@@ -142,7 +143,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   
                 }else {
                   console.log('timer zz1 occurred')
-                  sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
               } 
 
@@ -151,11 +152,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   console.log('timer zz2 occurred')
                   if(moment().isSameOrAfter(followupreply2time)) {
                     console.log('hella after time 2',moment(followupreply2time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                    sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // else {
                   //   console.log('hella before time 2',moment(followupreply2time))
-                  //   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   // }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
@@ -166,7 +167,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   
                 }else {
                   console.log('timer zz2 occurred')
-                  sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
               }
               
@@ -175,11 +176,11 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   
                   if(moment().isSameOrAfter(followupreply3time)) {
                     console.log('hella after time 3',moment(followupreply3time))
-                    sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                    sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   }
                   // else {
                   //   console.log('hella before time 3',moment(followupreply3time))
-                  //   sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                   // }
                   // send first autofollowupreport
                   // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
@@ -190,7 +191,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
                   
                 }else {
                   console.log('timer zz3 occurred')
-                  sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
               } 
               
@@ -226,7 +227,7 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
 //   }
 // }
 
-async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id) {
+async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -253,7 +254,10 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
   });
 
   const mailOptions = {
-    from: useremail,
+    from: {
+      name: name,
+      address: useremail
+    },
     to: recipient,
     subject: subject,
     html: `<html>
@@ -281,9 +285,9 @@ async function sendautofollowupCamp(thread_Id,campaign_Id,message_Id,gmail,acces
               <body>
                 <div class="getap-op">
                   <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${message_Id}/image.png" style="display: none" class="kioper" alt="imager">
-                  <p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p>
+                  <p>${body}<div style="margin: 1rem auto 1rem auto">${redlinker}</div></p>
                   <br>
-                  <div style="margin-top: 2rem">
+                  <div style="margin-top: .2rem">
                     You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
                   </div>
                 </div>
