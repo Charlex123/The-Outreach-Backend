@@ -311,25 +311,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
                       console.log("Finished processing all items.");
                     }
                   }
+                  sendToEachRecipient(); // Run it once immediately
                   const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
-                  // for (let r = 0; r < senttorecptscount; r++) {
-                  //   (function(r) {
-                  //     setTimeout(function() {
-                  //       try {
-                  //         if(recipientLists[r] !== undefined) {
-                  //           let recipient = recipientLists[r];
-                  //           console.log('recipient ---',recipient)
-                  //           sendmailCamp(senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                  //           console.log(`Email sent to ${recipient}`);
-                  //         }
-        
-                  //       } catch (error) {
-                  //         console.error(`Error sending email to : ${error}`);
-                  //       }
-                  //     }, 10000)
-                  // })(r)
-                    
-                  // }
                 
               }else if(delay_ === "2") {
                 function sendToEachRecipient() {
@@ -347,6 +330,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     console.log("Finished processing all items.");
                   }
                 }
+                sendToEachRecipient(); // Run it once immediately
                 const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
                 
               }else if(delay_ === "3") {
@@ -365,6 +349,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     console.log("Finished processing all items.");
                   }
                 }
+                sendToEachRecipient(); // Run it once immediately
                 const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
                 
               }else if(delay_ === "5") {
@@ -383,6 +368,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     console.log("Finished processing all items.");
                   }
                 }
+                sendToEachRecipient(); // Run it once immediately
                 const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 secs
               }
 
