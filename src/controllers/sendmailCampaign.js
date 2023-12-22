@@ -960,15 +960,15 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
           cronexpression = `0 12 * */${repeattimes} *`;
         }
         cron.schedule(cronexpression, function () {
-          console.log('Running Cron Process');
+          console.log('Running Cron Process',cronexpression);
           // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-            }
-          });
+          // transporter.sendMail(mailOptions, (error, info) => {
+          //   if (error) {
+          //     console.error(error);
+          //   } else {
+          //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          //   }
+          // });
         });
       }else {
           // Delivering mail with sendMail method
@@ -983,78 +983,54 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
       
     }
   }else {
-    if(repeatinterval == "h") {
-      cron.schedule(`* */${repeattimes} * * *`, function () {
-        console.log('Running Cron Process');
-        // Delivering mail with sendMail method
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          }
-        });
-      });
-    }
-    else if(repeatinterval == "d") {
-      cron.schedule(`0 12 */${repeattimes} * *`, function () {
-        console.log('Running Cron Process');
-        // Delivering mail with sendMail method
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          }
-        });
-      });
-    }
-    else if(repeatinterval == "w") {
-      let wtimes;
-      if(repeattimes == 1) {
-        wtimes = "";
+    if(repeatinterval != "") {
+      let cronexpression;
+      if(repeatinterval == "h") {
+        cronexpression = `* */${repeattimes} * * *`;
       }
-      if(repeattimes == 2) {
-        wtimes = 14;
+      else if(repeatinterval == "d") {
+        cronexpression = `0 12 */${repeattimes} * *`;
       }
-      if(repeattimes == 3) {
-        wtimes = 21;
+      else if(repeatinterval == "w") {
+        let wtimes;
+        if(repeattimes == 1) {
+          wtimes = "";
+        }
+        if(repeattimes == 2) {
+          wtimes = 14;
+        }
+        if(repeattimes == 3) {
+          wtimes = 21;
+        }
+        if(repeattimes == 4) {
+          wtimes = 28;
+        }
+
+        cronexpression = `0 12 */${wtimes} * *`;
       }
-      if(repeattimes == 4) {
-        wtimes = 28;
+      else if(repeatinterval == "m") {
+        cronexpression = `0 12 * */${repeattimes} *`;
       }
-      cron.schedule(`0 12 * */${wtimes} *`, function () {
-        console.log('Running Cron Process');
+      cron.schedule(cronexpression, function () {
+        console.log('Running Cron Process',cronexpression);
         // Delivering mail with sendMail method
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          }
-        });
-      });
-    }
-    else if(repeatinterval == "m") {
-      cron.schedule(`0 12 * */${repeattimes} *`, function () {
-        console.log('Running Cron Process');
-        // Delivering mail with sendMail method
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          }
-        });
+        // transporter.sendMail(mailOptions, (error, info) => {
+        //   if (error) {
+        //     console.error(error);
+        //   } else {
+        //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+        //   }
+        // });
       });
     }else {
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error(error);
-        } else {
-          updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-        }
-      });
+        // Delivering mail with sendMail method
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
     }
   }
   
