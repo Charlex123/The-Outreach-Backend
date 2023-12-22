@@ -956,17 +956,17 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
         cron.schedule(cronexpression, function () {
           console.log('Running Cron Process',cronexpression);
           // Delivering mail with sendMail method
-          // transporter.sendMail(mailOptions, (error, info) => {
-          //   if (error) {
-          //     console.error(error);
-          //   } else {
-          //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          //   }
-          // });
+          transporter.sendMail(mailOptions, (error) => {
+            if (error) {
+              console.error(error);
+            } else {
+              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            }
+          });
         });
       }else {
           // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error, info) => {
+          transporter.sendMail(mailOptions, (error) => {
             if (error) {
               console.error(error);
             } else {
