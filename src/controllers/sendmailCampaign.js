@@ -374,7 +374,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 message: "Campaign successfully set"
               })
             }else if(scheduletime === "5 Minutes") {
-              let Fiveminutesinterval = 5 * 60 * 1000;
               function send5MinutesScheduleEmail() {
                 let currentIndex = 0;
 
@@ -461,9 +460,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 })
               }
 
-              setTimeout(send5MinutesScheduleEmail,Fiveminutesinterval)
+              setTimeout(send5MinutesScheduleEmail,300000)
             }else if(scheduletime === "1 Hour") {
-              let onehourinterval = 1 * 60 * 60 * 1000;
               function send1HourScheduleEmail() {
                 let currentIndex = 0;
 
@@ -550,7 +548,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 })
               }
 
-              setTimeout(send1HourScheduleEmail,onehourinterval)
+              setTimeout(send1HourScheduleEmail,1 * 60 * 60 * 1000)
             }else if(scheduletime === "3 Hours") {
               let threehoursinterval = 3 * 60 * 60 * 1000;
               function send3HoursScheduleEmail() {
