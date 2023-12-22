@@ -667,7 +667,7 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     if(recptsdeliveredtocount == mailspday ) {
       console.log('daily limit exceeded')
     }else if(recptsdeliveredtocount >= recptscount_) {
-      callNextRun(campaignId_);
+      callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey);
     }else {
       console.log('daily limit not exceeded')
       
@@ -741,11 +741,27 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
 }
 
 
-async function callNextRun(campaignId_) {
+async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey) {
   cron.schedule(`0 * */1 * *`, async function() {
     const campaignd = await campaignSchema.findOne({'campaignId':campaignId_});
     if(campaignd) {
+      const nxtrun = campaignd.nextRun;
+      if(moment().isSameOrAfter(nxtrun)) {
+        const skipwknds = campaignd.schedule.skipweekends;
+        const rptinteval = campaignd.schedule.repeat.repeatinterval;
+        const rpttimes = campaignd.schedule.repeat.repeattimes;
+        const mailspday_ = campaignd.schedule.speed.mailsPerDay;
+        const dlay = campaignd.schedule.speed.delay;
+        const schedtime = campaignd.schedule.scheduletime;
+        const name = campaignd.name;
+        const camprcpts = campaignd.emailrecipients;
+        const bdy = campaignd.emailbody;
+        const sbj = campaignd.emailsubject;
+        const emailadd = campaignd.emailaddress;
+        const redrtlinktext = campaign.redlinktext;
+        const redrtlinkurl = campaign.redlinkurl;
 
+      }
     }
   })
 }
