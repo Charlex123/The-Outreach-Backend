@@ -268,15 +268,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
             console.log('mail recipients',recipientLists)
             let campaignId_ = newMailCampaign.campaignId;
             
-            let next_Run = newMailCampaign.nextRun;
-
-            cron.schedule(cronExpression, function () {
-
-            })
-            // if(moment().isSameOrAfter(next_Run)) {
-
-            // }
-
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             
             if(getfirstreportSent.length === 0) {
