@@ -964,16 +964,16 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
             }
           });
         });
-      }else {
-          // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-            }
-          });
       }
+
+      // Delivering mail with sendMail method
+      transporter.sendMail(mailOptions, (error) => {
+        if (error) {
+          console.error(error);
+        } else {
+          updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+        }
+      });
 
     }
   }
