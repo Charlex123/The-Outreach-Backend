@@ -268,6 +268,12 @@ const mailCampaign = asyncHandler(async (req, res) => {
             console.log('mail recipients',recipientLists)
             let campaignId_ = newMailCampaign.campaignId;
             
+            let next_Run = newMailCampaign.nextRun;
+
+            // if(moment().isSameOrAfter(next_Run)) {
+
+            // }
+
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
             
             if(getfirstreportSent.length === 0) {
@@ -915,6 +921,8 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     const remrecptscount = campaigndet.remainingrecipientscount;
     const mailspday = campaigndet.schedule.speed.mailsPerDay;
     console.log('mails per day',mailspday)
+    campaigndet.nextRun = moment().add(1,'day');
+    await campaigndet.save();
     if(recptsdeliveredtocount == mailspday ) {
       console.log('daily limit exceeded')
     }else {
@@ -926,14 +934,18 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
       }
 
       if(repeatinterval != "") {
+        console.log('repeat interval occurred ran')
         let cronexpression;
         if(repeatinterval == "h") {
+          console.log(' hourly interval ran',cronexpression)
           cronexpression = `0 */${repeattimes} * * ${skipwkends}`;
         }
         else if(repeatinterval == "d") {
+          console.log('daily interval ran', cronexpression)
           cronexpression = `0 12 */${repeattimes} * ${skipwkends}`;
         }
         else if(repeatinterval == "w") {
+          console.log('weekly interval ran',cronexpression)
           let wtimes;
           if(repeattimes == 1) {
             wtimes = "";
@@ -951,8 +963,11 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
           cronexpression = `0 12 */${wtimes} * ${skipwkends}`;
         }
         else if(repeatinterval == "m") {
+
           cronexpression = `0 12 * */${repeattimes} ${skipwkends}`;
+          console.log(' monthly interval ran',cronexpression)
         }
+        console.log('cron expression',cronexpression)
         cron.schedule(cronexpression, function () {
           console.log('Running Cron Process',cronexpression);
           // Delivering mail with sendMail method
