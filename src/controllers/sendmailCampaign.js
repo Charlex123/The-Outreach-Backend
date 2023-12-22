@@ -270,6 +270,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
             
             let next_Run = newMailCampaign.nextRun;
 
+            cron.schedule(cronExpression, function () {
+
+            })
             // if(moment().isSameOrAfter(next_Run)) {
 
             // }
@@ -937,15 +940,14 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
         console.log('repeat interval occurred ran')
         let cronexpression;
         if(repeatinterval == "h") {
-          console.log(' hourly interval ran',cronexpression)
           cronexpression = `0 */${repeattimes} * * ${skipwkends}`;
+          console.log(' hourly interval ran',cronexpression)
         }
         else if(repeatinterval == "d") {
-          console.log('daily interval ran', cronexpression)
           cronexpression = `0 12 */${repeattimes} * ${skipwkends}`;
+          console.log('daily interval ran', cronexpression)
         }
         else if(repeatinterval == "w") {
-          console.log('weekly interval ran',cronexpression)
           let wtimes;
           if(repeattimes == 1) {
             wtimes = "";
@@ -961,9 +963,9 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
           }
 
           cronexpression = `0 12 */${wtimes} * ${skipwkends}`;
+          console.log('weekly interval ran',cronexpression)
         }
         else if(repeatinterval == "m") {
-
           cronexpression = `0 12 * */${repeattimes} ${skipwkends}`;
           console.log(' monthly interval ran',cronexpression)
         }
