@@ -373,8 +373,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
               res.json({
                 message: "Campaign successfully set"
               })
-            }else if(scheduletime === "5 Minutes") {
+            }else if(scheduletime === "FiveMinutes") {
+              console.log('5 minutes occured but function not called')
               function send5MinutesScheduleEmail() {
+                console.log('5 minutes function called')
                 let currentIndex = 0;
 
                 if(delay_ === "1") {
@@ -461,7 +463,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }
 
               setTimeout(send5MinutesScheduleEmail,300000)
-            }else if(scheduletime === "1 Hour") {
+            }else if(scheduletime === "OneHour") {
               function send1HourScheduleEmail() {
                 let currentIndex = 0;
 
@@ -549,7 +551,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }
 
               setTimeout(send1HourScheduleEmail,1 * 60 * 60 * 1000)
-            }else if(scheduletime === "3 Hours") {
+            }else if(scheduletime === "ThreeHours") {
               let threehoursinterval = 3 * 60 * 60 * 1000;
               function send3HoursScheduleEmail() {
                 let currentIndex = 0;
@@ -906,70 +908,58 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     "senttorecipients":senttorecipients
   };
 
+  const campaigndet = await campaignSchema.findOne({'campaignId':campaignId_});
+  if (campaigndet) {
+    // campaign.emailId = messageId;
+    // campaign.threadId = threadId; 
+    // campaign.recipientscount = reciptscount_;
+    // campaign.recipientsdeliveredto = senttorecipients.toString();
+    // campaign.recipientsdeliveredtocount = deliveredto;
+    // campaign.remainingrecipientscount = rmrecipientscount;
+    // campaign.remainingrecipients = rmrecipients.toString();
+      
+    // const updatedCampgn = await campaign.save();
+  }
   
   const today = new Date();
   const dayOfWeek = today.getDay();
   console.log('day of the week', dayOfWeek)
-
+  
   if(skipweekends === true) {
+    
     if((dayOfWeek == 6) || (dayOfWeek == 7)) {
       
     }else {
       console.log("it's weekday 1")
-      if(repeatinterval == "h") {
-        cron.schedule(`* */${repeattimes} * * *`, function () {
-          console.log('Running Cron Process');
-          // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-            }
-          });
-        });
-      }
-      else if(repeatinterval == "d") {
-        cron.schedule(`0 12 */${repeattimes} * *`, function () {
-          console.log('Running Cron Process');
-          // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-            }
-          });
-        });
-      }
-      else if(repeatinterval == "w") {
-        let wtimes;
-        if(repeattimes == 1) {
-          wtimes = "";
+      if(repeatinterval != "") {
+        let cronexpression;
+        if(repeatinterval == "h") {
+          cronexpression = `* */${repeattimes} * * *`;
         }
-        if(repeattimes == 2) {
-          wtimes = 14;
+        else if(repeatinterval == "d") {
+          cronexpression = `0 12 */${repeattimes} * *`;
         }
-        if(repeattimes == 3) {
-          wtimes = 21;
+        else if(repeatinterval == "w") {
+          let wtimes;
+          if(repeattimes == 1) {
+            wtimes = "";
+          }
+          if(repeattimes == 2) {
+            wtimes = 14;
+          }
+          if(repeattimes == 3) {
+            wtimes = 21;
+          }
+          if(repeattimes == 4) {
+            wtimes = 28;
+          }
+
+          cronexpression = `0 12 */${wtimes} * *`;
         }
-        if(repeattimes == 4) {
-          wtimes = 28;
+        else if(repeatinterval == "m") {
+          cronexpression = `0 12 * */${repeattimes} *`;
         }
-        cron.schedule(`0 12 * */${wtimes} *`, function () {
-          console.log('Running Cron Process');
-          // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-            }
-          });
-        });
-      }
-      else if(repeatinterval == "m") {
-        cron.schedule(`0 12 * */${repeattimes} *`, function () {
+        cron.schedule(cronexpression, function () {
           console.log('Running Cron Process');
           // Delivering mail with sendMail method
           transporter.sendMail(mailOptions, (error, info) => {
@@ -981,14 +971,16 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
           });
         });
       }else {
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          }
-        });
+          // Delivering mail with sendMail method
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(error);
+            } else {
+              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            }
+          });
       }
+      
     }
   }else {
     if(repeatinterval == "h") {
