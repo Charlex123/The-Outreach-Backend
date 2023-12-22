@@ -910,129 +910,130 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
 
   const campaigndet = await campaignSchema.findOne({'campaignId':campaignId_});
   if (campaigndet) {
-    // campaign.emailId = messageId;
-    // campaign.threadId = threadId; 
-    // campaign.recipientscount = reciptscount_;
-    // campaign.recipientsdeliveredto = senttorecipients.toString();
-    // campaign.recipientsdeliveredtocount = deliveredto;
-    // campaign.remainingrecipientscount = rmrecipientscount;
-    // campaign.remainingrecipients = rmrecipients.toString();
-      
-    // const updatedCampgn = await campaign.save();
-  }
-  
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  console.log('day of the week', dayOfWeek)
-  
-  if(skipweekends === true) {
-    
-    if((dayOfWeek == 6) || (dayOfWeek == 7)) {
-      
+    const recptscount = campaigndet.recipientscount;
+    const recptsdeliveredtocount = campaigndet.recipientsdeliveredtocount;
+    const remrecptscount = campaigndet.remainingrecipientscount;
+    const mailspday = campaigndet.schedule.speed.mailsPerDay;
+    console.log('mails per day',mailspday)
+    if(recptsdeliveredtocount == mailspday ) {
+      console.log('daily limit exceeded')
     }else {
-      console.log("it's weekday 1")
-      if(repeatinterval != "") {
-        let cronexpression;
-        if(repeatinterval == "h") {
-          cronexpression = `* */${repeattimes} * * *`;
-        }
-        else if(repeatinterval == "d") {
-          cronexpression = `0 12 */${repeattimes} * *`;
-        }
-        else if(repeatinterval == "w") {
-          let wtimes;
-          if(repeattimes == 1) {
-            wtimes = "";
-          }
-          if(repeattimes == 2) {
-            wtimes = 14;
-          }
-          if(repeattimes == 3) {
-            wtimes = 21;
-          }
-          if(repeattimes == 4) {
-            wtimes = 28;
-          }
-
-          cronexpression = `0 12 */${wtimes} * *`;
-        }
-        else if(repeatinterval == "m") {
-          cronexpression = `0 12 * */${repeattimes} *`;
-        }
-        cron.schedule(cronexpression, function () {
-          console.log('Running Cron Process',cronexpression);
-          // Delivering mail with sendMail method
-          // transporter.sendMail(mailOptions, (error, info) => {
-          //   if (error) {
-          //     console.error(error);
-          //   } else {
-          //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-          //   }
-          // });
-        });
-      }else {
-          // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      console.log('day of the week', dayOfWeek)
+      
+      if(skipweekends === true) {
+        
+        if((dayOfWeek == 6) || (dayOfWeek == 7)) {
+          
+        }else {
+          console.log("it's weekday 1")
+          if(repeatinterval != "") {
+            let cronexpression;
+            if(repeatinterval == "h") {
+              cronexpression = `* */${repeattimes} * * *`;
             }
-          });
-      }
-      
-    }
-  }else {
-    if(repeatinterval != "") {
-      let cronexpression;
-      if(repeatinterval == "h") {
-        cronexpression = `* */${repeattimes} * * *`;
-      }
-      else if(repeatinterval == "d") {
-        cronexpression = `0 12 */${repeattimes} * *`;
-      }
-      else if(repeatinterval == "w") {
-        let wtimes;
-        if(repeattimes == 1) {
-          wtimes = "";
-        }
-        if(repeattimes == 2) {
-          wtimes = 14;
-        }
-        if(repeattimes == 3) {
-          wtimes = 21;
-        }
-        if(repeattimes == 4) {
-          wtimes = 28;
-        }
+            else if(repeatinterval == "d") {
+              cronexpression = `0 12 */${repeattimes} * *`;
+            }
+            else if(repeatinterval == "w") {
+              let wtimes;
+              if(repeattimes == 1) {
+                wtimes = "";
+              }
+              if(repeattimes == 2) {
+                wtimes = 14;
+              }
+              if(repeattimes == 3) {
+                wtimes = 21;
+              }
+              if(repeattimes == 4) {
+                wtimes = 28;
+              }
 
-        cronexpression = `0 12 */${wtimes} * *`;
-      }
-      else if(repeatinterval == "m") {
-        cronexpression = `0 12 * */${repeattimes} *`;
-      }
-      cron.schedule(cronexpression, function () {
-        console.log('Running Cron Process',cronexpression);
-        // Delivering mail with sendMail method
-        // transporter.sendMail(mailOptions, (error, info) => {
-        //   if (error) {
-        //     console.error(error);
-        //   } else {
-        //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-        //   }
-        // });
-      });
-    }else {
-        // Delivering mail with sendMail method
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+              cronexpression = `0 12 */${wtimes} * *`;
+            }
+            else if(repeatinterval == "m") {
+              cronexpression = `0 12 * */${repeattimes} *`;
+            }
+            cron.schedule(cronexpression, function () {
+              console.log('Running Cron Process',cronexpression);
+              // Delivering mail with sendMail method
+              // transporter.sendMail(mailOptions, (error, info) => {
+              //   if (error) {
+              //     console.error(error);
+              //   } else {
+              //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+              //   }
+              // });
+            });
+          }else {
+              // Delivering mail with sendMail method
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                  console.error(error);
+                } else {
+                  updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+                }
+              });
           }
-        });
+          
+        }
+      }else {
+        if(repeatinterval != "") {
+          let cronexpression;
+          if(repeatinterval == "h") {
+            cronexpression = `* */${repeattimes} * * *`;
+          }
+          else if(repeatinterval == "d") {
+            cronexpression = `0 12 */${repeattimes} * *`;
+          }
+          else if(repeatinterval == "w") {
+            let wtimes;
+            if(repeattimes == 1) {
+              wtimes = "";
+            }
+            if(repeattimes == 2) {
+              wtimes = 14;
+            }
+            if(repeattimes == 3) {
+              wtimes = 21;
+            }
+            if(repeattimes == 4) {
+              wtimes = 28;
+            }
+
+            cronexpression = `0 12 */${wtimes} * *`;
+          }
+          else if(repeatinterval == "m") {
+            cronexpression = `0 12 * */${repeattimes} *`;
+          }
+          cron.schedule(cronexpression, function () {
+            console.log('Running Cron Process',cronexpression);
+            // Delivering mail with sendMail method
+            // transporter.sendMail(mailOptions, (error, info) => {
+            //   if (error) {
+            //     console.error(error);
+            //   } else {
+            //     updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            //   }
+            // });
+          });
+        }else {
+            // Delivering mail with sendMail method
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.error(error);
+              } else {
+                updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+              }
+            });
+        }
+      }
     }
   }
+  
+  
   
   
 }

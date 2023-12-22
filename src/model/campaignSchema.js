@@ -72,6 +72,10 @@ const campaignSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  nextRun: {
+    type: Date,
+    default: null
+  },
   tracking: {
     isOpened: {
       type: Boolean,
