@@ -918,6 +918,7 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     if(recptsdeliveredtocount == mailspday ) {
       console.log('daily limit exceeded')
     }else {
+      console.log('daily limit not exceeded')
       const today = new Date();
       const dayOfWeek = today.getDay();
       console.log('day of the week', dayOfWeek)
