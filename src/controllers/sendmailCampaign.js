@@ -745,7 +745,7 @@ async function callNextRun(campaignId_) {
   cron.schedule(`0 * */1 * *`, async function() {
     const campaignd = await campaignSchema.findOne({'campaignId':campaignId_});
     if(campaignd) {
-      
+
     }
   })
 }
@@ -753,7 +753,6 @@ async function callNextRun(campaignId_) {
 
 async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken) {
 
-  
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     debug: true,
