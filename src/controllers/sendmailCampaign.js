@@ -298,7 +298,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -317,7 +317,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -336,7 +336,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -355,7 +355,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -384,7 +384,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                       // Check if there are more elements to process
                       if (currentIndex < senttorecptscount) {
                         const recipient = recipientLists[currentIndex];
-                        sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                        sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                         console.log(`recipient sent to: ${recipient}`);
                         
                         // Increment the index for the next iteration
@@ -403,7 +403,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -422,7 +422,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -441,7 +441,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -473,7 +473,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                       // Check if there are more elements to process
                       if (currentIndex < senttorecptscount) {
                         const recipient = recipientLists[currentIndex];
-                        sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                        sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                         console.log(`recipient sent to: ${recipient}`);
                         
                         // Increment the index for the next iteration
@@ -492,7 +492,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -511,7 +511,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -530,7 +530,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -562,7 +562,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                       // Check if there are more elements to process
                       if (currentIndex < senttorecptscount) {
                         const recipient = recipientLists[currentIndex];
-                        sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                        sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                         console.log(`recipient sent to: ${recipient}`);
                         
                         // Increment the index for the next iteration
@@ -581,7 +581,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -600,7 +600,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -619,7 +619,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -832,7 +832,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
   
 });
 
-async function sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -908,6 +908,7 @@ async function sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mai
     "senttorecipients":senttorecipients
   };
 
+  
   const today = new Date();
   const dayOfWeek = today.getDay();
   console.log('day of the week', dayOfWeek)
