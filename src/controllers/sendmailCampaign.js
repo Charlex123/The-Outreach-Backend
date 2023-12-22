@@ -4,16 +4,17 @@ const campaignSchema = require('../model/campaignSchema');
 const DraftSchema = require("../model/DraftSchema");
 const autofollowSchema = require("../model/autofollowSchema");
 const scheduleSchema = require("../model/scheduleSchema");
+const sendscheduleCamp = require("./sendscheduleCampaign");
 const firstreportsentSchema = require("../model/firstreportsentSchema");
 const User = require("../model/user");
-const { generateTrackingLink } = require('../utils');
 const { google } = require('googleapis');
 const moment = require('moment');
 const dotenv = require('dotenv');
 const config = require('../config');
 const nodemailer = require("nodemailer");
+const cron = require("node-cron");
 const v4 = require("uuid");
-const { get } = require("lodash");
+const { get, repeat } = require("lodash");
 const campagn_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;
@@ -45,10 +46,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const autofoltime3 = req.body.followupreply3time;
       const autofollowuptime3 = moment().add({days:autofolinterval3,seconds: autofoltime3});
       
-      console.log('autofollowuptime1',autofollowuptime1)
-      console.log('autofollowuptime2',autofollowuptime2)
-      console.log('autofollowuptime3',autofollowuptime3);
-
       const name = req.body.name;
       const mailsenttime = req.body.mailsenttime;
       const redlinktext_ = req.body.redlinktext;
@@ -279,17 +276,19 @@ const mailCampaign = asyncHandler(async (req, res) => {
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
-            if(scheduletime === "Now") {
-              let senttorecptscount;
-              if((recipientLists.length - mailsperday) <= 0) {
-                senttorecptscount = recipientLists.length;
-              }else {
-                senttorecptscount = mailsperday;
-              }
+            let senttorecptscount;
+            
+            if((recipientLists.length - mailsperday) <= 0) {
+              senttorecptscount = recipientLists.length;
+            }else {
+              senttorecptscount = mailsperday;
+            }
 
-              for (let sr = 0; sr < senttorecptscount; sr++) {
-                  senttorecipients.push(recipientLists[sr]);
-              }
+            for (let sr = 0; sr < senttorecptscount; sr++) {
+                senttorecipients.push(recipientLists[sr]);
+            }
+            
+            if(scheduletime === "Now") {
               
               let currentIndex = 0;
 
@@ -299,7 +298,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       console.log(`recipient sent to: ${recipient}`);
                       
                       // Increment the index for the next iteration
@@ -318,7 +317,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -337,7 +336,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -356,7 +355,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     console.log(`recipient sent to: ${recipient}`);
                     
                     // Increment the index for the next iteration
@@ -368,18 +367,281 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
-                const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 secs
+                const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
               }
 
-            }else {
-              
-            }
-              
-            res.json({
-              message: "success"
-            })
-          }
+              res.json({
+                message: "Campaign successfully set"
+              })
+            }else if(scheduletime === "5 Minutes") {
+              let Fiveminutesinterval = 5 * 60 * 1000;
+              function send5MinutesScheduleEmail() {
+                let currentIndex = 0;
+
+                if(delay_ === "1") {
+                  
+                    function sendToEachRecipient() {
+                      // Check if there are more elements to process
+                      if (currentIndex < senttorecptscount) {
+                        const recipient = recipientLists[currentIndex];
+                        sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                        console.log(`recipient sent to: ${recipient}`);
+                        
+                        // Increment the index for the next iteration
+                        currentIndex++;
+                      } else {
+                        // If all elements have been processed, stop the interval
+                        clearInterval(intervalId);
+                        console.log("Finished processing all items.");
+                      }
+                    }
+                    sendToEachRecipient(); // Run it once immediately
+                    const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+                  
+                }else if(delay_ === "2") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
+                  
+                }else if(delay_ === "3") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
+                  
+                }else if(delay_ === "5") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
+                }
   
+                res.json({
+                  message: "Campaign successfully set"
+                })
+              }
+
+              setTimeout(send5MinutesScheduleEmail,Fiveminutesinterval)
+            }else if(scheduletime === "1 Hour") {
+              let onehourinterval = 1 * 60 * 60 * 1000;
+              function send1HourScheduleEmail() {
+                let currentIndex = 0;
+
+                if(delay_ === "1") {
+                  
+                    function sendToEachRecipient() {
+                      // Check if there are more elements to process
+                      if (currentIndex < senttorecptscount) {
+                        const recipient = recipientLists[currentIndex];
+                        sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                        console.log(`recipient sent to: ${recipient}`);
+                        
+                        // Increment the index for the next iteration
+                        currentIndex++;
+                      } else {
+                        // If all elements have been processed, stop the interval
+                        clearInterval(intervalId);
+                        console.log("Finished processing all items.");
+                      }
+                    }
+                    sendToEachRecipient(); // Run it once immediately
+                    const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+                  
+                }else if(delay_ === "2") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
+                  
+                }else if(delay_ === "3") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
+                  
+                }else if(delay_ === "5") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
+                }
+  
+                res.json({
+                  message: "Campaign successfully set"
+                })
+              }
+
+              setTimeout(send1HourScheduleEmail,onehourinterval)
+            }else if(scheduletime === "3 Hours") {
+              let threehoursinterval = 3 * 60 * 60 * 1000;
+              function send3HoursScheduleEmail() {
+                let currentIndex = 0;
+
+                if(delay_ === "1") {
+                  
+                    function sendToEachRecipient() {
+                      // Check if there are more elements to process
+                      if (currentIndex < senttorecptscount) {
+                        const recipient = recipientLists[currentIndex];
+                        sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                        console.log(`recipient sent to: ${recipient}`);
+                        
+                        // Increment the index for the next iteration
+                        currentIndex++;
+                      } else {
+                        // If all elements have been processed, stop the interval
+                        clearInterval(intervalId);
+                        console.log("Finished processing all items.");
+                      }
+                    }
+                    sendToEachRecipient(); // Run it once immediately
+                    const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+                  
+                }else if(delay_ === "2") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
+                  
+                }else if(delay_ === "3") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
+                  
+                }else if(delay_ === "5") {
+                  function sendToEachRecipient() {
+                    // Check if there are more elements to process
+                    if (currentIndex < senttorecptscount) {
+                      const recipient = recipientLists[currentIndex];
+                      sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      console.log(`recipient sent to: ${recipient}`);
+                      
+                      // Increment the index for the next iteration
+                      currentIndex++;
+                    } else {
+                      // If all elements have been processed, stop the interval
+                      clearInterval(intervalId);
+                      console.log("Finished processing all items.");
+                    }
+                  }
+                  sendToEachRecipient(); // Run it once immediately
+                  const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
+                }
+  
+                res.json({
+                  message: "Campaign successfully set"
+                })
+              }
+
+              setTimeout(send3HoursScheduleEmail,threehoursinterval)
+            }
+          }
         }else if(action == '2') {
           
           const recipient__ = useremail;
@@ -545,7 +807,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           }
         
           res.json({
-            message: "success"
+            message: "Draft successfully saved"
           })
 
         }
@@ -570,8 +832,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
   
 });
 
-
-async function sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -647,13 +908,166 @@ async function sendmailCamp(name,senttorecipients,mailsperday,gmail,campaignreci
     "senttorecipients":senttorecipients
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error(error);
-    } else {
-      updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  console.log('day of the week', dayOfWeek)
+
+  if(skipweekends === true) {
+    if((dayOfWeek == 6) || (dayOfWeek == 7)) {
+      
+    }else {
+      console.log("it's weekday 1")
+      if(repeatinterval == "h") {
+        cron.schedule(`* */${repeattimes} * * *`, function () {
+          console.log('Running Cron Process');
+          // Delivering mail with sendMail method
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(error);
+            } else {
+              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            }
+          });
+        });
+      }
+      else if(repeatinterval == "d") {
+        cron.schedule(`0 12 */${repeattimes} * *`, function () {
+          console.log('Running Cron Process');
+          // Delivering mail with sendMail method
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(error);
+            } else {
+              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            }
+          });
+        });
+      }
+      else if(repeatinterval == "w") {
+        let wtimes;
+        if(repeattimes == 1) {
+          wtimes = "";
+        }
+        if(repeattimes == 2) {
+          wtimes = 14;
+        }
+        if(repeattimes == 3) {
+          wtimes = 21;
+        }
+        if(repeattimes == 4) {
+          wtimes = 28;
+        }
+        cron.schedule(`0 12 * */${wtimes} *`, function () {
+          console.log('Running Cron Process');
+          // Delivering mail with sendMail method
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(error);
+            } else {
+              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            }
+          });
+        });
+      }
+      else if(repeatinterval == "m") {
+        cron.schedule(`0 12 * */${repeattimes} *`, function () {
+          console.log('Running Cron Process');
+          // Delivering mail with sendMail method
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.error(error);
+            } else {
+              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+            }
+          });
+        });
+      }else {
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
+      }
     }
-  });
+  }else {
+    if(repeatinterval == "h") {
+      cron.schedule(`* */${repeattimes} * * *`, function () {
+        console.log('Running Cron Process');
+        // Delivering mail with sendMail method
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
+      });
+    }
+    else if(repeatinterval == "d") {
+      cron.schedule(`0 12 */${repeattimes} * *`, function () {
+        console.log('Running Cron Process');
+        // Delivering mail with sendMail method
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
+      });
+    }
+    else if(repeatinterval == "w") {
+      let wtimes;
+      if(repeattimes == 1) {
+        wtimes = "";
+      }
+      if(repeattimes == 2) {
+        wtimes = 14;
+      }
+      if(repeattimes == 3) {
+        wtimes = 21;
+      }
+      if(repeattimes == 4) {
+        wtimes = 28;
+      }
+      cron.schedule(`0 12 * */${wtimes} *`, function () {
+        console.log('Running Cron Process');
+        // Delivering mail with sendMail method
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
+      });
+    }
+    else if(repeatinterval == "m") {
+      cron.schedule(`0 12 * */${repeattimes} *`, function () {
+        console.log('Running Cron Process');
+        // Delivering mail with sendMail method
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
+      });
+    }else {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+        } else {
+          updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+        }
+      });
+    }
+  }
+  
+  
 }
 
 
