@@ -47,7 +47,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const autofollowuptime3 = moment().add({days:autofolinterval3,seconds: autofoltime3});
       
       const name = req.body.name;
-      const mailsenttime = req.body.mailsenttime;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
       const useremail = req.body.useremail;
@@ -273,7 +272,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             if(getfirstreportSent.length === 0) {
               firstsentreport_(useremail)
             }else {
-              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
+              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken);
             }
 
             let senttorecptscount;
@@ -658,11 +657,9 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
   if (campaigndet) {
 
     const emailrecpts = campaignrecipients.split(',');
-    const recptscount_ = emailrecipts.length;
+    const recptscount_ = emailrecpts.length;
 
-    const recptscount = campaigndet.recipientscount;
     const recptsdeliveredtocount = campaigndet.recipientsdeliveredtocount;
-    const remrecptscount = campaigndet.remainingrecipientscount;
     const mailspday = campaigndet.schedule.speed.mailsPerDay;
     console.log('mails per day',mailspday)
     campaigndet.nextRun = moment().add(1,'day');
@@ -670,7 +667,7 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     if(recptsdeliveredtocount == mailspday ) {
       console.log('daily limit exceeded')
     }else if(recptsdeliveredtocount >= recptscount_) {
-      callNextRun(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_);
+      callNextRun(campaignId_);
     }else {
       console.log('daily limit not exceeded')
       
@@ -744,14 +741,17 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
 }
 
 
-// async function callNextRun(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
-//   cron.schedule(`0 * */1 * *`, function() {
-    
-//   })
-// }
+async function callNextRun(campaignId_) {
+  cron.schedule(`0 * */1 * *`, async function() {
+    const campaignd = await campaignSchema.findOne({'campaignId':campaignId_});
+    if(campaignd) {
+      
+    }
+  })
+}
 
 
-async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,campaignId_) {
+async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken) {
 
   
   const transporter = nodemailer.createTransport({
