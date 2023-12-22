@@ -267,67 +267,38 @@ const mailCampaign = asyncHandler(async (req, res) => {
             const recipientLists = [...uniqueSet];
             console.log('mail recipients',recipientLists)
             let campaignId_ = newMailCampaign.campaignId;
-            let next_Run = newMailCampaign.nextRun;
-
-            if(next_Run == null) {
-                const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
-              
-                if(getfirstreportSent.length === 0) {
-                  firstsentreport_(useremail)
-                }else {
-                  sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
-                }
-    
-                let senttorecptscount;
-                
-                if((recipientLists.length - mailsperday) <= 0) {
-                  senttorecptscount = recipientLists.length;
-                }else {
-                  senttorecptscount = mailsperday;
-                }
-    
-                for (let sr = 0; sr < senttorecptscount; sr++) {
-                    senttorecipients.push(recipientLists[sr]);
-                }
-                
-                if(scheduletime == "Now") {
-                  startmailSending();
-                  console.log('scheduletime Now ran')
-                }else if(scheduletime == "FiveMinutes"){
-                  setTimeout(startmailSending,5*60*1000)
-                }else if(scheduletime == "OneHour"){
-                  setTimeout(startmailSending,1*60*60*1000)
-                }else if(scheduletime == "ThreeHours"){
-                  setTimeout(startmailSending,3*60*60*1000)
-                }
-              
-              }else {
-
-                  const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
-
-                  cron.schedule(`0 * */1 * *`, function() {
-                    
-                    if(getfirstreportSent.length === 0) {
-                      firstsentreport_(useremail)
-                    }else {
-                      sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
-                    }
-
-                    let senttorecptscount;
-                    
-                    if((recipientLists.length - mailsperday) <= 0) {
-                      senttorecptscount = recipientLists.length;
-                    }else {
-                      senttorecptscount = mailsperday;
-                    }
-
-                    for (let sr = 0; sr < senttorecptscount; sr++) {
-                        senttorecipients.push(recipientLists[sr]);
-                    }
-                
-                  })
+        
+            const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
+          
+            if(getfirstreportSent.length === 0) {
+              firstsentreport_(useremail)
+            }else {
+              sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken,campaignId_);
             }
 
+            let senttorecptscount;
+            
+            if((recipientLists.length - mailsperday) <= 0) {
+              senttorecptscount = recipientLists.length;
+            }else {
+              senttorecptscount = mailsperday;
+            }
+
+            for (let sr = 0; sr < senttorecptscount; sr++) {
+                senttorecipients.push(recipientLists[sr]);
+            }
+            
+            if(scheduletime == "Now") {
+              startmailSending();
+              console.log('scheduletime Now ran')
+            }else if(scheduletime == "FiveMinutes"){
+              setTimeout(startmailSending,5*60*1000)
+            }else if(scheduletime == "OneHour"){
+              setTimeout(startmailSending,1*60*60*1000)
+            }else if(scheduletime == "ThreeHours"){
+              setTimeout(startmailSending,3*60*60*1000)
+            }
+          
             // call send function
 
             function startmailSending() {
