@@ -143,40 +143,40 @@ const testMail = asyncHandler(async (req, res) => {
     //   } 
       
       // Function to retrieve recipient email addresses
-    //   async function getDraftId() {
-    //     return new Promise((resolve, reject) => {
-    //         gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
-    //             if (err) {
-    //                 reject(err);
-    //                 return;
-    //             }
+      async function getDraftId() {
+        return new Promise((resolve, reject) => {
+            gmail.users.drafts.list({ userId: 'me' }, (err, res) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
 
-    //             const drafts = res.data.drafts;
-    //             if (drafts) {
-    //                 const draftId = drafts[0].id; // Assuming you want the first draft's ID
+                const drafts = res.data.drafts;
+                if (drafts) {
+                    const draftId = drafts[0].id; // Assuming you want the first draft's ID
 
-    //                 gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
-    //                     if (err) {
-    //                         reject(err);
-    //                         return;
-    //                     }
+                    gmail.users.drafts.get({ userId: 'me', id: draftId }, (err, res) => {
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
 
-    //                     // Extract the message ID
-    //                     const messageId = res.data.message.id;
+                        // Extract the message ID
+                        const messageId = res.data.message.id;
 
-    //                     resolve(messageId);
-    //                 });
-    //             } else {
-    //                 resolve([]);
-    //             }
-    //         });
-    //     });
-    //   } 
+                        resolve(messageId);
+                    });
+                } else {
+                    resolve([]);
+                }
+            });
+        });
+      } 
       
 
     //   const recipientEmails = await getRecipientEmails();
 
-    //   const draftId = await getDraftId();
+      const draftId = await getDraftId();
       
     //   let rec_recip = recipientEmails.toString();
     //   let email_recipt = rec_recip.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi);
