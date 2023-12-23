@@ -203,6 +203,12 @@ const mailCampaign = asyncHandler(async (req, res) => {
         
         console.log('mail send action here',req.body.mailsendtesttype)
         let senttorecipients = [];
+        let recipients_ = campaignrecipients;
+        let recipientLista = recipients_.split(',');
+        const uniqueSet = new Set(recipientLista);
+        // Convert the Set back to an array
+        const recipientLists = [...uniqueSet];
+        console.log('mail recipients',recipientLists)
 
         if(action == '1') {
           const newMailCampaign = await campaignSchema.create({
@@ -214,6 +220,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             emailsubject: emailsubject,
             emailbody: emailbody,
             emailrecipients: campaignrecipients,
+            recipientscount: recipientLists.length,
             timezone: timezone,
             tracking: {
               isOpened: trackbyopen,
@@ -264,12 +271,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           });
     
           if(newMailCampaign.save()) {
-            let recipients_ = campaignrecipients;
-            let recipientLista = recipients_.split(',');
-            const uniqueSet = new Set(recipientLista);
-            // Convert the Set back to an array
-            const recipientLists = [...uniqueSet];
-            console.log('mail recipients',recipientLists)
+            
             let campaignId_ = newMailCampaign.campaignId;
         
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
@@ -340,7 +342,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   } else {
                     // If all elements have been processed, stop the interval
                     clearInterval(intervalId);
-                    console.log("Finished processing all items.");
+                    callNextRun(campaignId_,gmail,req.body.accessToken,req.body.refreshToken,req.body.userAppKey);
+                    console.log('next run ran first')
+                    console.log("Finished processing delay 2 recipts.");
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
@@ -357,7 +361,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   } else {
                     // If all elements have been processed, stop the interval
                     clearInterval(intervalId);
-                    console.log("Finished processing all items.");
+                    callNextRun(campaignId_,gmail,req.body.accessToken,req.body.refreshToken,req.body.userAppKey);
+                    console.log('next run ran first')
+                    console.log("Finished processing delay 3 rcipts.");
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
@@ -374,7 +380,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   } else {
                     // If all elements have been processed, stop the interval
                     clearInterval(intervalId);
-                    console.log("Finished processing all items.");
+                    callNextRun(campaignId_,gmail,req.body.accessToken,req.body.refreshToken,req.body.userAppKey);
+                    console.log('next run ran first')
+                    console.log("Finished processing delay 5 recipts.");
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
@@ -574,7 +582,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey) {
-  cron.schedule(`0 * */1 * *`, async function() {
+  console.log('nrxt run set to run')
+  cron.schedule(`*/30 * * * *`, async function() {
+    console.log('30 minutes nrxt run ran')
     const campaignd = await campaignSchema.findOne({'campaignId':campaignId_});
     if(campaignd) {
       const nxtrun = campaignd.nextRun;
@@ -588,29 +598,51 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
         const schedtime = campaignd.schedule.scheduletime;
         const name = campaignd.name;
         const campaignrecipients = campaignd.emailrecipients;
-        const body = campaignd.emailbody;
+        const campaignbody = campaignd.emailbody;
         const subject = campaignd.emailsubject;
-        const emailaddress = campaignd.emailaddress;
+        const draftId = campaignd.emailId;
+        const useremail = campaignd.emailaddress;
         const redlinktext = campaignd.redlinktext;
         const redlinkurl = campaignd.redlinkurl;
+        const delivertorecipients = campaignd.recipientsdeliveredto;
+        const deliveredtorecipientscount = campaignd.recipientsdeliveredtocount;
+        const remainingrecipients = campaignd.remainingrecipients;
+        const remainingrecipientscount = campaignd.remainingrecipientscount;
+        const recipientscount = campaignd.recipientscount;
 
-        let recipients_ = campaignrecipients;
-        let recipientLista = recipients_.split(',');
-        const uniqueSet = new Set(recipientLista);
-        // Convert the Set back to an array
-        const recipientLists = [...uniqueSet];
-        console.log('mail recipients',recipientLists)
+        let startcount;
+        let recipientLists;
+        if((remainingrecipientscount > 0)) {
+          if((mailsperday >= remainingrecipientscount)) {
+            startcount = 0;
+            let remrecipients_ = remainingrecipients;
+            let remrecipientLista = remrecipients_.split(',');
+            const remuniqueSet = new Set(remrecipientLista);
+            // Convert the Set back to an array
+            recipientLists = [...remuniqueSet];
+          }else {
+            let remrecptstosendmailto = remainingrecipientscount - mailsperday;
+            let remrecipients_ = remainingrecipients;
+            let remrecipientLista = remrecipients_.split(',');
+            const remuniqueSet = new Set(remrecipientLista);
+            // Convert the Set back to an array
+            recipientLists = [...remuniqueSet];
+          }
+          
+        }else if((mailsperday > recipientscount) && (remainingrecipientscount == 0)) {
+          let recipients_ = campaignrecipients;
+          let recipientLista = recipients_.split(',');
+          const uniqueSet = new Set(recipientLista);
+          // Convert the Set back to an array
+          recipientLists = [...uniqueSet];
+        }else if((mailsperday < recipientscount) && (remainingrecipientscount > 0)) {
+          let recipients_ = campaignrecipients;
+          let recipientLista = recipients_.split(',');
+          const uniqueSet = new Set(recipientLista);
+          // Convert the Set back to an array
+          recipientLists = [...uniqueSet];
+        }else if((mailsperday < recipientscount) && (remainingrecipientscount == 0)) {
 
-        let senttorecptscount;
-            
-        if((recipientLists.length - mailsperday) <= 0) {
-          senttorecptscount = recipientLists.length;
-        }else {
-          senttorecptscount = mailsperday;
-        }
-
-        for (let sr = 0; sr < senttorecptscount; sr++) {
-            senttorecipients.push(recipientLists[sr]);
         }
 
         if(schedtime == "Now") {
@@ -628,7 +660,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
 
         function startnxtrunmailSending() {
           console.log('start mail sending ran')
-          let currentIndex = 0;
+          let currentIndex = startcount;
 
           if(delay_ === "1") {
             
@@ -636,7 +668,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
                 // Check if there are more elements to process
                 if (currentIndex < senttorecptscount) {
                   const recipient = recipientLists[currentIndex];
-                  sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailspday,gmail,campaignrecipients,draftId,recipient,campaignbody, subj,accesstoken, refreshtoken, useremail, userappkey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                  sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                   // Increment the index for the next iteration
                   currentIndex++;
                 } else {
@@ -653,7 +685,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
               // Check if there are more elements to process
               if (currentIndex < senttorecptscount) {
                 const recipient = recipientLists[currentIndex];
-                sendnxtrunmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
                 currentIndex++;
               } else {
@@ -670,7 +702,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
               // Check if there are more elements to process
               if (currentIndex < senttorecptscount) {
                 const recipient = recipientLists[currentIndex];
-                sendnxtrunmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
                 currentIndex++;
               } else {
@@ -687,7 +719,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
               // Check if there are more elements to process
               if (currentIndex < senttorecptscount) {
                 const recipient = recipientLists[currentIndex];
-                sendnxtrunmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
                 currentIndex++;
               } else {
@@ -796,13 +828,6 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
     campaigndet.nextRun = moment().add(1,'day');
     await campaigndet.save();
 
-    console.log('recpts count',recptscount_);
-    console.log('recpts count',recptsdeliveredtocount);
-
-    if(recptsdeliveredtocount >= mailspday ) {
-      console.log('daily limit exceeded')
-    }else if((recptsdeliveredtocount < mailspday) && (recptsdeliveredtocount <= recptscount_)) {
-
       let skipwknds;
       if(skipweekends == true) {
         skipwknds = 1-5;
@@ -851,7 +876,7 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
             if (error) {
               console.error(error);
             } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+              updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
             }
           });
         },true,timezone);
@@ -861,12 +886,10 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
         if (error) {
           console.error(error);
         } else {
-          updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
         }
       });
-
-      
-    }
+    
   }
     
 }
@@ -990,10 +1013,11 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignrecipients, gmail, email, subject, to, body,campaignId_) {
+async function updateEmailCampaignId(name,gmail, email, subject, to, body,campaignId_) {
 
   try{
     // Retrieve the email threads in the user's mailbox
+    
     let query = subject; 
     const response = await gmail.users.messages.list({
       userId: 'me',
@@ -1005,29 +1029,71 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
     if (messages[0]) {
       const messageId = messages[0].id;
       const threadId = messages[0].threadId;
-      // Function to get the labelId by label name.
-      let rmrecipients = [];
-      const emailrecipts = campaignrecipients.split(',');
-      const reciptscount_ = emailrecipts.length;
-      let rmrecipientscount;
-      let deliveredto;
-      if((reciptscount_ - mailsperday) > 0) {
-        rmrecipientscount = reciptscount_ - mailsperday;
-        deliveredto = mailsperday;
-        for(let rr = mailsperday; rr <= emailrecipts.length; rr++) {
-          rmrecipients.push(emailrecipts[rr]);
-        }
-      }else {
-        rmrecipientscount = 0;
-        deliveredto = reciptscount_; 
-      }
 
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
+
       if (campaign) {
+
+        let rmrecipientscount = campaign.remainingrecipientscount;
+        let rmrecipients = campaign.remainingrecipients;
+        let deliveredto = campaign.recipientsdeliveredto;
+        let deliveredtocount = campaign.recipientsdeliveredtocount;
+        let mailsperday = campaign.schedule.speed.mailsPerDay;
+        let campaignrecipients = campaign.emailrecipients;
+        let campaignrecipientscount = campaign.recipientscount;
+        const recipient = to;
+
+        let rmrecipientsarray = rmrecipients.split(',');
+        let campaignrecipientsarray = campaignrecipients.split(',');
+        let recipientsdeliveredtoarray = deliveredto.split(',');
+
+        console.log('rm receipts array',rmrecipientsarray,'campaignrecpts array',campaignrecipientsarray,' receipts delivered to array',recipientsdeliveredtoarray)
+        let noofrecptstosendto;
+        let indexofrecpt;
+        if(deliveredtocount < campaignrecipientscount) {
+          if((mailsperday > campaignrecipientscount)) {
+            noofrecptstosendto = campaignrecipientscount;
+            rmrecipientscount = 0;
+            deliveredtocount = campaignrecipientscount;
+            for(let rr = 0; rr < noofrecptstosendto; rr++) {
+              indexofrecpt = campaignrecipientsarray.indexOf(recipient);
+              rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,1);
+              recipientsdeliveredtoarray.push(recipient);
+            }
+          }else {
+            noofrecptstosendto = campaignrecipientscount - mailsperday;
+            rmrecipientscount = campaignrecipientscount - deliveredto;
+            for(let rr = 0; rr < noofrecptstosendto; rr++) {
+              indexofrecpt = campaignrecipientsarray.indexOf(recipient);
+              rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,1);
+              recipientsdeliveredtoarray.push(recipient);
+            }
+          }
+        }else {
+          // check if mail per day > campaignrecipientscount
+          // if(mailsperday > campaignrecipientscount) {
+          //   rmrecipientscount = reciptscount_ - mailsperday;
+          //   deliveredto = mailsperday;
+          //   for(let rr = mailsperday; rr < emailrecipts.length; rr++) {
+          //     rmrecipientsarray.push(emailrecipts[rr]);
+          //   }
+          //   // check if mails per day > remainingrecipientscount
+          //   if(mailsperday < rmrecipientscount) {
+          //     rmrecipientscount = reciptscount_ - mailsperday;
+          //     deliveredto = mailsperday;
+          //     for(let rr = mailsperday; rr < emailrecipts.length; rr++) {
+          //       rmrecipientsarray.push(emailrecipts[rr]);
+          //     }
+          //   }
+          // }else {
+          //   rmrecipientscount = 0;
+          //   deliveredto = reciptscount_; 
+          // }
+        }
+        
         campaign.emailId = messageId;
         campaign.threadId = threadId; 
-        campaign.recipientscount = reciptscount_;
-        campaign.recipientsdeliveredto = senttorecipients.toString();
+        campaign.recipientsdeliveredto = recipientsdeliveredtoarray.toString();
         campaign.recipientsdeliveredtocount = deliveredto;
         campaign.remainingrecipientscount = rmrecipientscount;
         campaign.remainingrecipients = rmrecipients.toString();
@@ -1037,14 +1103,14 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
 
           const getautofollowup = await campaignSchema.aggregate([ 
             {$match: {'campaignId':campaignId_}},
-            { $project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt" }},
+            { $project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt","timezone":"$timezone" }},
             {$sort: {"emailsubject": -1}},
             {$limit: 1}
           ])
   
           const getschedule = await campaignSchema.aggregate([ 
             {$match: {'campaignId':campaignId_}},
-            { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt" }},
+            { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt","timezone":"$timezone" }},
             {$sort: {"emailsubject": -1}},
             {$limit: 1}
           ])
@@ -1053,6 +1119,7 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
           let _id = getautofollowup[0].userId;
           let mailtsentdate  = getautofollowup[0].created;
           let tracking_  = getautofollowup[0].tracking;
+          let autofollowptimezone = getautofollowup[0].timezone;
   
           const newautofollowUp = await autofollowSchema.create({
             userId: _id,
@@ -1066,6 +1133,7 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
             emailrecipients: campaignrecipients,
             emailrecipient: to,
             mailsentDate: mailtsentdate,
+            timezone: autofollowptimezone,
             tracking: tracking_,
             autofollowup: getautofollowup_
           })
@@ -1074,6 +1142,8 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
           let _id_ = getschedule[0].userId;
           let scheduletracking_ = getschedule[0].tracking;
           let mailtsentdate_  = getschedule[0].created;
+          let schedtimezone = getschedule[0].timezone;
+          
           const newSchedule = await scheduleSchema.create({
             userId: _id_,
             scheduleId: schedule_Id,
@@ -1087,6 +1157,7 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
             emailrecipients: campaignrecipients,
             emailrecipient: to,
             mailsentDate: mailtsentdate_,
+            timezone: schedtimezone,
             tracking: scheduletracking_,
             schedule: getschedule_
           })
@@ -1099,51 +1170,6 @@ async function updateEmailCampaignId(name,senttorecipients,mailsperday,campaignr
       } else {
         res.status(404);
         throw new Error("User Not Found");
-      }
-
-      async function getLabelIdByName(gmail,labelName) {
-        
-        try {
-          const response = await gmail.users.labels.list({
-            userId: 'me',
-          });
-          
-          const labels = response.data.labels;
-          const label = labels.find((l) => l.name === labelName);
-
-          if (label) {
-            return label.id;
-          } else {
-            throw new Error(`Label "${labelName}" not found.`);
-          }
-        } catch (err) {
-          throw new Error('Error listing labels:', err);
-        }
-      }
-
-      const labelId = await getLabelIdByName(gmail,"Outreach Sent");
-      if(labelId) {
-        addEmailToLabel(labelId, messageId,email);
-      }
-      // Function to add an email to a label.
-      function addEmailToLabel(labelId, messageId,from) {
-        // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
-
-        gmail.users.messages.modify({
-          userId: 'me',
-          id: emailId,
-          resource: {
-            addLabelIds: [labelId],
-          },
-        }, (err, response) => {
-          if (err) {
-            console.error('Error adding email to label:', err);
-          } else {
-            console.log('Email added to label:');
-            firstsentreport_(from)
-          }
-        });
       }
 
     } else {
