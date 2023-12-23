@@ -15,6 +15,7 @@ const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 const v4 = require("uuid");
 const { get, repeat } = require("lodash");
+
 const campagn_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;
@@ -46,6 +47,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const autofoltime3 = req.body.followupreply3time;
       const autofollowuptime3 = moment().add({days:autofolinterval3,seconds: autofoltime3});
       
+      process.env.TZ = req.body.timezone;
+
       const name = req.body.name;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
@@ -312,7 +315,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     // Check if there are more elements to process
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
-                      sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                      sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       // Increment the index for the next iteration
                       currentIndex++;
                     } else {
@@ -320,7 +323,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                       clearInterval(intervalId);
                       callNextRun(campaignId_,gmail,req.body.accessToken,req.body.refreshToken,req.body.userAppKey);
                       console.log('next run ran first')
-                      console.log("Finished processing all items.");
+                      console.log("Finished processing delay 1 recpts.");
                     }
                   }
                   sendToEachRecipient(); // Run it once immediately
@@ -331,7 +334,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -348,7 +351,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -365,7 +368,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   // Check if there are more elements to process
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
-                    sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -633,7 +636,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
                 // Check if there are more elements to process
                 if (currentIndex < senttorecptscount) {
                   const recipient = recipientLists[currentIndex];
-                  sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailspday,gmail,campaignrecipients,draftId,recipient,campaignbody, subj,accesstoken, refreshtoken, useremail, userappkey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                  sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailspday,gmail,campaignrecipients,draftId,recipient,campaignbody, subj,accesstoken, refreshtoken, useremail, userappkey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                   // Increment the index for the next iteration
                   currentIndex++;
                 } else {
@@ -706,7 +709,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
   })
 }
 
-async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -851,7 +854,7 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
               updateEmailCampaignId(mailOptions.name,mailOptions.senttorecipients,mailOptions.mailsperday,mailOptions.campaignrecipients,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
             }
           });
-        });
+        },true,timezone);
       }
       // Delivering mail with sendMail method
       transporter.sendMail(mailOptions, (error) => {
