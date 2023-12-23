@@ -38,19 +38,24 @@ const campaignSchema = new mongoose.Schema({
     required: true
   },
   recipientscount: {
-    type: Number
+    type: Number,
+    default: 0
   },
   recipientsdeliveredto: {
-    type: String
+    type: String,
+    default: ""
   },
   recipientsdeliveredtocount: {
-    type: Number
+    type: Number,
+    default: 0
   },
   remainingrecipients: {
-    type: String
+    type: String,
+    default: ""
   },
   remainingrecipientscount: {
-    type: Number
+    type: Number,
+    default: 0
   },
   createdAt:{
     type:Date,
