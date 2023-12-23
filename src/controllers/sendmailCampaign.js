@@ -316,6 +316,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     } else {
                       // If all elements have been processed, stop the interval
                       clearInterval(intervalId);
+                      callNextRun(campaignId_,gmail,req.body.accessToken,req.body.refreshToken,req.body.userAppKey);
+                      console.log('next run ran first')
                       console.log("Finished processing all items.");
                     }
                   }
@@ -653,7 +655,6 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
 
     const recptsdeliveredtocount = campaigndet.recipientsdeliveredtocount;
     const mailspday = campaigndet.schedule.speed.mailsPerDay;
-    console.log('mails per day',mailspday)
     campaigndet.nextRun = moment().add(1,'day');
     await campaigndet.save();
 
@@ -663,8 +664,6 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     if(recptsdeliveredtocount >= mailspday ) {
       console.log('daily limit exceeded')
     }else if((recptsdeliveredtocount < mailspday) && (recptsdeliveredtocount <= recptscount_)) {
-      console.log('daily limit not exceeded')
-      console.log('skip weekends',skipweekends)
 
       let skipwknds;
       if(skipweekends == true) {
@@ -674,7 +673,7 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
         skipwknds = '*';
       }
       if(repeatinterval != "") {
-        console.log('repeat interval occurred ran')
+        
         let cronexpression;
         if(repeatinterval == "h") {
           cronexpression = `*/10 * * * ${skipwknds}`;
@@ -729,9 +728,6 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
       });
 
       
-    }else if((recptsdeliveredtocount < mailspday) && (recptsdeliveredtocount >= recptscount_)){
-      callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey);
-      console.log('next run ran first')
     }
   }
   
