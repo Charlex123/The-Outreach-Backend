@@ -311,8 +311,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
                     if (currentIndex < senttorecptscount) {
                       const recipient = recipientLists[currentIndex];
                       sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                      console.log(`recipient sent to: ${recipient}`);
-                      
                       // Increment the index for the next iteration
                       currentIndex++;
                     } else {
@@ -330,8 +328,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                    console.log(`recipient sent to: ${recipient}`);
-                    
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -349,8 +345,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                    console.log(`recipient sent to: ${recipient}`);
-                    
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -368,8 +362,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   if (currentIndex < senttorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                    console.log(`recipient sent to: ${recipient}`);
-                    
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -664,11 +656,13 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     console.log('mails per day',mailspday)
     campaigndet.nextRun = moment().add(1,'day');
     await campaigndet.save();
-    if(recptsdeliveredtocount == mailspday ) {
+
+    console.log('recpts count',recptscount_);
+    console.log('recpts count',recptsdeliveredtocount);
+
+    if(recptsdeliveredtocount >= mailspday ) {
       console.log('daily limit exceeded')
-    }else if(recptsdeliveredtocount >= recptscount_) {
-      callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey);
-    }else {
+    }else if((recptsdeliveredtocount < mailspday) && (recptsdeliveredtocount <= recptscount_)) {
       console.log('daily limit not exceeded')
       
       let skipwkends = '*';
@@ -732,6 +726,10 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
         }
       });
 
+      
+    }else if((recptsdeliveredtocount < mailspday) && (recptsdeliveredtocount >= recptscount_)){
+      callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey);
+      console.log('next run ran first')
     }
   }
   
