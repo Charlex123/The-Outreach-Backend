@@ -55,6 +55,9 @@ const autofollowupSchema = new mongoose.Schema({
   mailsentDate:{
     type:Date
   },
+  timezone: {
+    type: String
+  },
   createdAt:{
     type:Date,
     default:Date.now()
