@@ -665,9 +665,10 @@ async function sendmailCamp(skipweekends,repeatinterval,repeattimes,name,senttor
     }else if((recptsdeliveredtocount < mailspday) && (recptsdeliveredtocount <= recptscount_)) {
       console.log('daily limit not exceeded')
       
-      let skipwkends = '*';
       if(skipweekends == true) {
-        skipwkends = 1-5;
+        let skipwkends = 1-5;
+      }else {
+        let skipwkends = '*';
       }
 
       if(repeatinterval != "") {
