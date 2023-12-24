@@ -872,7 +872,7 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
               updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
             }
           });
-        },true,timezone);
+        });
       }
       // Delivering mail with sendMail method
       transporter.sendMail(mailOptions, (error) => {
