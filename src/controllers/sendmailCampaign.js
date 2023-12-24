@@ -1031,9 +1031,9 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         const recipient = to;
 
 
-        let rmrecipientsarray = rmrecipients.split(',');
+        let rmrecipientsarray = [];
         let campaignrecipientsarray = campaignrecipients.split(',');
-        let recipientsdeliveredtoarray = [];
+        let recipientsdeliveredtoarray = rmrecipients.split(',');
         console.log('recip here', recipient)
         console.log('rm receipts array',rmrecipientsarray,'campaignrecpts array',campaignrecipientsarray,' receipts delivered to array',recipientsdeliveredtoarray)
         let noofrecptstosendto;
@@ -1044,8 +1044,8 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           noofrecptstosendto = campaignrecipientscount;
           if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
-            indexofrecpt = campaignrecipientsarray.indexOf(recipient);
-            campaignrecipientsarray.splice(indexofrecpt, 1);
+            // indexofrecpt = campaignrecipientsarray.indexOf(recipient);
+            // campaignrecipientsarray.splice(indexofrecpt, 1);
             console.log('recipientsdeliveredtoarray count',recipientsdeliveredtoarray.length)
             console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
             console.log('new array & rem recpts array count',campaignrecipientsarray.length);
