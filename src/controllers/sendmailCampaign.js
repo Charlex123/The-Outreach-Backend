@@ -1045,14 +1045,24 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             deliveredtocount++;
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
 
-            if(rmrecipientsarray.length > 0) {
+            if(rmrecipientsarray.length > 1) {
               console.log('rm recpts array set',rmrecipientsarray.length)
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
+              recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter(Boolean);
+              console.log('new array--',campaignrecipientsarray)
+              console.log('decrement cam recpt',campaignrecipientsarray.shift())
+              console.log('new array-- after decrement',campaignrecipientsarray)
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               console.log('rm recpts not ran yet')
+              recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter(Boolean);
+              console.log('new array--',campaignrecipientsarray)
+              console.log('decrement cam recpt',campaignrecipientsarray.shift())
+              console.log('new array-- after decrement',campaignrecipientsarray)
             }
             // indexofrecpt = campaignrecipientsarray.indexOf(recipient);
             // campaignrecipientsarray.splice(indexofrecpt, 1);
@@ -1060,12 +1070,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             // console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
             // console.log('new array & rem recpts array count',campaignrecipientsarray.length);
             
-            console.log('recip to add here', recipient)
-            recipientsdeliveredtoarray.push(recipient);
-            recipientsdeliveredtoarray.filter(Boolean);
-            console.log('new array--',campaignrecipientsarray)
-            console.log('decrement cam recpt',campaignrecipientsarray.shift())
-            console.log('new array-- after decrement',campaignrecipientsarray)
+            
             
           }
           
@@ -1074,18 +1079,24 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           
           if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
-            if(deliveredtocount > 0) {
-              newArray = rmrecipientsarray;
-            }else {
-              newArray = campaignrecipientsarray;
-            }
-            indexofrecpt = newArray.indexOf(recipient);
-            newArray.splice(indexofrecpt, 1);
-            rmrecipientsarray = newArray;
-            console.log('new array & rem recpts array count',newArray.length)
-            rmrecipientscount = campaignrecipientscount - deliveredtocount;
-            if(recipient != "" && recipient != null && recipient != undefined) {
+            if(rmrecipientsarray.length > 1) {
+              console.log('rm recpts array set',rmrecipientsarray.length)
+              rmrecipientsarray.splice(indexofrecpt, 1)
+              rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter(Boolean);
+              console.log('new array--',campaignrecipientsarray)
+              console.log('decrement cam recpt',campaignrecipientsarray.shift())
+              console.log('new array-- after decrement',campaignrecipientsarray)
+            }else {
+              campaignrecipientsarray.splice(indexofrecpt, 1)
+              rmrecipientsarray = campaignrecipientsarray;
+              console.log('rm recpts not ran yet')
+              recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter(Boolean);
+              console.log('new array--',campaignrecipientsarray)
+              console.log('decrement cam recpt',campaignrecipientsarray.shift())
+              console.log('new array-- after decrement',campaignrecipientsarray)
             }
           }
         }
