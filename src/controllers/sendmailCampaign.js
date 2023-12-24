@@ -1030,7 +1030,6 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         let campaignrecipientscount = campaign.recipientscount;
         const recipient = to;
 
-
         let rmrecipientsarray = rmrecipients.split(',');
         let campaignrecipientsarray = campaignrecipients.split(',');
         let recipientsdeliveredtoarray = deliveredto.split(',');
