@@ -813,11 +813,6 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
   const campaigndet = await campaignSchema.findOne({'campaignId':campaignId_});
   if (campaigndet) {
 
-    const emailrecpts = campaignrecipients.split(',');
-    const recptscount_ = emailrecpts.length;
-
-    const recptsdeliveredtocount = campaigndet.recipientsdeliveredtocount;
-    const mailspday = campaigndet.schedule.speed.mailsPerDay;
     campaigndet.nextRun = moment().add(1,'day');
     await campaigndet.save();
 
@@ -1048,19 +1043,16 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
 
         if((mailsperday > campaignrecipientscount)) {
           noofrecptstosendto = campaignrecipientscount;
-          if(deliveredtocount < noofrecptstosendto) {
+          if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
-            if(deliveredtocount > 0) {
-              newArray = rmrecipientsarray;
-            }else {
-              newArray = campaignrecipientsarray;
-            }
-            indexofrecpt = newArray.indexOf(recipient);
-            newArray.splice(indexofrecpt, 1);
-            rmrecipientsarray = newArray;
-            console.log('new array & rem recpts array count',newArray.length);
+            indexofrecpt = campaignrecipientsarray.indexOf(recipient);
+            campaignrecipientsarray.splice(indexofrecpt, 1);
+            rmrecipientsarray = campaignrecipientsarray;
+            console.log('new array--',campaignrecipientsarray)
+            console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
+            console.log('new array & rem recpts array count',campaignrecipientsarray.length);
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
-            if(recipient != "" && recipient != null && recipient != undefined) {
+            if(recipient != "" && recipient != null && recipient != undefined && recipientsdeliveredtoarray.length > 0) {
               recipientsdeliveredtoarray.push(recipient);
             }
           }
@@ -1068,7 +1060,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         }else {
           noofrecptstosendto = campaignrecipientscount - mailsperday;
           
-          if(deliveredtocount < noofrecptstosendto) {
+          if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
             if(deliveredtocount > 0) {
               newArray = rmrecipientsarray;
