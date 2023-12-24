@@ -1049,6 +1049,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             campaignrecipientsarray.splice(indexofrecpt, 1);
             rmrecipientsarray = campaignrecipientsarray;
             console.log('new array--',campaignrecipientsarray)
+            console.log('decrement cam recpt',campaignrecipients.length --)
             console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
             console.log('new array & rem recpts array count',campaignrecipientsarray.length);
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
