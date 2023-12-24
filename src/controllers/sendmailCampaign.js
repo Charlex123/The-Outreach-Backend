@@ -1050,15 +1050,10 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           noofrecptstosendto = campaignrecipientscount;
           if(deliveredtocount < noofrecptstosendto) {
             deliveredtocount++;
-            if(rmrecipientscount > 0) {
-              newArray = [...rmrecipientsarray];
-            }else {
-              newArray = [...campaignrecipientsarray];
-            }
             
             indexofrecpt = campaignrecipientsarray.indexOf(recipient);
             newArray.splice(indexofrecpt, 1);
-            rmrecipientsarray = newArray;
+            rmrecipientsarray = campaignrecipientsarray.shift;
             rmrecipientscount = campaignrecipientscount--;
             if(recipient != "" && recipient != null && recipient != undefined) {
               recipientsdeliveredtoarray.push(recipient);
@@ -1071,15 +1066,10 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           
           if(deliveredtocount < noofrecptstosendto) {
             deliveredtocount++;
-            if(rmrecipientscount > 0) {
-              newArray = [...rmrecipientsarray];
-            }else {
-              newArray = [...campaignrecipientsarray];
-            }
 
             indexofrecpt = campaignrecipientsarray.indexOf(recipient);
             newArray.splice(indexofrecpt, 1);
-            rmrecipientsarray = newArray;
+            rmrecipientsarray = campaignrecipientsarray.shift;
             rmrecipientscount = campaignrecipientscount--;
             if(recipient != "" && recipient != null && recipient != undefined) {
               recipientsdeliveredtoarray.push(recipient);
