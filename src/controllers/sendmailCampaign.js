@@ -1081,7 +1081,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         campaign.recipientsdeliveredto = recipientsdeliveredtoarray.toString();
         campaign.recipientsdeliveredtocount = deliveredtocount;
         campaign.remainingrecipientscount = rmrecipientscount;
-        campaign.remainingrecipients = rmrecipients.toString();
+        campaign.remainingrecipients = rmrecipientsarray.toString();
           
         const updatedCampgn = await campaign.save();
         if(updatedCampgn) {
