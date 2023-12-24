@@ -1202,7 +1202,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             console.error('Error adding email to label:', err);
           } else {
             console.log('Email added to label:');
-            firstsentreport_(from)
+            firstsentreport_(email)
           }
         });
       }
