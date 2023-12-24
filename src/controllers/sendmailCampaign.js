@@ -1050,13 +1050,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
             console.log('new array & rem recpts array count',campaignrecipientsarray.length);
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
-            if(recipient != "" && recipient != null && recipient != undefined) {
-              recipientsdeliveredtoarray.push(recipient);
-              console.log('new array--',campaignrecipientsarray)
-              console.log('decrement cam recpt',campaignrecipientsarray.length --)
-              console.log('new array-- after decrement',campaignrecipientsarray)
-              rmrecipientsarray = campaignrecipientsarray;
-            }
+            
+            recipientsdeliveredtoarray.push(recipient);
+            recipientsdeliveredtoarray.filter(Boolean);
+            console.log('new array--',campaignrecipientsarray)
+            console.log('decrement cam recpt',campaignrecipientsarray.length --)
+            console.log('new array-- after decrement',campaignrecipientsarray)
+            rmrecipientsarray = campaignrecipientsarray;
           }
           
         }else {
