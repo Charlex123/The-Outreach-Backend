@@ -1043,19 +1043,30 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           noofrecptstosendto = campaignrecipientscount;
           if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
+            rmrecipientscount = campaignrecipientscount - deliveredtocount;
+
+            if(rmrecipientsarray.length > 0) {
+              console.log('rm recpts array set')
+              rmrecipientsarray.splice(indexofrecpt, 1)
+              rmrecipientsarray = rmrecipientsarray;
+            }else {
+              campaignrecipientsarray.splice(indexofrecpt, 1)
+              rmrecipientsarray = campaignrecipientsarray;
+              console.log('rm recpts not ran yet')
+            }
             // indexofrecpt = campaignrecipientsarray.indexOf(recipient);
             // campaignrecipientsarray.splice(indexofrecpt, 1);
             // console.log('recipientsdeliveredtoarray count',recipientsdeliveredtoarray.length)
             // console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
             // console.log('new array & rem recpts array count',campaignrecipientsarray.length);
-            rmrecipientscount = campaignrecipientscount - deliveredtocount;
+            
             console.log('recip to add here', recipient)
             recipientsdeliveredtoarray.push(recipient);
             recipientsdeliveredtoarray.filter(Boolean);
             console.log('new array--',campaignrecipientsarray)
-            console.log('decrement cam recpt',campaignrecipientsarray.length --)
+            console.log('decrement cam recpt',campaignrecipientsarray.shift())
             console.log('new array-- after decrement',campaignrecipientsarray)
-            rmrecipientsarray = campaignrecipientsarray;
+            
           }
           
         }else {
