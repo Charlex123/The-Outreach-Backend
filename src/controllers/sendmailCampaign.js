@@ -1046,7 +1046,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
 
             if(rmrecipientsarray.length > 0) {
-              console.log('rm recpts array set')
+              console.log('rm recpts array set',rmrecipientsarray.length)
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
             }else {
