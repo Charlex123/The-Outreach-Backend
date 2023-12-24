@@ -1168,6 +1168,52 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         throw new Error("User Not Found");
       }
 
+      // Function to get the labelId by label name.
+      async function getLabelIdByName(gmail,labelName) {
+  
+        try {
+          const response = await gmail.users.labels.list({
+            userId: 'me',
+          });
+          
+          const labels = response.data.labels;
+          const label = labels.find((l) => l.name === labelName);
+
+          if (label) {
+            return label.id;
+          } else {
+            throw new Error(`Label "${labelName}" not found.`);
+          }
+        } catch (err) {
+          throw new Error('Error listing labels:', err);
+        }
+      }
+
+      const labelId = await getLabelIdByName(gmail,"Outreach Sent");
+      if(labelId) {
+        addEmailToLabel(labelId, messageId,from);
+      }
+      // Function to add an email to a label.
+      function addEmailToLabel(labelId, messageId,from) {
+        // Specify the email ID and label you want to add the email to.
+        const emailId = messageId;
+
+        gmail.users.messages.modify({
+          userId: 'me',
+          id: emailId,
+          resource: {
+            addLabelIds: [labelId],
+          },
+        }, (err, response) => {
+          if (err) {
+            console.error('Error adding email to label:', err);
+          } else {
+            console.log('Email added to label:');
+            firstsentreport_(from)
+          }
+        });
+      }
+      
     } else {
       console.log('No messages found.');
     }
