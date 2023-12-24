@@ -1034,7 +1034,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
 
         let rmrecipientsarray = rmrecipients.split(',');
         let campaignrecipientsarray = campaignrecipients.split(',');
-        let recipientsdeliveredtoarray = deliveredto.split(',');
+        let recipientsdeliveredtoarray = [];
         console.log('recip here', recipient)
         console.log('rm receipts array',rmrecipientsarray,'campaignrecpts array',campaignrecipientsarray,' receipts delivered to array',recipientsdeliveredtoarray)
         let noofrecptstosendto;
@@ -1054,7 +1054,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             if(recipient != "" && recipient != null && recipient != undefined && recipientsdeliveredtoarray.length > 0) {
               recipientsdeliveredtoarray.push(recipient);
               console.log('new array--',campaignrecipientsarray)
-              console.log('decrement cam recpt',campaignrecipients.length --)
+              console.log('decrement cam recpt',campaignrecipientsarray.length --)
               rmrecipientsarray = campaignrecipientsarray;
             }
           }
