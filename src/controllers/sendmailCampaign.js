@@ -1050,10 +1050,16 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           noofrecptstosendto = campaignrecipientscount;
           if(deliveredtocount < noofrecptstosendto) {
             deliveredtocount++;
-            indexofrecpt = campaignrecipientsarray.indexOf(recipient);
-            campaignrecipientsarray.splice(indexofrecpt, 1);
-            rmrecipientsarray = campaignrecipientsarray.shift();
-            rmrecipientscount = campaignrecipientscount--;
+            if(deliveredtocount > 0) {
+              newArray = rmrecipientsarray;
+            }else {
+              newArray = campaignrecipientsarray;
+            }
+            indexofrecpt = newArray.indexOf(recipient);
+            newArray.splice(indexofrecpt, 1);
+            rmrecipientsarray = newArray;
+            console.log('new array & rem recpts array count',newArray.length);
+            rmrecipientscount = campaignrecipientscount - deliveredtocount;
             if(recipient != "" && recipient != null && recipient != undefined) {
               recipientsdeliveredtoarray.push(recipient);
             }
@@ -1061,14 +1067,19 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           
         }else {
           noofrecptstosendto = campaignrecipientscount - mailsperday;
-          rmrecipientscount = campaignrecipientscount - deliveredto;
           
           if(deliveredtocount < noofrecptstosendto) {
             deliveredtocount++;
-            indexofrecpt = campaignrecipientsarray.indexOf(recipient);
-            campaignrecipientsarray.splice(indexofrecpt, 1);
-            rmrecipientsarray = campaignrecipientsarray.shift();
-            rmrecipientscount = campaignrecipientscount--;
+            if(deliveredtocount > 0) {
+              newArray = rmrecipientsarray;
+            }else {
+              newArray = campaignrecipientsarray;
+            }
+            indexofrecpt = newArray.indexOf(recipient);
+            newArray.splice(indexofrecpt, 1);
+            rmrecipientsarray = newArray;
+            console.log('new array & rem recpts array count',newArray.length)
+            rmrecipientscount = campaignrecipientscount - deliveredtocount;
             if(recipient != "" && recipient != null && recipient != undefined) {
               recipientsdeliveredtoarray.push(recipient);
             }
