@@ -1055,7 +1055,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             rmrecipientsarray = newArray.splice(indexofrecpt, 1);;
             rmrecipientscount = rmrecipientsarray.length;
             if(recipient != "" && recipient != null && recipient != undefined) {
-              recipientsdeliveredtoarray.push(recipient).filter(function () { return true });
+              recipientsdeliveredtoarray.push(recipient);
             }
           }
           
@@ -1070,7 +1070,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             rmrecipientsarray = newArray.splice(indexofrecpt, 1);;
             rmrecipientscount = rmrecipientsarray.length;
             if(recipient != "" && recipient != null && recipient != undefined) {
-              recipientsdeliveredtoarray.push(recipient).filter(function () { return true });
+              recipientsdeliveredtoarray.push(recipient);
             }
           }
         }
