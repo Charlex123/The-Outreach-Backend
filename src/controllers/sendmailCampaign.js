@@ -1033,7 +1033,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
 
         let rmrecipientsarray = rmrecipients.split(',');
         let campaignrecipientsarray = campaignrecipients.split(',');
-        let recipientsdeliveredtoarray = rmrecipients.split(',');
+        let recipientsdeliveredtoarray = deliveredto.split(',');
         console.log('rm receipts array',rmrecipientsarray,'campaignrecpts array',campaignrecipientsarray,' receipts delivered to array',recipientsdeliveredtoarray)
         let noofrecptstosendto;
         let indexofrecpt;
