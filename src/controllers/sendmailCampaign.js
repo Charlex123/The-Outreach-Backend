@@ -828,52 +828,52 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
         // skip weekeds false
         skipwknds = '*';
       }
-      if(repeatinterval != "") {
+      // if(repeatinterval != "") {
         
-        let cronexpression;
-        if(repeatinterval == "h") {
-          cronexpression = `*/10 * * * ${skipwknds}`;
-          console.log(' hourly interval ran',cronexpression)
-        }
-        else if(repeatinterval == "d") {
-          cronexpression = `0 12 */${repeattimes} * ${skipwknds}`;
-          console.log('daily interval ran', cronexpression)
-        }
-        else if(repeatinterval == "w") {
-          let wtimes;
-          if(repeattimes == 1) {
-            wtimes = "";
-          }
-          if(repeattimes == 2) {
-            wtimes = 14;
-          }
-          if(repeattimes == 3) {
-            wtimes = 21;
-          }
-          if(repeattimes == 4) {
-            wtimes = 28;
-          }
+      //   let cronexpression;
+      //   if(repeatinterval == "h") {
+      //     cronexpression = `*/10 * * * ${skipwknds}`;
+      //     console.log(' hourly interval ran',cronexpression)
+      //   }
+      //   else if(repeatinterval == "d") {
+      //     cronexpression = `0 12 */${repeattimes} * ${skipwknds}`;
+      //     console.log('daily interval ran', cronexpression)
+      //   }
+      //   else if(repeatinterval == "w") {
+      //     let wtimes;
+      //     if(repeattimes == 1) {
+      //       wtimes = "";
+      //     }
+      //     if(repeattimes == 2) {
+      //       wtimes = 14;
+      //     }
+      //     if(repeattimes == 3) {
+      //       wtimes = 21;
+      //     }
+      //     if(repeattimes == 4) {
+      //       wtimes = 28;
+      //     }
 
-          cronexpression = `0 12 */${wtimes} * ${skipwknds}`;
-          console.log('weekly interval ran',cronexpression)
-        }
-        else if(repeatinterval == "m") {
-          cronexpression = `0 12 * */${repeattimes} ${skipwknds}`;
-          console.log(' monthly interval ran',cronexpression)
-        }
-        console.log('cron expression',cronexpression)
-        cron.schedule(cronexpression, function () {
-          console.log('Running Cron Process',cronexpression);
-          // Delivering mail with sendMail method
-          transporter.sendMail(mailOptions, (error) => {
-            if (error) {
-              console.error(error);
-            } else {
-              updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-            }
-          });
-        });
-      }
+      //     cronexpression = `0 12 */${wtimes} * ${skipwknds}`;
+      //     console.log('weekly interval ran',cronexpression)
+      //   }
+      //   else if(repeatinterval == "m") {
+      //     cronexpression = `0 12 * */${repeattimes} ${skipwknds}`;
+      //     console.log(' monthly interval ran',cronexpression)
+      //   }
+      //   console.log('cron expression',cronexpression)
+      //   cron.schedule(cronexpression, function () {
+      //     console.log('Running Cron Process',cronexpression);
+      //     // Delivering mail with sendMail method
+      //     transporter.sendMail(mailOptions, (error) => {
+      //       if (error) {
+      //         console.error(error);
+      //       } else {
+      //         updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+      //       }
+      //     });
+      //   });
+      // }
       // Delivering mail with sendMail method
       transporter.sendMail(mailOptions, (error) => {
         if (error) {
@@ -1047,8 +1047,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         if(deliveredtocount < campaignrecipientscount) {
           if((mailsperday > campaignrecipientscount)) {
             noofrecptstosendto = campaignrecipientscount;
-            
-            for(let rr = deliveredtocount; rr < noofrecptstosendto; rr++) {
+            if(deliveredtocount < noofrecptstosendto) {
               deliveredtocount++;
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
               rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,indexofrecpt);
@@ -1056,12 +1055,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               if(recipient != "") {
                 recipientsdeliveredtoarray.push(recipient);
               }
-              
             }
+            
           }else {
             noofrecptstosendto = campaignrecipientscount - mailsperday;
             rmrecipientscount = campaignrecipientscount - deliveredto;
-            for(let rr = deliveredtocount; rr < noofrecptstosendto; rr++) {
+            
+            if(deliveredtocount < noofrecptstosendto) {
               deliveredtocount++;
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
               rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,indexofrecpt);
