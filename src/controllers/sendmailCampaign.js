@@ -1036,10 +1036,11 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         let campaignrecipientscount = campaign.recipientscount;
         const recipient = to;
 
+
         let rmrecipientsarray = rmrecipients.split(',');
         let campaignrecipientsarray = campaignrecipients.split(',');
         let recipientsdeliveredtoarray = deliveredto.split(',');
-
+        console.log('recip here', recipient)
         console.log('rm receipts array',rmrecipientsarray,'campaignrecpts array',campaignrecipientsarray,' receipts delivered to array',recipientsdeliveredtoarray)
         let noofrecptstosendto;
         let indexofrecpt;
@@ -1049,20 +1050,25 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             
             for(let rr = deliveredtocount; rr < noofrecptstosendto; rr++) {
               deliveredtocount++;
-              rmrecipientscount--;
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
-              rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,1);
-              recipientsdeliveredtoarray.push(recipient);
+              rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,indexofrecpt);
+              rmrecipientscount = rmrecipientsarray.length;
+              if(recipient != "") {
+                recipientsdeliveredtoarray.push(recipient);
+              }
+              
             }
           }else {
             noofrecptstosendto = campaignrecipientscount - mailsperday;
             rmrecipientscount = campaignrecipientscount - deliveredto;
             for(let rr = deliveredtocount; rr < noofrecptstosendto; rr++) {
               deliveredtocount++;
-              rmrecipientscount--;
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
-              rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,1);
-              recipientsdeliveredtoarray.push(recipient);
+              rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,indexofrecpt);
+              rmrecipientscount = rmrecipientsarray.length;
+              if(recipient != "") {
+                recipientsdeliveredtoarray.push(recipient);
+              }
             }
           }
         }
