@@ -14,7 +14,6 @@ const config = require('../config');
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 const v4 = require("uuid");
-const { get, repeat } = require("lodash");
 
 const campagn_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
@@ -1047,11 +1046,11 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             deliveredtocount++;
             indexofrecpt = campaignrecipientsarray.indexOf(recipient);
             campaignrecipientsarray.splice(indexofrecpt, 1);
-            
+            console.log('recipientsdeliveredtoarray count',recipientsdeliveredtoarray.length)
             console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
             console.log('new array & rem recpts array count',campaignrecipientsarray.length);
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
-            if(recipient != "" && recipient != null && recipient != undefined && recipientsdeliveredtoarray.length > 0) {
+            if(recipient != "" && recipient != null && recipient != undefined) {
               recipientsdeliveredtoarray.push(recipient);
               console.log('new array--',campaignrecipientsarray)
               console.log('decrement cam recpt',campaignrecipientsarray.length --)
