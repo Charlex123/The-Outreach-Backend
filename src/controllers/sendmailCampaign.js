@@ -1037,7 +1037,6 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         console.log('rm receipts array',rmrecipientsarray,'campaignrecpts array',campaignrecipientsarray,' receipts delivered to array',recipientsdeliveredtoarray)
         let noofrecptstosendto;
         let indexofrecpt;
-        let newArray;
 
         if((mailsperday > campaignrecipientscount)) {
           noofrecptstosendto = campaignrecipientscount;
@@ -1050,13 +1049,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter(Boolean);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               console.log('rm recpts not ran yet')
               recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter(Boolean);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }
             
           }
@@ -1071,13 +1070,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter(Boolean);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               console.log('rm recpts not ran yet')
               recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter(Boolean);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }
           }
         }
