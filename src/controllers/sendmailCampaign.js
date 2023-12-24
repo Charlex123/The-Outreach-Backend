@@ -1054,6 +1054,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               recipientsdeliveredtoarray.push(recipient);
               console.log('new array--',campaignrecipientsarray)
               console.log('decrement cam recpt',campaignrecipientsarray.length --)
+              console.log('new array-- after decrement',campaignrecipientsarray)
               rmrecipientsarray = campaignrecipientsarray;
             }
           }
