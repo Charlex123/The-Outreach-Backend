@@ -1051,26 +1051,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter(Boolean);
-              console.log('new array--',campaignrecipientsarray)
-              console.log('decrement cam recpt',campaignrecipientsarray.shift())
-              console.log('new array-- after decrement',campaignrecipientsarray)
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               console.log('rm recpts not ran yet')
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter(Boolean);
-              console.log('new array--',campaignrecipientsarray)
-              console.log('decrement cam recpt',campaignrecipientsarray.shift())
-              console.log('new array-- after decrement',campaignrecipientsarray)
             }
-            // indexofrecpt = campaignrecipientsarray.indexOf(recipient);
-            // campaignrecipientsarray.splice(indexofrecpt, 1);
-            // console.log('recipientsdeliveredtoarray count',recipientsdeliveredtoarray.length)
-            // console.log('new recipient to add--',campaignrecipientsarray.splice(indexofrecpt, 1))
-            // console.log('new array & rem recpts array count',campaignrecipientsarray.length);
-            
-            
             
           }
           
@@ -1085,18 +1072,12 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter(Boolean);
-              console.log('new array--',campaignrecipientsarray)
-              console.log('decrement cam recpt',campaignrecipientsarray.shift())
-              console.log('new array-- after decrement',campaignrecipientsarray)
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               console.log('rm recpts not ran yet')
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter(Boolean);
-              console.log('new array--',campaignrecipientsarray)
-              console.log('decrement cam recpt',campaignrecipientsarray.shift())
-              console.log('new array-- after decrement',campaignrecipientsarray)
             }
           }
         }
