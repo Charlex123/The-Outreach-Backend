@@ -1046,15 +1046,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             if(rmrecipientsarray.length > 1) {
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
-              let nrmrecptarray = rmrecipientsarray.push(recipient);
-              nrmrecptarray.filter((str) => str !== '');
-              recipientsdeliveredtoarray = nrmrecptarray;
+              recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
-              let nrmrecptarray = rmrecipientsarray.push(recipient);
-              nrmrecptarray.filter((str) => str !== '');
-              recipientsdeliveredtoarray = nrmrecptarray;
+              recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }
             
           }
@@ -1072,9 +1070,8 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
-              let nrmrecptarray = rmrecipientsarray.push(recipient);
-              nrmrecptarray.filter((str) => str !== '');
-              recipientsdeliveredtoarray = nrmrecptarray;
+              recipientsdeliveredtoarray.push(recipient);
+              recipientsdeliveredtoarray.filter((str) => str !== '');
             }
           }
         }
