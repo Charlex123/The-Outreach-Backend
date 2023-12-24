@@ -1190,7 +1190,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
 
       const labelId = await getLabelIdByName(gmail,"Outreach Sent");
       if(labelId) {
-        addEmailToLabel(labelId, messageId,from);
+        addEmailToLabel(labelId, messageId,email);
       }
       // Function to add an email to a label.
       function addEmailToLabel(labelId, messageId,email) {
