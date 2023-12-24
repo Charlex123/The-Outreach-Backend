@@ -282,15 +282,15 @@ const mailCampaign = asyncHandler(async (req, res) => {
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken);
             }
 
-            let senttorecptscount;
+            let sendtorecptscount;
             
             if((recipientLists.length - mailsperday) <= 0) {
-              senttorecptscount = recipientLists.length;
+              sendtorecptscount = recipientLists.length;
             }else {
-              senttorecptscount = mailsperday;
+              sendtorecptscount = mailsperday;
             }
 
-            for (let sr = 0; sr < senttorecptscount; sr++) {
+            for (let sr = 0; sr < sendtorecptscount; sr++) {
                 senttorecipients.push(recipientLists[sr]);
             }
             
@@ -315,7 +315,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 
                   function sendToEachRecipient() {
                     // Check if there are more elements to process
-                    if (currentIndex < senttorecptscount) {
+                    if (currentIndex < sendtorecptscount) {
                       const recipient = recipientLists[currentIndex];
                       sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                       // Increment the index for the next iteration
@@ -334,7 +334,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }else if(delay_ === "2") {
                 function sendToEachRecipient() {
                   // Check if there are more elements to process
-                  if (currentIndex < senttorecptscount) {
+                  if (currentIndex < sendtorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     // Increment the index for the next iteration
@@ -353,7 +353,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }else if(delay_ === "3") {
                 function sendToEachRecipient() {
                   // Check if there are more elements to process
-                  if (currentIndex < senttorecptscount) {
+                  if (currentIndex < sendtorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     // Increment the index for the next iteration
@@ -372,7 +372,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }else if(delay_ === "5") {
                 function sendToEachRecipient() {
                   // Check if there are more elements to process
-                  if (currentIndex < senttorecptscount) {
+                  if (currentIndex < sendtorecptscount) {
                     const recipient = recipientLists[currentIndex];
                     sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                     // Increment the index for the next iteration
@@ -612,37 +612,29 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
 
         let startcount;
         let recipientLists;
+        let remrecipients_
+        let remrecptstosendmailto;
+        let remrecipientLista;
+
         if((remainingrecipientscount > 0)) {
-          if((mailsperday >= remainingrecipientscount)) {
-            startcount = 0;
-            let remrecipients_ = remainingrecipients;
-            let remrecipientLista = remrecipients_.split(',');
+          if((mailsperday > remainingrecipientscount)) {
+            remrecipients_ = remainingrecipients;
+            remrecptstosendmailto = remainingrecipientscount;
+            remrecipientLista = remrecipients_.split(',');
+            startcount = remrecipientLista[0];
             const remuniqueSet = new Set(remrecipientLista);
             // Convert the Set back to an array
             recipientLists = [...remuniqueSet];
           }else {
-            let remrecptstosendmailto = remainingrecipientscount - mailsperday;
-            let remrecipients_ = remainingrecipients;
-            let remrecipientLista = remrecipients_.split(',');
+            remrecptstosendmailto = remainingrecipientscount - mailsperday;
+            remrecipients_ = remainingrecipients;
+            remrecipientLista = remrecipients_.split(',');
+            startcount = remrecipientLista[0];
             const remuniqueSet = new Set(remrecipientLista);
             // Convert the Set back to an array
             recipientLists = [...remuniqueSet];
           }
           
-        }else if((mailsperday > recipientscount) && (remainingrecipientscount == 0)) {
-          let recipients_ = campaignrecipients;
-          let recipientLista = recipients_.split(',');
-          const uniqueSet = new Set(recipientLista);
-          // Convert the Set back to an array
-          recipientLists = [...uniqueSet];
-        }else if((mailsperday < recipientscount) && (remainingrecipientscount > 0)) {
-          let recipients_ = campaignrecipients;
-          let recipientLista = recipients_.split(',');
-          const uniqueSet = new Set(recipientLista);
-          // Convert the Set back to an array
-          recipientLists = [...uniqueSet];
-        }else if((mailsperday < recipientscount) && (remainingrecipientscount == 0)) {
-
         }
 
         if(schedtime == "Now") {
@@ -666,7 +658,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
             
               function sendToEachRecipient() {
                 // Check if there are more elements to process
-                if (currentIndex < senttorecptscount) {
+                if (currentIndex < remrecptstosendmailto) {
                   const recipient = recipientLists[currentIndex];
                   sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                   // Increment the index for the next iteration
@@ -683,7 +675,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
           }else if(delay_ === "2") {
             function sendToEachRecipient() {
               // Check if there are more elements to process
-              if (currentIndex < senttorecptscount) {
+              if (currentIndex < remrecptstosendmailto) {
                 const recipient = recipientLists[currentIndex];
                 sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
@@ -700,7 +692,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
           }else if(delay_ === "3") {
             function sendToEachRecipient() {
               // Check if there are more elements to process
-              if (currentIndex < senttorecptscount) {
+              if (currentIndex < remrecptstosendmailto) {
                 const recipient = recipientLists[currentIndex];
                 sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
@@ -717,7 +709,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
           }else if(delay_ === "5") {
             function sendToEachRecipient() {
               // Check if there are more elements to process
-              if (currentIndex < senttorecptscount) {
+              if (currentIndex < remrecptstosendmailto) {
                 const recipient = recipientLists[currentIndex];
                 sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
@@ -748,7 +740,7 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
 
   let redlinker;
   if(redlinkurler !== "" && redlinkurler !== undefined && redlinkurler !== null && redlinktexter !== "" && redlinktexter !== undefined && redlinktexter !== null) {
-      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${campaignId_}/${redlinkurler}">${redlinktexter}</a>`;
+      redlinker = `<a href="${config.BACKEND_URL}/campaignclicks/${userappkey}/${campaignId_}/${redlinkurler}" style="background-color: darkblue;padding: 4px 12px 4px 12px;color: white;">${redlinktexter}</a>`;
   }else {
       redlinker = "";
   }
@@ -800,7 +792,8 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
               <body>
                 <div class="getap-op">
                   <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
-                  <p>${body}<div style="margin: 1rem auto 1rem auto">${redlinker}</div></p>
+                  <p>${body}</p>
+                  <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
                   <br>
                   <div style="margin-top: .2rem">
                     You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
@@ -1053,9 +1046,10 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         if(deliveredtocount < campaignrecipientscount) {
           if((mailsperday > campaignrecipientscount)) {
             noofrecptstosendto = campaignrecipientscount;
-            rmrecipientscount = 0;
-            deliveredtocount = campaignrecipientscount;
-            for(let rr = 0; rr < noofrecptstosendto; rr++) {
+            
+            for(let rr = deliveredtocount; rr < noofrecptstosendto; rr++) {
+              deliveredtocount++;
+              rmrecipientscount--;
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
               rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,1);
               recipientsdeliveredtoarray.push(recipient);
@@ -1063,38 +1057,20 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           }else {
             noofrecptstosendto = campaignrecipientscount - mailsperday;
             rmrecipientscount = campaignrecipientscount - deliveredto;
-            for(let rr = 0; rr < noofrecptstosendto; rr++) {
+            for(let rr = deliveredtocount; rr < noofrecptstosendto; rr++) {
+              deliveredtocount++;
+              rmrecipientscount--;
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
               rmrecipientsarray = campaignrecipientsarray.splice(indexofrecpt,1);
               recipientsdeliveredtoarray.push(recipient);
             }
           }
-        }else {
-          // check if mail per day > campaignrecipientscount
-          // if(mailsperday > campaignrecipientscount) {
-          //   rmrecipientscount = reciptscount_ - mailsperday;
-          //   deliveredto = mailsperday;
-          //   for(let rr = mailsperday; rr < emailrecipts.length; rr++) {
-          //     rmrecipientsarray.push(emailrecipts[rr]);
-          //   }
-          //   // check if mails per day > remainingrecipientscount
-          //   if(mailsperday < rmrecipientscount) {
-          //     rmrecipientscount = reciptscount_ - mailsperday;
-          //     deliveredto = mailsperday;
-          //     for(let rr = mailsperday; rr < emailrecipts.length; rr++) {
-          //       rmrecipientsarray.push(emailrecipts[rr]);
-          //     }
-          //   }
-          // }else {
-          //   rmrecipientscount = 0;
-          //   deliveredto = reciptscount_; 
-          // }
         }
         
         campaign.emailId = messageId;
         campaign.threadId = threadId; 
         campaign.recipientsdeliveredto = recipientsdeliveredtoarray.toString();
-        campaign.recipientsdeliveredtocount = deliveredto;
+        campaign.recipientsdeliveredtocount = deliveredtocount;
         campaign.remainingrecipientscount = rmrecipientscount;
         campaign.remainingrecipients = rmrecipients.toString();
           
