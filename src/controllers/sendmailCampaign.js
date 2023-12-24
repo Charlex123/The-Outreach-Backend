@@ -1052,6 +1052,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               deliveredtocount++;
               newArray = [...campaignrecipientsarray];
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
+              newArray.splice(indexofrecpt, 1);
               rmrecipientsarray = newArray;
               rmrecipientscount = rmrecipientsarray.length;
               if(recipient != "" && recipient != null && recipient != undefined) {
@@ -1067,6 +1068,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               deliveredtocount++;
               newArray = [...campaignrecipientsarray];
               indexofrecpt = campaignrecipientsarray.indexOf(recipient);
+              newArray.splice(indexofrecpt, 1);
               rmrecipientsarray = newArray;
               rmrecipientscount = rmrecipientsarray.length;
               if(recipient != "" && recipient != null && recipient != undefined) {
