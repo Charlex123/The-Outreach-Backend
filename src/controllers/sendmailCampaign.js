@@ -1048,11 +1048,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter((str) => str !== '');
+              console.log('filtered array',recipientsdeliveredtoarray)
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter((str) => str !== '');
+              console.log('filtered array',recipientsdeliveredtoarray)
             }
             
           }
@@ -1067,11 +1069,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter((str) => str !== '');
+              console.log('filtered array',recipientsdeliveredtoarray)
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
               recipientsdeliveredtoarray.filter((str) => str !== '');
+              console.log('filtered array',recipientsdeliveredtoarray)
             }
           }
         }
