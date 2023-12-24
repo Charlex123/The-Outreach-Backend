@@ -1045,17 +1045,17 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
 
             if(rmrecipientsarray.length > 1) {
-              console.log('rm recpts array set',rmrecipientsarray.length)
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
-              recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter((str) => str !== '');
+              let nrmrecptarray = rmrecipientsarray.push(recipient);
+              nrmrecptarray.filter((str) => str !== '');
+              recipientsdeliveredtoarray = nrmrecptarray;
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
-              console.log('rm recpts not ran yet')
-              recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter((str) => str !== '');
+              let nrmrecptarray = rmrecipientsarray.push(recipient);
+              nrmrecptarray.filter((str) => str !== '');
+              recipientsdeliveredtoarray = nrmrecptarray;
             }
             
           }
@@ -1066,7 +1066,6 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
             if(rmrecipientsarray.length > 1) {
-              console.log('rm recpts array set',rmrecipientsarray.length)
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
               recipientsdeliveredtoarray.push(recipient);
@@ -1074,9 +1073,9 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             }else {
               campaignrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = campaignrecipientsarray;
-              console.log('rm recpts not ran yet')
-              recipientsdeliveredtoarray.push(recipient);
-              recipientsdeliveredtoarray.filter((str) => str !== '');
+              let nrmrecptarray = rmrecipientsarray.push(recipient);
+              nrmrecptarray.filter((str) => str !== '');
+              recipientsdeliveredtoarray = nrmrecptarray;
             }
           }
         }
