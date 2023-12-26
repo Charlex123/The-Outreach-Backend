@@ -20,9 +20,6 @@ const campagn_Id = `${
 const autofollowup_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;
-const schedule_Id = `${
-  Math.floor(100000000 + Math.random() * 900000000)
-}`;
 const defaultthread_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;

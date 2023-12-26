@@ -12,6 +12,10 @@ const cron = require("node-cron");
 const v4 = require("uuid");
 const Agenda = require("agenda");
 
+const autofollowup_Id = `${
+  Math.floor(100000000 + Math.random() * 900000000)
+}`;
+
 const agenda = new Agenda({
   db: {
     address: process.env.DATABASE_URL
@@ -202,7 +206,7 @@ agenda.define('send test email', async () => {
                 sendToEachRecipient(); // Run it once immediately
                 const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
               }
-    
+  
               res.json({
                 message: "Campaign successfully set"
               })
