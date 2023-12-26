@@ -26,133 +26,115 @@ agenda.define('send test email', async () => {
       const recpcount = campaignd.recipientscount;
       const rmrecptcount = campaignd.remainingrecipientscount;
       const recptsdeliveredtocount = campaignd.recipientsdeliveredtocount;
-      
-      console.log('campaign dd next run',nxtrun, 'recp count',recpcount,'rmrecp count',rmrecptcount,'deliveredto count',recptsdeliveredtocount)
-        if(moment().isSameOrAfter(nxtrun) && recptsdeliveredtocount < recpcount) {
-          console.log('next run reached and ran')
-          const skipweekends = campaignd.schedule.skipweekends;
-          const repeatinterval = campaignd.schedule.repeat.repeatinterval;
-          const repeattimes = campaignd.schedule.repeat.repeattimes;
-          const mailsperday = campaignd.schedule.speed.mailsPerDay;
-          const schedtime = campaignd.schedule.scheduletime;
-          const campaignId_ = campaignd.campaignId;
-          const delay_ = campaignd.schedule.speed.delay;
-          const name = campaignd.name;
-          const campaignrecipients = campaignd.emailrecipients;
-          const campaignbody = campaignd.emailbody;
-          const subject = campaignd.emailsubject;
-          const draftId = campaignd.emailId;
-          const useremail = campaignd.emailaddress;
-          const redlinktext = campaignd.redlinktext;
-          const redlinkurl = campaignd.redlinkurl;
-          const timezone = campaignd.timezone;
-          const delivertorecipients = campaignd.recipientsdeliveredto;
-          const deliveredtorecipientscount = campaignd.recipientsdeliveredtocount;
-          const remainingrecipients = campaignd.remainingrecipients;
-          const remainingrecipientscount = campaignd.remainingrecipientscount;
-          const recipientscount = campaignd.recipientscount;
-  
-          process.env.TZ = timezone;
+    
+      if(moment().isSameOrAfter(nxtrun) && recptsdeliveredtocount < recpcount) {
+        console.log('next run reached and ran')
+        const skipweekends = campaignd.schedule.skipweekends;
+        const repeatinterval = campaignd.schedule.repeat.repeatinterval;
+        const repeattimes = campaignd.schedule.repeat.repeattimes;
+        const mailsperday = campaignd.schedule.speed.mailsPerDay;
+        const schedtime = campaignd.schedule.scheduletime;
+        const campaignId_ = campaignd.campaignId;
+        const delay_ = campaignd.schedule.speed.delay;
+        const name = campaignd.name;
+        const campaignrecipients = campaignd.emailrecipients;
+        const campaignbody = campaignd.emailbody;
+        const subject = campaignd.emailsubject;
+        const draftId = campaignd.emailId;
+        const useremail = campaignd.emailaddress;
+        const redlinktext = campaignd.redlinktext;
+        const redlinkurl = campaignd.redlinkurl;
+        const timezone = campaignd.timezone;
+        const delivertorecipients = campaignd.recipientsdeliveredto;
+        const deliveredtorecipientscount = campaignd.recipientsdeliveredtocount;
+        const remainingrecipients = campaignd.remainingrecipients;
+        const remainingrecipientscount = campaignd.remainingrecipientscount;
+        const recipientscount = campaignd.recipientscount;
 
-          const verifyuserdata = await User.findOne({email: useremail});
-          if (verifyuserdata) {
+        process.env.TZ = timezone;
+
+        const verifyuserdata = await User.findOne({email: useremail});
+        if (verifyuserdata) {
+          
+            verifyuserdata.verified = true;
             
-              verifyuserdata.verified = true;
-              
-              const verifiedUser = await verifyuserdata.save();
-              const accessToken = verifiedUser.accessToken;
-              const refreshToken = verifiedUser.refreshToken;
-              const userappkey = verifiedUser.userAppKey;
+            const verifiedUser = await verifyuserdata.save();
+            const accessToken = verifiedUser.accessToken;
+            const refreshToken = verifiedUser.refreshToken;
+            const userappkey = verifiedUser.userAppKey;
 
-              console.log('access token', accessToken,'refresh token',refreshToken)
-              console.log('schedule delay',delay_,'schedule time',schedtime)
-              const oAuth2Client = new google.auth.OAuth2(
-                config.client_id,
-                config.client_secret,
-                config.redirect_uris
-              );
-          
-          
-              oAuth2Client.setCredentials({
-                access_token: accessToken,
-                refresh_token: refreshToken
-              });
+            console.log('access token', accessToken,'refresh token',refreshToken)
+            console.log('schedule delay',delay_,'schedule time',schedtime)
+            const oAuth2Client = new google.auth.OAuth2(
+              config.client_id,
+              config.client_secret,
+              config.redirect_uris
+            );
+        
+        
+            oAuth2Client.setCredentials({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+            
+        
+            const gmail = google.gmail({
+              version: 'v1',
+              auth: oAuth2Client
+            });
               
-          
-              const gmail = google.gmail({
-                version: 'v1',
-                auth: oAuth2Client
-              });
+            const accesstoken = accessToken;
+            const refreshtoken = accessToken;
+
+            let startcount;
+            let recipientLists;
+            let remrecipients_
+            let remrecptstosendmailto;
+            let remrecipientLista;
+    
+            if((mailsperday > remainingrecipientscount)) {
+              remrecipients_ = remainingrecipients;
+              remrecptstosendmailto = remainingrecipientscount;
+              remrecipientLista = remrecipients_.split(',');
+              startcount = remrecipientLista[0];
+              const remuniqueSet = new Set(remrecipientLista);
+              // Convert the Set back to an array
+              recipientLists = [...remuniqueSet];
+              console.log('mailsperday is greater',recipientLists)
+            }else {
+              remrecptstosendmailto = remainingrecipientscount - mailsperday;
+              remrecipients_ = remainingrecipients;
+              remrecipientLista = remrecipients_.split(',');
+              startcount = remrecipientLista[0];
+              const remuniqueSet = new Set(remrecipientLista);
+              // Convert the Set back to an array
+              recipientLists = [...remuniqueSet];
+              console.log('mailsperday is less than',recipientLists)
+            }
+            console.log('currentIndex ---',currentIndex);
+            console.log('remrecptstosendmailto -----',remrecptstosendmailto);
+            
+            if(schedtime == "Now") {
+              startnxtrunmailSending();
+              console.log('scheduletime Now ran ')
+            }else if(schedtime == "FiveMinutes"){
+              setTimeout(startnxtrunmailSending,5*60*1000)
+              console.log('scheduletime Now ran 11')
+            }else if(schedtime == "OneHour"){
+              setTimeout(startnxtrunmailSending,1*60*60*1000)
+              console.log('scheduletime Now ran 22')
+            }else if(schedtime == "ThreeHours"){
+              setTimeout(startnxtrunmailSending,3*60*60*1000)
+              console.log('scheduletime Now ran 33')
+            }
+            // call send function
+    
+            function startnxtrunmailSending() {
+              console.log('start mail sending ran')
+              let currentIndex = startcount;
+    
+              if(delay_ === "1") {
                 
-              const accesstoken = accessToken;
-              const refreshtoken = accessToken;
-
-              let startcount;
-              let recipientLists;
-              let remrecipients_
-              let remrecptstosendmailto;
-              let remrecipientLista;
-      
-              if((mailsperday > remainingrecipientscount)) {
-                remrecipients_ = remainingrecipients;
-                remrecptstosendmailto = remainingrecipientscount;
-                remrecipientLista = remrecipients_.split(',');
-                startcount = remrecipientLista[0];
-                const remuniqueSet = new Set(remrecipientLista);
-                // Convert the Set back to an array
-                recipientLists = [...remuniqueSet];
-                console.log('mailsperday is greater',recipientLists)
-              }else {
-                remrecptstosendmailto = remainingrecipientscount - mailsperday;
-                remrecipients_ = remainingrecipients;
-                remrecipientLista = remrecipients_.split(',');
-                startcount = remrecipientLista[0];
-                const remuniqueSet = new Set(remrecipientLista);
-                // Convert the Set back to an array
-                recipientLists = [...remuniqueSet];
-                console.log('mailsperday is less than',recipientLists)
-              }
-              console.log('currentIndex ---',currentIndex);
-              console.log('remrecptstosendmailto -----',remrecptstosendmailto);
-              
-              if(schedtime == "Now") {
-                startnxtrunmailSending();
-                console.log('scheduletime Now ran ')
-              }else if(schedtime == "FiveMinutes"){
-                setTimeout(startnxtrunmailSending,5*60*1000)
-                console.log('scheduletime Now ran 11')
-              }else if(schedtime == "OneHour"){
-                setTimeout(startnxtrunmailSending,1*60*60*1000)
-                console.log('scheduletime Now ran 22')
-              }else if(schedtime == "ThreeHours"){
-                setTimeout(startnxtrunmailSending,3*60*60*1000)
-                console.log('scheduletime Now ran 33')
-              }
-              // call send function
-      
-              function startnxtrunmailSending() {
-                console.log('start mail sending ran')
-                let currentIndex = startcount;
-      
-                if(delay_ === "1") {
-                  
-                    function sendToEachRecipient() {
-                      // Check if there are more elements to process
-                      if (currentIndex < remrecptstosendmailto) {
-                        const recipient = recipientLists[currentIndex];
-                        sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-                        // Increment the index for the next iteration
-                        currentIndex++;
-                      } else {
-                        // If all elements have been processed, stop the interval
-                        clearInterval(intervalId);
-                        console.log("Finished processing all items.");
-                      }
-                    }
-                    sendToEachRecipient(); // Run it once immediately
-                    const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
-                  
-                }else if(delay_ === "2") {
                   function sendToEachRecipient() {
                     // Check if there are more elements to process
                     if (currentIndex < remrecptstosendmailto) {
@@ -167,49 +149,66 @@ agenda.define('send test email', async () => {
                     }
                   }
                   sendToEachRecipient(); // Run it once immediately
-                  const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
-                  
-                }else if(delay_ === "3") {
-                  function sendToEachRecipient() {
-                    // Check if there are more elements to process
-                    if (currentIndex < remrecptstosendmailto) {
-                      const recipient = recipientLists[currentIndex];
-                      sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-                      // Increment the index for the next iteration
-                      currentIndex++;
-                    } else {
-                      // If all elements have been processed, stop the interval
-                      clearInterval(intervalId);
-                      console.log("Finished processing all items.");
-                    }
+                  const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+                
+              }else if(delay_ === "2") {
+                function sendToEachRecipient() {
+                  // Check if there are more elements to process
+                  if (currentIndex < remrecptstosendmailto) {
+                    const recipient = recipientLists[currentIndex];
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                    // Increment the index for the next iteration
+                    currentIndex++;
+                  } else {
+                    // If all elements have been processed, stop the interval
+                    clearInterval(intervalId);
+                    console.log("Finished processing all items.");
                   }
-                  sendToEachRecipient(); // Run it once immediately
-                  const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
-                  
-                }else if(delay_ === "5") {
-                  function sendToEachRecipient() {
-                    // Check if there are more elements to process
-                    if (currentIndex < remrecptstosendmailto) {
-                      const recipient = recipientLists[currentIndex];
-                      sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-                      // Increment the index for the next iteration
-                      currentIndex++;
-                    } else {
-                      // If all elements have been processed, stop the interval
-                      clearInterval(intervalId);
-                      console.log("Finished processing all items.");
-                    }
-                  }
-                  sendToEachRecipient(); // Run it once immediately
-                  const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
                 }
-      
-                res.json({
-                  message: "Campaign successfully set"
-                })
+                sendToEachRecipient(); // Run it once immediately
+                const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
+                
+              }else if(delay_ === "3") {
+                function sendToEachRecipient() {
+                  // Check if there are more elements to process
+                  if (currentIndex < remrecptstosendmailto) {
+                    const recipient = recipientLists[currentIndex];
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                    // Increment the index for the next iteration
+                    currentIndex++;
+                  } else {
+                    // If all elements have been processed, stop the interval
+                    clearInterval(intervalId);
+                    console.log("Finished processing all items.");
+                  }
+                }
+                sendToEachRecipient(); // Run it once immediately
+                const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
+                
+              }else if(delay_ === "5") {
+                function sendToEachRecipient() {
+                  // Check if there are more elements to process
+                  if (currentIndex < remrecptstosendmailto) {
+                    const recipient = recipientLists[currentIndex];
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                    // Increment the index for the next iteration
+                    currentIndex++;
+                  } else {
+                    // If all elements have been processed, stop the interval
+                    clearInterval(intervalId);
+                    console.log("Finished processing all items.");
+                  }
+                }
+                sendToEachRecipient(); // Run it once immediately
+                const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
               }
+    
+              res.json({
+                message: "Campaign successfully set"
+              })
             }
           }
+        }
     }
   }
 });
