@@ -28,7 +28,6 @@ dotenv.config();
 const testMail = asyncHandler(async (req, res) => {
   try {
       
-      const maildetails = req.body;
       const autofolinterval1 = req.body.followupreply1interval; 
       const autofoltime1 = req.body.followupreply1time;
       const autofollowuptime1 = moment().add({days:autofolinterval1,seconds: autofoltime1});
@@ -45,15 +44,18 @@ const testMail = asyncHandler(async (req, res) => {
       console.log('autofollowuptime2',autofollowuptime2)
       console.log('autofollowuptime3',autofollowuptime3);
 
-      const testmailsenttime = req.body.testmailsenttime;
+      process.env.TZ = req.body.timezone;
+
+      const recpts = req.body.testemailrecipients;
+      const name = req.body.name;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
       const useremail = req.body.useremail;
       const emailsubject = req.body.mailcampaignsubject;
       const emailbody = req.body.mailcampaignbody;
-      const testmailrecipient = req.body.testmailrecipient;
       const trackbyopen = req.body.trackbyopen;
       const trackbyclicks = req.body.trackbyclicks;
+      const timezone = req.body.timezone;
       const action = req.body.mailsendtesttype;
       const followupreply1type = req.body.followupreply1type;
       const followupreply1interval = req.body.followupreply1interval;
@@ -209,7 +211,9 @@ const testMail = asyncHandler(async (req, res) => {
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
-            emailrecipients: testmailrecipient,
+            emailrecipients: campaignrecipients,
+            recipientscount: recipientLists.length,
+            timezone: timezone,
             tracking: {
               isOpened: trackbyopen,
               isClicked: trackbyclicks,
@@ -259,8 +263,7 @@ const testMail = asyncHandler(async (req, res) => {
           });
     
           if(newMailCampaign.save()) {
-            let recipients_ = testmailrecipient;
-            let recipientLists = recipients_.split(',');
+            let recipientLists = recpts.split(',');
 
             let campaignId_ = newMailCampaign.campaignId;
             

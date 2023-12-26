@@ -52,15 +52,32 @@ const loadCampData = async () => {
       const recipientscount = campaignd.recipientscount;
 
       process.env.TZ = timezone;
-      processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtocount,skipweekends,repeatinterval,repeattimes,mailsperday,schedtime,campaignId_,delay_,name,campaignrecipients,campaignbody,subject,useremail,redlinktext,redlinkurl,delivertorecipients,deliveredtorecipientscount,remainingrecipients,remainingrecipientscount,recipientscount)
+      if(repeatinterval && repeatinterval != "" && repeattimes && repeattimes != "") {
+        let cronexpression;
+        if(repeatinterval == 'h') {
+          cronexpression = `0 */${repeattimes} * * *`;
+        }else if(repeatinterval == 'd') {
+          cronexpression = `0 */${repeattimes} * * *`;
+        }else if(repeatinterval == 'w') {
+          cronexpression = `0 */${repeattimes} * * *`;
+        }else if(repeatinterval == 'm') {
+          cronexpression = `0 */${repeattimes} * * *`;
+        }
+        cron.schedule(cronexpression, function() {
+          console.log('repeat camp is ran -----')
+          processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtocount,skipweekends,repeatinterval,repeattimes,mailsperday,schedtime,campaignId_,delay_,name,campaignrecipients,campaignbody,subject,useremail,redlinktext,redlinkurl,delivertorecipients,deliveredtorecipientscount,remainingrecipients,remainingrecipientscount,recipientscount,timezone)
+        })
+          
+      }
+      
     }
   }
 }
 loadCampData()
 
 async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtocount,skipweekends,repeatinterval,repeattimes,mailsperday,schedtime,campaignId_,delay_,name,campaignrecipients,campaignbody,subject,useremail,redlinktext,redlinkurl,delivertorecipients,deliveredtorecipientscount,remainingrecipients,remainingrecipientscount,recipientscount) {
-  agenda.define('send test email', async () => {
-    console.log('repeat campaign Job is running!');
+  
+  console.log('repeat campaign Job is running!');
   const verifyuserdata = await User.findOne({email: useremail});
   if (verifyuserdata) {
     
@@ -71,8 +88,6 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
       const refreshToken = verifiedUser.refreshToken;
       const userappkey = verifiedUser.userAppKey;
 
-      console.log('access token', accessToken,'refresh token',refreshToken)
-      console.log('schedule delay',delay_,'schedule time',schedtime)
       const oAuth2Client = new google.auth.OAuth2(
         config.client_id,
         config.client_secret,
@@ -94,6 +109,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
       const accesstoken = accessToken;
       const refreshtoken = accessToken;
 
+      let intervalId;
       let startcount;
       let recipientLists;
       let remrecipients_
@@ -119,7 +135,6 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         recipientLists = [...remuniqueSet];
         console.log('mailsperday is less than',recipientLists)
       }
-      console.log('currentIndex ---',currentIndex);
       console.log('remrecptstosendmailto -----',remrecptstosendmailto);
       
       if(schedtime == "Now") {
@@ -157,7 +172,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
               }
             }
             sendToEachRecipient(); // Run it once immediately
-            const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+            intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
           
         }else if(delay_ === "2") {
           function sendToEachRecipient() {
@@ -174,7 +189,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             }
           }
           sendToEachRecipient(); // Run it once immediately
-          const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
+          intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
           
         }else if(delay_ === "3") {
           function sendToEachRecipient() {
@@ -191,7 +206,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             }
           }
           sendToEachRecipient(); // Run it once immediately
-          const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
+          intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
           
         }else if(delay_ === "5") {
           function sendToEachRecipient() {
@@ -208,7 +223,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             }
           }
           sendToEachRecipient(); // Run it once immediately
-          const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
+          intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
         }
 
         res.json({
@@ -216,12 +231,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         })
       }
     }
-  });
   
-  (async () => {
-    await agenda.start();
-    await agenda.every('1 minute', 'send test email');
-  })();
 }
 
 
@@ -529,9 +539,6 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
     console.log('req params',req.params);
     agenda.define('send test email', async () => {
       console.log('Job is running!');
-      res.json({
-        "message":"hello ran 3 x"
-      })
     });
     
     (async () => {

@@ -21,8 +21,8 @@ const agenda = new Agenda({
     address: process.env.DATABASE_URL
   },
 });
+ 
 agenda.define('send test email', async () => {
-  console.log('24 hurss Job is running!');
   const campd = await campaignSchema.find();
   if(campd) {
     for (const campaignd of campd) {
@@ -30,7 +30,6 @@ agenda.define('send test email', async () => {
       const recpcount = campaignd.recipientscount;
       const rmrecptcount = campaignd.remainingrecipientscount;
       const recptsdeliveredtocount = campaignd.recipientsdeliveredtocount;
-    
       if(moment().isSameOrAfter(nxtrun) && recptsdeliveredtocount < recpcount) {
         console.log('next run reached and ran')
         const skipweekends = campaignd.schedule.skipweekends;
@@ -90,6 +89,7 @@ agenda.define('send test email', async () => {
             const accesstoken = accessToken;
             const refreshtoken = accessToken;
 
+            let intervalId;
             let startcount;
             let recipientLists;
             let remrecipients_
@@ -153,7 +153,7 @@ agenda.define('send test email', async () => {
                     }
                   }
                   sendToEachRecipient(); // Run it once immediately
-                  const intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
+                  intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
                 
               }else if(delay_ === "2") {
                 function sendToEachRecipient() {
@@ -170,7 +170,7 @@ agenda.define('send test email', async () => {
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
-                const intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
+                intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
                 
               }else if(delay_ === "3") {
                 function sendToEachRecipient() {
@@ -187,7 +187,7 @@ agenda.define('send test email', async () => {
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
-                const intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
+                intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
                 
               }else if(delay_ === "5") {
                 function sendToEachRecipient() {
@@ -204,7 +204,7 @@ agenda.define('send test email', async () => {
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
-                const intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
+                intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
               }
   
               res.json({
@@ -374,7 +374,7 @@ agenda.define('send test email', async () => {
   
           if((mailsperday > campaignrecipientscount)) {
             noofrecptstosendto = campaignrecipientscount;
-            if(deliveredtocount <= noofrecptstosendto) {
+            if(deliveredtocount < noofrecptstosendto) {
               deliveredtocount++;
               rmrecipientscount = campaignrecipientscount - deliveredtocount;
   
@@ -397,7 +397,7 @@ agenda.define('send test email', async () => {
           }else {
             noofrecptstosendto = campaignrecipientscount - mailsperday;
             
-            if(deliveredtocount <= noofrecptstosendto) {
+            if(deliveredtocount < noofrecptstosendto) {
               deliveredtocount++;
               if(rmrecipientsarray.length > 1) {
                 rmrecipientsarray.splice(indexofrecpt, 1)
