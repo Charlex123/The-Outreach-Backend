@@ -2,8 +2,8 @@
 const dotenv = require ("dotenv");
 dotenv.config()
 module.exports = {
-DATABASE_URL:process.env.PRODUCTION_DATABASE_URL,
-redirect_uris:process.env.PRODUCTION_REDIRECT_URIS,
+DATABASE_URL:process.env.DATABASE_URL,
+redirect_uris:process.env.redirect_uris,
 BACKEND_URL:process.env.PRODUCTION_URL_BACKEND,
 FRONTEND_URL:process.env.PRODUCTION_URL_FRONTEND,
 appSecret:process.env.PRODUCTION_APP_SECRET,

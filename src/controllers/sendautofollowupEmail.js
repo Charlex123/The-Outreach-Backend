@@ -1,11 +1,9 @@
 require("express");
 const asyncHandler = require("express-async-handler");
 const campaignSchema = require('../model/campaignSchema');
-const DraftSchema = require("../model/DraftSchema");
 const autofollowSchema = require("../model/autofollowSchema");
 const firstreportsentSchema = require("../model/firstreportsentSchema");
 const User = require("../model/user");
-const { generateTrackingLink } = require('../utils');
 const { google } = require('googleapis');
 const moment = require('moment');
 const dotenv = require('dotenv');
@@ -17,13 +15,40 @@ const cron = require("node-cron");
 
 dotenv.config();
 
-const autofollowUpCampaign = asyncHandler(async (req, res) => {
-  try {
-      
-    const useremail_ = req.body;
-    const useremail = useremail_.toString();
-    console.log('u email string', useremail);
-    const verifyuserdata = await User.findOne({email: useremail});
+const loadAutoFollowUp = async () => {
+  
+  const getautofollowups = await autofollowSchema.find();
+  for (const autofollowup of getautofollowups) {
+    console.log('autofollowup --- auto follow upppp')
+    try {
+      const autofollowup_Id = autofollowup.autofollowupId;
+      const message_Id = autofollowup.emailId;
+      const thread_Id = autofollowup.threadId;
+      const campaign_Id = autofollowup.campaignId;
+      const recipient = autofollowup.emailrecipient;
+      const name = autofollowup.name;
+      const useremail = autofollowup.emailaddress;
+      const subject = autofollowup.emailrecipient;
+      const campaignsenttime = autofollowup.mailsentDate;
+      const redlinktexta = autofollowup.tracking.redlinktext;
+      const redlinkurla = autofollowup.tracking.redlinkurl;
+      const followupreply1type = autofollowup.autofollowup.firstfollowup.reply1type;
+      const followupreply1interval = autofollowup.autofollowup.firstfollowup.reply1interval;
+      const followupreply1time = autofollowup.autofollowup.firstfollowup.reply1time;
+      const followupreply1message = autofollowup.autofollowup.firstfollowup.reply1message;
+      const followupreply1status = autofollowup.autofollowup.firstfollowup.status;
+      const followupreply2type = autofollowup.autofollowup.secondfollowup.reply2type;
+      const followupreply2interval = autofollowup.autofollowup.secondfollowup.reply2interval;
+      const followupreply2time = autofollowup.autofollowup.secondfollowup.reply2time;
+      const followupreply2message = autofollowup.autofollowup.secondfollowup.reply2message;
+      const followupreply2status = autofollowup.autofollowup.secondfollowup.status;
+      const followupreply3type = autofollowup.autofollowup.thirdfollowup.reply3type;
+      const followupreply3interval = autofollowup.autofollowup.thirdfollowup.reply3interval;
+      const followupreply3time = autofollowup.autofollowup.thirdfollowup.reply3time;
+      const followupreply3message = autofollowup.autofollowup.thirdfollowup.reply3message;
+      const followupreply3status = autofollowup.autofollowup.thirdfollowup.status;
+
+      const verifyuserdata = await User.findOne({email: useremail});
 
       if (verifyuserdata) {
         
@@ -64,157 +89,128 @@ const autofollowUpCampaign = asyncHandler(async (req, res) => {
             });
           }
 
-          const getautofollowups = await autofollowSchema.find({"emailaddress":useremail,$or:[{"autofollowup.firstfollowup.status":"unsent"},{"autofollowup.secondfollowup.status":"unsent"},{"autofollowup.thirdfollowup.status":"unsent"}]});
-          for (const autofollowup of getautofollowups) {
-            try {
-              const autofollowup_Id = autofollowup.autofollowupId;
-              const message_Id = autofollowup.emailId;
-              const thread_Id = autofollowup.threadId;
-              const campaign_Id = autofollowup.campaignId;
-              const recipient = autofollowup.emailrecipient;
-              const name = autofollowup.name;
-              const subject = autofollowup.emailrecipient;
-              const campaignsenttime = autofollowup.mailsentDate;
-              const redlinktexta = autofollowup.tracking.redlinktext;
-              const redlinkurla = autofollowup.tracking.redlinkurl;
-              const followupreply1type = autofollowup.autofollowup.firstfollowup.reply1type;
-              const followupreply1interval = autofollowup.autofollowup.firstfollowup.reply1interval;
-              const followupreply1time = autofollowup.autofollowup.firstfollowup.reply1time;
-              const followupreply1message = autofollowup.autofollowup.firstfollowup.reply1message;
-              const followupreply1status = autofollowup.autofollowup.firstfollowup.status;
-              const followupreply2type = autofollowup.autofollowup.secondfollowup.reply2type;
-              const followupreply2interval = autofollowup.autofollowup.secondfollowup.reply2interval;
-              const followupreply2time = autofollowup.autofollowup.secondfollowup.reply2time;
-              const followupreply2message = autofollowup.autofollowup.secondfollowup.reply2message;
-              const followupreply2status = autofollowup.autofollowup.secondfollowup.status;
-              const followupreply3type = autofollowup.autofollowup.thirdfollowup.reply3type;
-              const followupreply3interval = autofollowup.autofollowup.thirdfollowup.reply3interval;
-              const followupreply3time = autofollowup.autofollowup.thirdfollowup.reply3time;
-              const followupreply3message = autofollowup.autofollowup.thirdfollowup.reply3message;
-              const followupreply3status = autofollowup.autofollowup.thirdfollowup.status;
-
-                  
-              // Function to check if a message has a reply
-              // function checkIfMessageHasReply() {
-              //   return new Promise((resolve, reject) => {
-                  
-              //     gmail.users.threads.list({
-              //       userId: 'me',
-              //       q: `in:inbox id:${message_Id}`, // Search for the thread containing the message
-              //     }, (err, res) => {
-              //       if (err) {
-              //         reject(err);
-              //         return;
-              //       }
-
-              //       const threads = res.data.threads;
-              //       console.log('res 00--', res)
-              //       console.log('res data 00--', res.data)
-              //       console.log('threads 00--', threads)
-              //       const hasReply = threads;
-              //       resolve(threads);
-              //     });
-              //   });
-              // }
-
-              // const checkmessagereply = await checkIfMessageHasReply();
-
-              // console.log('check reply',checkmessagereply)
-
-
-              if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
-                console.log('rrrrr1',followupreply1type)
-                if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
-                  console.log('timer zz1 occurred')
-                  if(moment().isSameOrAfter(followupreply1time)) {
-                    console.log('hella after time',moment(followupreply1time))
-                    sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }
-                  // else {
-                  //   console.log('hella before time',moment(followupreply1time))
-                  //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  // }
-                  // send first autofollowupreport
-                  // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-                  // console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
-                  // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-                  //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  // }
-                  
-                }else {
-                  console.log('timer zz1 occurred')
-                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                }
-              } 
-
-              if(followupreply2type && followupreply2type !== "" && followupreply2type === "r") {
-                if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
-                  console.log('timer zz2 occurred')
-                  if(moment().isSameOrAfter(followupreply2time)) {
-                    console.log('hella after time 2',moment(followupreply2time))
-                    sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }
-                  // else {
-                  //   console.log('hella before time 2',moment(followupreply2time))
-                  //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  // }
-                  // send first autofollowupreport
-                  // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-                  // console.log('get first sent report',getfirstautofol_upsentReport)
-                  // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-                  //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  // }
-                  
-                }else {
-                  console.log('timer zz2 occurred')
-                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                }
+          if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
+            console.log('rrrrr1',followupreply1type)
+            if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
+              console.log('timer zz1 occurred')
+              if(moment().isSameOrAfter(followupreply1time)) {
+                console.log('hella after time',moment(followupreply1time))
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
+              // else {
+              //   console.log('hella before time',moment(followupreply1time))
+              //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+              // }
+              // send first autofollowupreport
+              // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+              // console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
+              // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+              //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+              // }
               
-              if(followupreply3type && followupreply3type !== "" && followupreply3type === "r") {
-                if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
-                  
-                  if(moment().isSameOrAfter(followupreply3time)) {
-                    console.log('hella after time 3',moment(followupreply3time))
-                    sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  }
-                  // else {
-                  //   console.log('hella before time 3',moment(followupreply3time))
-                  //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                  // }
-                  // send first autofollowupreport
-                  // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-                  // console.log('get first sent report',getfirstautofol_upsentReport)
-                  // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-                  //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-                  // }
-                  
-                }else {
-                  console.log('timer zz3 occurred')
-                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-                }
-              } 
-              
-              
-            } catch (error) {
-              console.error(`Ooops!!! something occurred: ${error}`);
+            }else {
+              console.log('timer zz1 occurred')
+              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
           } 
-
+    
+          if(followupreply2type && followupreply2type !== "" && followupreply2type === "r") {
+            if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
+              console.log('timer zz2 occurred')
+              if(moment().isSameOrAfter(followupreply2time)) {
+                console.log('hella after time 2',moment(followupreply2time))
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+              }
+              // else {
+              //   console.log('hella before time 2',moment(followupreply2time))
+              //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+              // }
+              // send first autofollowupreport
+              // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+              // console.log('get first sent report',getfirstautofol_upsentReport)
+              // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+              //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+              // }
+              
+            }else {
+              console.log('timer zz2 occurred')
+              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+            }
+          }
+          
+          if(followupreply3type && followupreply3type !== "" && followupreply3type === "r") {
+            if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
+              
+              if(moment().isSameOrAfter(followupreply3time)) {
+                console.log('hella after time 3',moment(followupreply3time))
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+              }
+              // else {
+              //   console.log('hella before time 3',moment(followupreply3time))
+              //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+              // }
+              // send first autofollowupreport
+              // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+              // console.log('get first sent report',getfirstautofol_upsentReport)
+              // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+              //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+              // }
+              
+            }else {
+              console.log('timer zz3 occurred')
+              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+            }
+          } 
+      
         }else {
           console.log("user not found")
       }
-      
+      // Function to check if a message has a reply
+      // function checkIfMessageHasReply() {
+      //   return new Promise((resolve, reject) => {
+          
+      //     gmail.users.threads.list({
+      //       userId: 'me',
+      //       q: `in:inbox id:${message_Id}`, // Search for the thread containing the message
+      //     }, (err, res) => {
+      //       if (err) {
+      //         reject(err);
+      //         return;
+      //       }
 
-    }catch (error) {
-      console.log('server error',error);
-      // res.status(500).json({ message: error.message });
+      //       const threads = res.data.threads;
+      //       console.log('res 00--', res)
+      //       console.log('res data 00--', res.data)
+      //       console.log('threads 00--', threads)
+      //       const hasReply = threads;
+      //       resolve(threads);
+      //     });
+      //   });
+      // }
+
+      // const checkmessagereply = await checkIfMessageHasReply();
+
+      // console.log('check reply',checkmessagereply)
+
+    } catch (error) {
+      console.error(`Ooops!!! something occurred: ${error}`);
     }
+  } 
+}
+loadAutoFollowUp()
 
+// const loadautofollowUpCampaign = asyncHandler(async () => {
+//   try {
+      
+//     const useremail_ = req.body;
+//     const useremail = useremail_.toString();
+//     console.log('u email string', useremail);
     
-    
-  
-});
+//     }catch (error) {
+//       console.log('server error',error);
+//       // res.status(500).json({ message: error.message });
+//     }
+// });
 
 // updateautofollowupsentStatus("juanromeroj1962@gmail.com",147826144,311573948);
 // async function updateautofollowupsentStatus(useremail,campaignId,autofollowupId) {
@@ -263,29 +259,30 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
     html: `<html>
               <head>
                 <style>
-                  body {
-                    font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: 1rem auto 1rem auto;
-                    text-align: center;
-                  }
-                  p {
-                    text-align: left;
-                  }
-                  span {
-                    text-align: left;
-                  }
-                  a.redlink {
-                    text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
-                    color: white;
-                  }
-                  a.unsubscribe {
-                    text-align: left;color: #4682B4;
-                  }
+                body {
+                  font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: .5rem auto .5rem auto;
+                  text-align: center;
+                }
+                p {
+                  text-align: left;
+                }
+                span {
+                  text-align: left;
+                }
+                a.redlink {
+                  text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                  color: white;
+                }
+                a.unsubscribe {
+                  text-align: left;color: #4682B4;
+                }
                 </style>
               </head>
               <body>
                 <div class="getap-op">
                   <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${message_Id}/image.png" style="display: none" class="kioper" alt="imager">
-                  <p>${body}<div style="margin: 1rem auto 1rem auto">${redlinker}</div></p>
+                  <p>${body}</p>
+                  <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
                   <br>
                   <div style="margin-top: .2rem">
                     You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
@@ -311,25 +308,25 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
 
 async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowupId) {
   const getautofollupStat = await autofollowSchema.find({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
-          if(getautofollupStat) {
-            for(const gautofollowupStat of getautofollupStat) {
-              if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status != "" && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.firstfollowup.status = "sent";
-                const ausa1 = await gautofollowupStat.save();
-              }
-              if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status != "" && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.secondfollowup.status = "sent";
-                const ausa2 = await gautofollowupStat.save();
-              }
-              if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
-                gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
-                const ausa3 = await gautofollowupStat.save();
-              }
-            }
-            
-            // const updatedgetautofollupStat = await autofollowSchema.findOne({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
-            
-          }
+  if(getautofollupStat) {
+    for(const gautofollowupStat of getautofollupStat) {
+      if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status != "" && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
+        gautofollowupStat.autofollowup.firstfollowup.status = "sent";
+        await gautofollowupStat.save();
+      }
+      if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status != "" && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
+        gautofollowupStat.autofollowup.secondfollowup.status = "sent";
+        await gautofollowupStat.save();
+      }
+      if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
+        gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
+        await gautofollowupStat.save();
+      }
+    }
+    
+    // const updatedgetautofollupStat = await autofollowSchema.findOne({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
+    
+  }
 }
 
 async function autofollowupsentSuccess(emailaddress,campaignId,autofollowupId) {
@@ -483,5 +480,21 @@ async function autofollowupsentSuccess(emailaddress,campaignId,autofollowupId) {
   //   }
     
   // }
+
+  const autofollowUpCampaign = asyncHandler(async(req,res)=> {
+
+    console.log('req params',req.params);
+    agenda.define('send test email', async () => {
+      console.log('Job is running!');
+      res.json({
+        "message":"hello ran 3 x"
+      })
+    });
+    
+    (async () => {
+      await agenda.start();
+      await agenda.every('1 minutes', 'send test email');
+    })();    
+})
 
 module.exports = { autofollowUpCampaign  };

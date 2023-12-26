@@ -2,9 +2,9 @@
 
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/engine/reference/builder/
+# https://docs.docker.com/go/dockerfile-reference/
 
-ARG NODE_VERSION=18.17.0
+ARG NODE_VERSION=20.10.0
 
 FROM node:${NODE_VERSION}-alpine
 
@@ -30,7 +30,7 @@ USER node
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 3000
+EXPOSE 7000
 
 # Run the application.
 CMD yarn start

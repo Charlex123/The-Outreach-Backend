@@ -3,7 +3,6 @@ const asyncHandler = require("express-async-handler");
 const campaignSchema = require('../model/campaignSchema');
 const DraftSchema = require("../model/DraftSchema");
 const autofollowSchema = require("../model/autofollowSchema");
-const scheduleSchema = require("../model/scheduleSchema");
 const firstreportsentSchema = require("../model/firstreportsentSchema");
 const User = require("../model/user");
 const { generateTrackingLink } = require('../utils');
@@ -763,13 +762,6 @@ async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to
             {$limit: 1}
           ])
   
-          const getschedule = await campaignSchema.aggregate([ 
-            {$match: {'campaignId':campaignId_}},
-            { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt" }},
-            {$sort: {"emailsubject": -1}},
-            {$limit: 1}
-          ])
-  
           let getautofollowup_ = getautofollowup[0].autofollowup;
           let _id = getautofollowup[0].userId;
           let mailtsentdate  = getautofollowup[0].created;
@@ -790,30 +782,9 @@ async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to
             autofollowup: getautofollowup_
           })
   
-          let getschedule_ = getschedule[0].schedule;
-          let _id_ = getschedule[0].userId;
-          let scheduletracking_ = getschedule[0].tracking;
-          let mailtsentdate_  = getschedule[0].created;
-          const newSchedule = await scheduleSchema.create({
-            userId: _id_,
-            scheduleId: schedule_Id,
-            campaignId: campaignId_,
-            emailId: messageId,
-            threadId: threadId,
-            emailaddress: from,
-            emailsubject: subject,
-            emailbody: body,
-            emailrecipients: testmailrecipient,
-            emailrecipient: to,
-            mailsentDate: mailtsentdate_,
-            tracking: scheduletracking_,
-            schedule: getschedule_
-          })
-  
+          
           newautofollowUp.save();
-  
-          newSchedule.save();
-        }
+      }
 
       } else {
         res.status(404);

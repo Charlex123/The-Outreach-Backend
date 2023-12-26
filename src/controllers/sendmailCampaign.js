@@ -3,8 +3,6 @@ const asyncHandler = require("express-async-handler");
 const campaignSchema = require('../model/campaignSchema');
 const DraftSchema = require("../model/DraftSchema");
 const autofollowSchema = require("../model/autofollowSchema");
-const scheduleSchema = require("../model/scheduleSchema");
-const sendscheduleCamp = require("./sendscheduleCampaign");
 const firstreportsentSchema = require("../model/firstreportsentSchema");
 const User = require("../model/user");
 const { google } = require('googleapis');
@@ -14,6 +12,7 @@ const config = require('../config');
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 const v4 = require("uuid");
+dotenv.config();
 
 const campagn_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
@@ -28,12 +27,8 @@ const defaultthread_Id = `${
   Math.floor(100000000 + Math.random() * 900000000)
 }`;
 
-dotenv.config();
-
 const mailCampaign = asyncHandler(async (req, res) => {
   try {
-      
-      const maildetails = req.body;
       const autofolinterval1 = req.body.followupreply1interval; 
       const autofoltime1 = req.body.followupreply1time;
       const autofollowuptime1 = moment().add({days:autofolinterval1,seconds: autofoltime1});
@@ -732,6 +727,7 @@ async function callNextRun(campaignId_,gmail,accesstoken,refreshtoken,userappkey
   })
 }
 
+
 async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
@@ -815,59 +811,22 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
     campaigndet.nextRun = moment().add(1,'day');
     await campaigndet.save();
 
-      let skipwknds;
-      if(skipweekends == true) {
-        skipwknds = 1-5;
-      }else {
-        // skip weekeds false
-        skipwknds = '*';
-      }
-      // if(repeatinterval != "") {
-        
-      //   let cronexpression;
-      //   if(repeatinterval == "h") {
-      //     cronexpression = `*/10 * * * ${skipwknds}`;
-      //     console.log(' hourly interval ran',cronexpression)
-      //   }
-      //   else if(repeatinterval == "d") {
-      //     cronexpression = `0 12 */${repeattimes} * ${skipwknds}`;
-      //     console.log('daily interval ran', cronexpression)
-      //   }
-      //   else if(repeatinterval == "w") {
-      //     let wtimes;
-      //     if(repeattimes == 1) {
-      //       wtimes = "";
-      //     }
-      //     if(repeattimes == 2) {
-      //       wtimes = 14;
-      //     }
-      //     if(repeattimes == 3) {
-      //       wtimes = 21;
-      //     }
-      //     if(repeattimes == 4) {
-      //       wtimes = 28;
-      //     }
+    if(skipweekends == true) {
+      let day = date.getDay();
+      if((day == 6) || (day ==7)) {
 
-      //     cronexpression = `0 12 */${wtimes} * ${skipwknds}`;
-      //     console.log('weekly interval ran',cronexpression)
-      //   }
-      //   else if(repeatinterval == "m") {
-      //     cronexpression = `0 12 * */${repeattimes} ${skipwknds}`;
-      //     console.log(' monthly interval ran',cronexpression)
-      //   }
-      //   console.log('cron expression',cronexpression)
-      //   cron.schedule(cronexpression, function () {
-      //     console.log('Running Cron Process',cronexpression);
-      //     // Delivering mail with sendMail method
-      //     transporter.sendMail(mailOptions, (error) => {
-      //       if (error) {
-      //         console.error(error);
-      //       } else {
-      //         updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
-      //       }
-      //     });
-      //   });
-      // }
+      }else {
+        // Delivering mail with sendMail method
+        transporter.sendMail(mailOptions, (error) => {
+          if (error) {
+            console.error(error);
+          } else {
+            updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }
+        });
+      }
+    }else {
+      // skip weekeds false
       // Delivering mail with sendMail method
       transporter.sendMail(mailOptions, (error) => {
         if (error) {
@@ -876,6 +835,7 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
           updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
         }
       });
+    }
     
   }
     
@@ -1097,13 +1057,6 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             {$limit: 1}
           ])
   
-          const getschedule = await campaignSchema.aggregate([ 
-            {$match: {'campaignId':campaignId_}},
-            { $project:{"_id":0,"userId":"$userId","schedule": "$schedule","tracking": "$tracking","created":"$createdAt","timezone":"$timezone" }},
-            {$sort: {"emailsubject": -1}},
-            {$limit: 1}
-          ])
-  
           let getautofollowup_ = getautofollowup[0].autofollowup;
           let _id = getautofollowup[0].userId;
           let mailtsentdate  = getautofollowup[0].created;
@@ -1127,33 +1080,8 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             autofollowup: getautofollowup_
           })
   
-          let getschedule_ = getschedule[0].schedule;
-          let _id_ = getschedule[0].userId;
-          let scheduletracking_ = getschedule[0].tracking;
-          let mailtsentdate_  = getschedule[0].created;
-          let schedtimezone = getschedule[0].timezone;
           
-          const newSchedule = await scheduleSchema.create({
-            userId: _id_,
-            scheduleId: schedule_Id,
-            campaignId: campaignId_,
-            emailId: messageId,
-            threadId: threadId,
-            emailaddress: email,
-            name: name,
-            emailsubject: subject,
-            emailbody: body,
-            emailrecipients: campaignrecipients,
-            emailrecipient: to,
-            mailsentDate: mailtsentdate_,
-            timezone: schedtimezone,
-            tracking: scheduletracking_,
-            schedule: getschedule_
-          })
-  
           newautofollowUp.save();
-  
-          newSchedule.save();
         }
 
       } else {
