@@ -207,9 +207,6 @@ agenda.define('send test email', async () => {
                 intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
               }
   
-              res.json({
-                message: "Campaign successfully set"
-              })
             }
           }
         }
@@ -526,14 +523,11 @@ agenda.define('send test email', async () => {
     console.log('req params',req.params);
     agenda.define('send test email', async () => {
       console.log('Job is running!');
-      res.json({
-        "message":"hello ran 3 x"
-      })
     });
     
     (async () => {
       await agenda.start();
-      await agenda.every('1 minutes', 'send test email');
+      await agenda.every('24 hours', 'send test email');
     })();
     
     

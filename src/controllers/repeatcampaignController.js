@@ -226,9 +226,6 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
           intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
         }
 
-        res.json({
-          message: "Campaign successfully set"
-        })
       }
     }
   

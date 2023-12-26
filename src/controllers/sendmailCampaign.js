@@ -379,7 +379,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
               }
 
               res.json({
-                message: "Campaign successfully set"
+                message: "Campaign successfully created"
               })
             }
           }

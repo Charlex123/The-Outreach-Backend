@@ -288,7 +288,7 @@ const testMail = asyncHandler(async (req, res) => {
             }  
 
             res.json({
-              message: "success"
+              message: "Test campaign successfully created"
             })
           }
   
@@ -458,7 +458,7 @@ const testMail = asyncHandler(async (req, res) => {
           }
         
           res.json({
-            message: "success"
+            message: "Test campaign successfully created"
           })
 
         }else if(action === '') {
@@ -543,7 +543,7 @@ const testMail = asyncHandler(async (req, res) => {
             }      
           }
           res.json({
-            message: "success"
+            message: "Test campaign successfully created"
           })
         }
         // 385965910519
