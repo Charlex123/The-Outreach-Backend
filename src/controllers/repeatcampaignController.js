@@ -57,7 +57,7 @@ const loadCampData = async () => {
         if(repeatinterval == 'h') {
           cronexpression = `0 */${repeattimes} * * *`;
         }else if(repeatinterval == 'd') {
-          cronexpression = `0 */${repeattimes} * * *`;
+          cronexpression = `0 0 */${repeattimes} * *`;
         }else if(repeatinterval == 'w') {
           cronexpression = `0 */${repeattimes} * * *`;
         }else if(repeatinterval == 'm') {

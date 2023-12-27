@@ -823,25 +823,25 @@ async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to
         addEmailToLabel(labelId, messageId,from);
       }
       // Function to add an email to a label.
-      // function addEmailToLabel(labelId, messageId,from) {
-      //   // Specify the email ID and label you want to add the email to.
-      //   const emailId = messageId;
+      function addEmailToLabel(labelId, messageId,from) {
+        // Specify the email ID and label you want to add the email to.
+        const emailId = messageId;
 
-      //   gmail.users.messages.modify({
-      //     userId: 'me',
-      //     id: emailId,
-      //     resource: {
-      //       addLabelIds: [labelId],
-      //     },
-      //   }, (err, response) => {
-      //     if (err) {
-      //       console.error('Error adding email to label:', err);
-      //     } else {
-      //       console.log('Email added to label:', response);
-      //       firstsentreport_(from)
-      //     }
-      //   });
-      // }
+        gmail.users.messages.modify({
+          userId: 'me',
+          id: emailId,
+          resource: {
+            addLabelIds: [labelId],
+          },
+        }, (err, response) => {
+          if (err) {
+            console.error('Error adding email to label:', err);
+          } else {
+            console.log('Email added to label:', response);
+            firstsentreport_(from)
+          }
+        });
+      }
 
     } else {
       console.log('No messages found.');
