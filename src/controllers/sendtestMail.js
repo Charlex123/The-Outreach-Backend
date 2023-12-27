@@ -203,7 +203,6 @@ const testMail = asyncHandler(async (req, res) => {
         
         console.log('mail send action here',req.body.mailsendtesttype)
         let recipientLists = testmailrecipient.split(',');
-        let campaignrecipients = recipientLists;
 
         if(action == '1') {
           const newMailCampaign = await campaignSchema.create({
