@@ -514,7 +514,6 @@ agenda.define('send test email', async () => {
       console.log(error)
     }
   
-    
   };
   
 

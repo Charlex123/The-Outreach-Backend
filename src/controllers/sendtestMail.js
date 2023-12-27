@@ -201,6 +201,8 @@ const testMail = asyncHandler(async (req, res) => {
         }
         
         console.log('mail send action here',req.body.mailsendtesttype)
+        let recipientLists = recpts.split(',');
+        let campaignrecipients = recipientLists;
 
         if(action == '1') {
           const newMailCampaign = await campaignSchema.create({
@@ -263,8 +265,7 @@ const testMail = asyncHandler(async (req, res) => {
           });
     
           if(newMailCampaign.save()) {
-            let recipientLists = recpts.split(',');
-
+            
             let campaignId_ = newMailCampaign.campaignId;
             
             const getfirstreportSent = await firstreportsentSchema.find({"useremail":useremail,"firstmailsentreport":"unsent"});
@@ -348,12 +349,15 @@ const testMail = asyncHandler(async (req, res) => {
             console.log('create draft schema true/false')
             const newMailCampaignDraft = await DraftSchema.create({
               userId: _id,
-              emailId: draft_id,
+              campaignId: campagn_Id,
+              emailId: draftId,
               threadId: defaultthread_Id,
               emailaddress: useremail,
               emailsubject: emailsubject,
               emailbody: emailbody,
-              emailrecipients: testmailrecipient,
+              emailrecipients: campaignrecipients,
+              recipientscount: recipientLists.length,
+              timezone: timezone,
               tracking: {
                 isOpened: trackbyopen,
                 isClicked: trackbyclicks,
@@ -367,18 +371,21 @@ const testMail = asyncHandler(async (req, res) => {
                   reply1interval: followupreply1interval,
                   reply1time: followupreply1time,
                   reply1message: followupreply1message,
+                  status: "unsent",
                 },
                 secondfollowup: {
                   reply2type: followupreply2type,
                   reply2interval: followupreply2interval,
                   reply2time: followupreply2time,
                   reply2message: followupreply2message,
+                  status: "unsent",
                 },
                 thirdfollowup: {
                   reply3type: followupreply3type,
                   reply3interval: followupreply3interval,
                   reply3time: followupreply3time,
                   reply3message: followupreply3message,
+                  status: "unsent",
                 },
               },
               schedule: {

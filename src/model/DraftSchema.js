@@ -13,15 +13,22 @@ const DraftSchema = new mongoose.Schema({
     ref: 'User'
   },
   campaignId: {
-    type: Number
+    type: Number,
+    required: true
   },
   emailId: {
     type: String,
     required: true
   },
+  threadId: {
+    type: String,
+  },
   emailaddress: {
     type: String,
     required: true
+  },
+  name: {
+    type: String
   },
   emailsubject: {
     type: String,
@@ -35,16 +42,61 @@ const DraftSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  recipientscount: {
+    type: Number,
+    default: 0
+  },
+  recipientsdeliveredto: {
+    type: String,
+    default: ""
+  },
+  recipientsdeliveredtocount: {
+    type: Number,
+    default: 0
+  },
+  remainingrecipients: {
+    type: String,
+    default: ""
+  },
+  remainingrecipientscount: {
+    type: Number,
+    default: 0
+  },
+  timezone: {
+    type: String
+  },
   createdAt:{
     type:Date,
     default:Date.now()
   },
+  Opens: {
+    type: Number,
+    default: 0
+  },
+  Clicks: {
+    type: Number,
+    default: 0
+  },
+  Bounces: {
+    type: Number,
+    default: 0
+  },
+  Replies: {
+    type: Number,
+    default: 0
+  },
+  nextRun: {
+    type: Date,
+    default: null
+  },
   tracking: {
     isOpened: {
       type: Boolean,
+      default: true
     },
     isClicked: {
       type: Boolean,
+      default: true
     },
     redlinktext: {
       type: String
@@ -57,49 +109,64 @@ const DraftSchema = new mongoose.Schema({
     type: String
   },
   autofollowup: {
-    firstfollowup: {
-      reply1type: {
-        type: String,
+      firstfollowup: {
+        reply1type: {
+          type: String,
+        },
+        reply1interval: {
+          type: Number
+        },
+        reply1time: {
+          type: Date,
+          default: null
+        },
+        reply1message: {
+          type: String
+        },
+        status: {
+          type: String,
+          default: 'unsent'
+        }
       },
-      reply1interval: {
-        type: Number
-      },
-      reply1time: {
-        type: String
-      },
-      reply1message: {
-        type: String
-      },
-    },
-    secondfollowup: {
-      reply2type: {
-        type: String,
-      },
-      reply2interval: {
-        type: Number,
-      },
-      reply2time: {
-        type: String,
-      },
-      reply2message: {
-        type: String
-      },
-    },      
-    thirdfollowup: {
-      reply3type: {
-        type: String,
-      },
-      reply3interval: {
-        type: Number,
-      },
-      reply3time: {
-        type: String,
-      },
-      reply3message: {
-        type: String
+      secondfollowup: {
+        reply2type: {
+          type: String,
+        },
+        reply2interval: {
+          type: Number,
+        },
+        reply2time: {
+          type: Date,
+          default: null
+        },
+        reply2message: {
+          type: String
+        },
+        status: {
+          type: String,
+          default: 'unsent'
+        }
+      },      
+      thirdfollowup: {
+        reply3type: {
+          type: String,
+        },
+        reply3interval: {
+          type: Number,
+        },
+        reply3time: {
+          type: Date,
+          default: null
+        },
+        reply3message: {
+          type: String
+        },
+        status: {
+          type: String,
+          default: 'unsent'
+        }
       }
-    }
-  },  
+    },  
   schedule: {
     scheduletime: {
       type: String
@@ -109,7 +176,8 @@ const DraftSchema = new mongoose.Schema({
     },
     speed: {
       mailsPerDay: {
-        type: String
+        type: Number,
+        default: null
       },
       delay: {
         type: String
@@ -120,7 +188,8 @@ const DraftSchema = new mongoose.Schema({
         type: String
       },
       repeattimes: {
-        type: String
+        type: Number,
+        default: null
       }
     }
   },
@@ -133,7 +202,7 @@ const DraftSchema = new mongoose.Schema({
       type: String
     },
     verifyemail: {
-      type: Boolean
+      type: String
     }
   }
 });
