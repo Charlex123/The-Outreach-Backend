@@ -57,11 +57,11 @@ const loadCampData = async () => {
         if(repeatinterval == 'h') {
           cronexpression = `0 */${repeattimes} * * *`;
         }else if(repeatinterval == 'd') {
-          cronexpression = `0 0 */${repeattimes} * *`;
+          cronexpression = `0 12 */${repeattimes} * *`;
         }else if(repeatinterval == 'w') {
-          cronexpression = `0 */${repeattimes} * * *`;
+          cronexpression = `0 12 * * 1/${repeattimes}`;
         }else if(repeatinterval == 'm') {
-          cronexpression = `0 */${repeattimes} * * *`;
+          cronexpression = `0 12 1 */${repeattimes} *`;
         }
         cron.schedule(cronexpression, function() {
           console.log('repeat camp is ran -----')
