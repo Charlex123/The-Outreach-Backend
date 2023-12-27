@@ -46,7 +46,7 @@ const testMail = asyncHandler(async (req, res) => {
 
       process.env.TZ = req.body.timezone;
 
-      const recpts = req.body.testemailrecipients;
+      const testmailrecipient = req.body.testemailrecipients;
       const name = req.body.name;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
@@ -78,6 +78,7 @@ const testMail = asyncHandler(async (req, res) => {
       const sendas = req.body.sendas;
       const verifyemail = req.body.verifyemails;
 
+      console.log('test mail recpts',recpts)
       // const { emails, body, subject,draft,rt } = req.body;
       // let drafttMessageId = draft.split(':')[1]
       // let labelId = req.user?.emailLabels.find((label) => {
@@ -201,7 +202,7 @@ const testMail = asyncHandler(async (req, res) => {
         }
         
         console.log('mail send action here',req.body.mailsendtesttype)
-        let recipientLists = recpts.split(',');
+        let recipientLists = testmailrecipient.split(',');
         let campaignrecipients = recipientLists;
 
         if(action == '1') {
@@ -213,7 +214,7 @@ const testMail = asyncHandler(async (req, res) => {
             emailaddress: useremail,
             emailsubject: emailsubject,
             emailbody: emailbody,
-            emailrecipients: campaignrecipients,
+            emailrecipients: testmailrecipient,
             recipientscount: recipientLists.length,
             timezone: timezone,
             tracking: {
@@ -355,7 +356,7 @@ const testMail = asyncHandler(async (req, res) => {
               emailaddress: useremail,
               emailsubject: emailsubject,
               emailbody: emailbody,
-              emailrecipients: campaignrecipients,
+              emailrecipients: testmailrecipient,
               recipientscount: recipientLists.length,
               timezone: timezone,
               tracking: {
