@@ -78,7 +78,7 @@ const testMail = asyncHandler(async (req, res) => {
       const sendas = req.body.sendas;
       const verifyemail = req.body.verifyemails;
 
-      console.log('test mail recpts',recpts)
+      console.log('test mail recpts',testmailrecipient)
       // const { emails, body, subject,draft,rt } = req.body;
       // let drafttMessageId = draft.split(':')[1]
       // let labelId = req.user?.emailLabels.find((label) => {
