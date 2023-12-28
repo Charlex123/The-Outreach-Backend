@@ -30,7 +30,7 @@ agenda.define('send test email', async () => {
       const recpcount = campaignd.recipientscount;
       const rmrecptcount = campaignd.remainingrecipientscount;
       const recptsdeliveredtocount = campaignd.recipientsdeliveredtocount;
-      if(moment().isSameOrAfter(nxtrun) && recptsdeliveredtocount < recpcount) {
+      if(moment().isSameOrAfter(nxtrun) && rmrecptcount < recpcount) {
         console.log('next run reached and ran')
         const skipweekends = campaignd.schedule.skipweekends;
         const repeatinterval = campaignd.schedule.repeat.repeatinterval;
@@ -65,9 +65,6 @@ agenda.define('send test email', async () => {
             const accessToken = verifiedUser.accessToken;
             const refreshToken = verifiedUser.refreshToken;
             const userappkey = verifiedUser.userAppKey;
-
-            console.log('access token', accessToken,'refresh token',refreshToken)
-            console.log('schedule delay',delay_,'schedule time',schedtime)
             const oAuth2Client = new google.auth.OAuth2(
               config.client_id,
               config.client_secret,
@@ -98,9 +95,12 @@ agenda.define('send test email', async () => {
     
             if((mailsperday > remainingrecipientscount)) {
               remrecipients_ = remainingrecipients;
+              console.log(' rem repct ',remrecipients_)
               remrecptstosendmailto = remainingrecipientscount;
+              console.log(' rem repct to send to',remrecptstosendmailto)
               remrecipientLista = remrecipients_.split(',');
-              startcount = remrecipientLista[0];
+              console.log('re recp lista',remrecipientLista.length)
+              startcount = remrecipientLista[0].length;
               const remuniqueSet = new Set(remrecipientLista);
               // Convert the Set back to an array
               recipientLists = [...remuniqueSet];
@@ -108,15 +108,19 @@ agenda.define('send test email', async () => {
             }else {
               remrecptstosendmailto = remainingrecipientscount - mailsperday;
               remrecipients_ = remainingrecipients;
+              console.log(' rem repct ',remrecipients_)
+              console.log(' rem repct to send to',remrecptstosendmailto)
               remrecipientLista = remrecipients_.split(',');
-              startcount = remrecipientLista[0];
+              console.log('re recp lista',remrecipientLista.length)
+              startcount = remrecipientLista[0].length;
               const remuniqueSet = new Set(remrecipientLista);
               // Convert the Set back to an array
               recipientLists = [...remuniqueSet];
               console.log('mailsperday is less than',recipientLists)
             }
-            console.log('currentIndex ---',currentIndex);
+
             console.log('remrecptstosendmailto -----',remrecptstosendmailto);
+            console.log('start count ---',startcount);
             
             if(schedtime == "Now") {
               startnxtrunmailSending();
@@ -143,13 +147,14 @@ agenda.define('send test email', async () => {
                     // Check if there are more elements to process
                     if (currentIndex < remrecptstosendmailto) {
                       const recipient = recipientLists[currentIndex];
+                      console.log(' call next run recipient 11',recipient)
                       sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                       // Increment the index for the next iteration
                       currentIndex++;
                     } else {
                       // If all elements have been processed, stop the interval
                       clearInterval(intervalId);
-                      console.log("Finished processing all items.");
+                      console.log("Finished processing all items at 1.");
                     }
                   }
                   sendToEachRecipient(); // Run it once immediately
@@ -160,13 +165,14 @@ agenda.define('send test email', async () => {
                   // Check if there are more elements to process
                   if (currentIndex < remrecptstosendmailto) {
                     const recipient = recipientLists[currentIndex];
+                    console.log(' call next run recipient 22',recipient)
                     sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
                     // If all elements have been processed, stop the interval
                     clearInterval(intervalId);
-                    console.log("Finished processing all items.");
+                    console.log("Finished processing all items at 2");
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
@@ -177,13 +183,14 @@ agenda.define('send test email', async () => {
                   // Check if there are more elements to process
                   if (currentIndex < remrecptstosendmailto) {
                     const recipient = recipientLists[currentIndex];
+                    console.log(' call next run recipient 33',recipient)
                     sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
                     // If all elements have been processed, stop the interval
                     clearInterval(intervalId);
-                    console.log("Finished processing all items.");
+                    console.log("Finished processing all items at 3.");
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately
@@ -194,13 +201,14 @@ agenda.define('send test email', async () => {
                   // Check if there are more elements to process
                   if (currentIndex < remrecptstosendmailto) {
                     const recipient = recipientLists[currentIndex];
+                    console.log(' call next run recipient 55',recipient)
                     sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
                     // If all elements have been processed, stop the interval
                     clearInterval(intervalId);
-                    console.log("Finished processing all items.");
+                    console.log("Finished processing all items at 4.");
                   }
                 }
                 sendToEachRecipient(); // Run it once immediately

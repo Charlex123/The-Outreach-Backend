@@ -109,7 +109,7 @@ const loadAutoFollowUp = async () => {
               // }
               
             }else {
-              console.log('timer zz1 occurred')
+              console.log('timer zz1 occurred ---')
               sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
           } 
@@ -133,7 +133,7 @@ const loadAutoFollowUp = async () => {
               // }
               
             }else {
-              console.log('timer zz2 occurred')
+              console.log('timer zz2 occurred ----')
               sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
           }
@@ -225,6 +225,7 @@ loadAutoFollowUp()
 
 async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id) {
 
+  console.log('send autofollow up email ran --')
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
 
