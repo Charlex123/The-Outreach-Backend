@@ -17,7 +17,7 @@ dotenv.config();
 
 const loadAutoFollowUp = async () => {
   
-  const getautofollowups = await autofollowSchema.find();
+  const getautofollowups = await autofollowSchema.find({$or:[{"autofollowup.firstfollowup.status":"unsent"},{"autofollowup.secondfollowup.status":"unsent"},{"autofollowup.thirdfollowup.status":"unsent"}]});
   for (const autofollowup of getautofollowups) {
     console.log('autofollowup --- auto follow upppp')
     try {
@@ -92,7 +92,6 @@ const loadAutoFollowUp = async () => {
           if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
             console.log('rrrrr1',followupreply1type)
             if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
-              console.log('timer zz1 occurred')
               if(moment().isSameOrAfter(followupreply1time)) {
                 console.log('hella after time',moment(followupreply1time))
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
@@ -116,7 +115,6 @@ const loadAutoFollowUp = async () => {
     
           if(followupreply2type && followupreply2type !== "" && followupreply2type === "r") {
             if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
-              console.log('timer zz2 occurred')
               if(moment().isSameOrAfter(followupreply2time)) {
                 console.log('hella after time 2',moment(followupreply2time))
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
@@ -133,7 +131,6 @@ const loadAutoFollowUp = async () => {
               // }
               
             }else {
-              console.log('timer zz2 occurred ----')
               sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
           }
@@ -157,7 +154,6 @@ const loadAutoFollowUp = async () => {
               // }
               
             }else {
-              console.log('timer zz3 occurred')
               sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
           } 
@@ -298,7 +294,7 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
     if (error) console.log(error);
     else {
       console.log('Email sent: ' + info.response);
-      updateautofollowupsentStatus(useremail,campaign_Id,autofollowupId)
+      updateautofollowupsentStatus(useremail,campaign_Id,autofollowup_Id)
       autofollowupsentSuccess(useremail,campaign_Id,autofollowup_Id)
     }
   });
@@ -330,18 +326,18 @@ async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowup
   }
 }
 
-async function autofollowupsentSuccess(emailaddress,campaignId,autofollowupId) {
-  const updatedgetautofollupStat = await autofollowSchema.findOne({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
-  if(updatedgetautofollupStat) {
-    if(updatedgetautofollupStat.autofollowup.firstfollowup.status == "sent" && updatedgetautofollupStat.autofollowup.secondfollowup.status == "sent" && updatedgetautofollupStat.autofollowup.thirdfollowup.status == "sent") {
-      const updatedautofollowupcampaign = await campaignSchema.find({'emailaddress':useremail,'campaignId': campaignId});
-      updatedautofollowupcampaign.autofollowup.firstfollowup.status = "sent";
-      updatedautofollowupcampaign.autofollowup.secondfollowup.status = "sent";
-      updatedautofollowupcampaign.autofollowup.thirdfollowup.status = "sent";
-    }
+// async function autofollowupsentSuccess(emailaddress,campaignId,autofollowupId) {
+//   const updatedgetautofollupStat = await autofollowSchema.findOne({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
+//   if(updatedgetautofollupStat) {
+//     if(updatedgetautofollupStat.autofollowup.firstfollowup.status == "sent" && updatedgetautofollupStat.autofollowup.secondfollowup.status == "sent" && updatedgetautofollupStat.autofollowup.thirdfollowup.status == "sent") {
+//       const updatedautofollowupcampaign = await campaignSchema.find({'emailaddress':emailaddress,'campaignId': campaignId});
+//       updatedautofollowupcampaign.autofollowup.firstfollowup.status = "sent";
+//       updatedautofollowupcampaign.autofollowup.secondfollowup.status = "sent";
+//       updatedautofollowupcampaign.autofollowup.thirdfollowup.status = "sent";
+//     }
       
-  }
-}
+//   }
+// }
 // async function sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail,accesstoken,refreshtoken,redlinktexta,redlinkurla,autofollowup_Id) {
 
 //   let redlinktexter = redlinktexta;

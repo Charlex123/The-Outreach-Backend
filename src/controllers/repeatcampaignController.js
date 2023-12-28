@@ -106,9 +106,6 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         auth: oAuth2Client
       });
         
-      const accesstoken = accessToken;
-      const refreshtoken = accessToken;
-
       let intervalId;
       let startcount;
       let recipientLists;
@@ -158,7 +155,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
               // Check if there are more elements to process
               if (currentIndex < remrecptstosendmailto) {
                 const recipient = recipientLists[currentIndex];
-                sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                 // Increment the index for the next iteration
                 currentIndex++;
               } else {
@@ -175,7 +172,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             // Check if there are more elements to process
             if (currentIndex < remrecptstosendmailto) {
               const recipient = recipientLists[currentIndex];
-              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
               // Increment the index for the next iteration
               currentIndex++;
             } else {
@@ -192,7 +189,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             // Check if there are more elements to process
             if (currentIndex < remrecptstosendmailto) {
               const recipient = recipientLists[currentIndex];
-              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
               // Increment the index for the next iteration
               currentIndex++;
             } else {
@@ -209,7 +206,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             // Check if there are more elements to process
             if (currentIndex < remrecptstosendmailto) {
               const recipient = recipientLists[currentIndex];
-              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
               // Increment the index for the next iteration
               currentIndex++;
             } else {
@@ -228,7 +225,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
 }
 
 
-  async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+  async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accessToken,refreshToken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
     console.log('send mail function ran')
     let redlinktexter = redlinktexta;
     let redlinkurler = redlinkurla;
@@ -249,8 +246,8 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         user: useremail,
         clientId: config.client_id,
         clientSecret: config.client_secret,
-        refreshToken: refreshtoken,
-        accessToken: accesstoken
+        refreshToken: refreshToken,
+        accessToken: accessToken
       }
     });
   

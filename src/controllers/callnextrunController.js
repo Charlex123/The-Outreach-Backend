@@ -83,9 +83,6 @@ agenda.define('send test email', async () => {
               auth: oAuth2Client
             });
               
-            const accesstoken = accessToken;
-            const refreshtoken = accessToken;
-
             let intervalId;
             let recipientLists;
             let remrecipients_
@@ -135,7 +132,7 @@ agenda.define('send test email', async () => {
                     if (currentIndex < remrecptstosendmailto) {
                       const recipient = recipientLists[currentIndex];
                       console.log(' call next run recipient 11',recipient)
-                      sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                      sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                       // Increment the index for the next iteration
                       currentIndex++;
                     } else {
@@ -153,7 +150,7 @@ agenda.define('send test email', async () => {
                   if (currentIndex < remrecptstosendmailto) {
                     const recipient = recipientLists[currentIndex];
                     console.log(' call next run recipient 22',recipient)
-                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -171,7 +168,7 @@ agenda.define('send test email', async () => {
                   if (currentIndex < remrecptstosendmailto) {
                     const recipient = recipientLists[currentIndex];
                     console.log(' call next run recipient 33',recipient)
-                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -189,7 +186,7 @@ agenda.define('send test email', async () => {
                   if (currentIndex < remrecptstosendmailto) {
                     const recipient = recipientLists[currentIndex];
                     console.log(' call next run recipient 55',recipient)
-                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accesstoken, refreshtoken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+                    sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
                     // Increment the index for the next iteration
                     currentIndex++;
                   } else {
@@ -214,7 +211,7 @@ agenda.define('send test email', async () => {
   await agenda.every('1 minute', 'send test email');
 })();
 
-  async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+  async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accessToken,refreshToken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
     console.log('send mail function ran')
     let redlinktexter = redlinktexta;
     let redlinkurler = redlinkurla;
@@ -235,8 +232,8 @@ agenda.define('send test email', async () => {
         user: useremail,
         clientId: config.client_id,
         clientSecret: config.client_secret,
-        refreshToken: refreshtoken,
-        accessToken: accesstoken
+        refreshToken: refreshToken,
+        accessToken: accessToken
       }
     });
   
