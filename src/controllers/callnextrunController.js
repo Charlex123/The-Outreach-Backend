@@ -87,7 +87,6 @@ agenda.define('send test email', async () => {
             const refreshtoken = accessToken;
 
             let intervalId;
-            let startcount;
             let recipientLists;
             let remrecipients_
             let remrecptstosendmailto;
@@ -95,32 +94,21 @@ agenda.define('send test email', async () => {
     
             if((mailsperday > remainingrecipientscount)) {
               remrecipients_ = remainingrecipients;
-              console.log(' rem repct ',remrecipients_)
               remrecptstosendmailto = remainingrecipientscount;
-              console.log(' rem repct to send to',remrecptstosendmailto)
               remrecipientLista = remrecipients_.split(',');
-              console.log('re recp lista',remrecipientLista.length)
-              startcount = remrecipientLista[0].length;
               const remuniqueSet = new Set(remrecipientLista);
               // Convert the Set back to an array
               recipientLists = [...remuniqueSet];
-              console.log('mailsperday is greater',recipientLists)
             }else {
               remrecptstosendmailto = remainingrecipientscount - mailsperday;
               remrecipients_ = remainingrecipients;
-              console.log(' rem repct ',remrecipients_)
-              console.log(' rem repct to send to',remrecptstosendmailto)
               remrecipientLista = remrecipients_.split(',');
-              console.log('re recp lista',remrecipientLista.length)
-              startcount = remrecipientLista[0].length;
               const remuniqueSet = new Set(remrecipientLista);
               // Convert the Set back to an array
               recipientLists = [...remuniqueSet];
-              console.log('mailsperday is less than',recipientLists)
             }
 
             console.log('remrecptstosendmailto -----',remrecptstosendmailto);
-            console.log('start count ---',startcount);
             
             if(schedtime == "Now") {
               startnxtrunmailSending();
@@ -139,10 +127,9 @@ agenda.define('send test email', async () => {
     
             function startnxtrunmailSending() {
               console.log('start mail sending ran')
-              let currentIndex = startcount;
+              let currentIndex = 0;
     
               if(delay_ === "1") {
-                
                   function sendToEachRecipient() {
                     // Check if there are more elements to process
                     if (currentIndex < remrecptstosendmailto) {
