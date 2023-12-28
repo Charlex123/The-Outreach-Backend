@@ -120,20 +120,16 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         remrecipients_ = remainingrecipients;
         remrecptstosendmailto = remainingrecipientscount;
         remrecipientLista = remrecipients_.split(',');
-        startcount = remrecipientLista[0];
         const remuniqueSet = new Set(remrecipientLista);
         // Convert the Set back to an array
         recipientLists = [...remuniqueSet];
-        console.log('mailsperday is greater',recipientLists)
       }else {
         remrecptstosendmailto = remainingrecipientscount - mailsperday;
         remrecipients_ = remainingrecipients;
         remrecipientLista = remrecipients_.split(',');
-        startcount = remrecipientLista[0];
         const remuniqueSet = new Set(remrecipientLista);
         // Convert the Set back to an array
         recipientLists = [...remuniqueSet];
-        console.log('mailsperday is less than',recipientLists)
       }
       console.log('remrecptstosendmailto -----',remrecptstosendmailto);
       
