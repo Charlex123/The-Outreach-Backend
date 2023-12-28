@@ -304,9 +304,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
               let currentIndex = 0;
               
               if(delay_ === "1") {
-                
+                  
                   function sendToEachRecipient() {
-                    let intervalId;
                     // Check if there are more elements to process
                     if (currentIndex < sendtorecptscount) {
                       const recipient = recipientLists[currentIndex];
@@ -851,7 +850,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           if(deliveredtocount <= noofrecptstosendto) {
             deliveredtocount++;
             rmrecipientscount = campaignrecipientscount - deliveredtocount;
-
+            console.log('rem recpt array count',rmrecipientsarray.length)
             if(rmrecipientsarray.length > 1) {
               rmrecipientsarray.splice(indexofrecpt, 1)
               rmrecipientsarray = rmrecipientsarray;
