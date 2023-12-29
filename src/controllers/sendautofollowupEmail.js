@@ -294,7 +294,7 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
     if (error) console.log(error);
     else {
       console.log('Email sent: ' + info.response);
-      updateautofollowupsentStatus(useremail,campaign_Id,autofollowup_Id)
+      updateautofollowupsentStatus(useremail,campaign_Id,autofollowup_Id,body)
       autofollowupsentSuccess(useremail,campaign_Id,autofollowup_Id)
     }
   });
@@ -303,21 +303,27 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
 }
 
 
-async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowupId) {
+async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowupId,body) {
   const getautofollupStat = await autofollowSchema.find({"emailaddress":emailaddress,"campaignId": campaignId,"autofollowupId":autofollowupId});
   if(getautofollupStat) {
     for(const gautofollowupStat of getautofollupStat) {
       if(gautofollowupStat.autofollowup.firstfollowup.status != undefined && gautofollowupStat.autofollowup.firstfollowup.status != "" && gautofollowupStat.autofollowup.firstfollowup.status == "unsent") {
-        gautofollowupStat.autofollowup.firstfollowup.status = "sent";
-        await gautofollowupStat.save();
+        if(gautofollowupStat.autofollowup.firstfollowup.reply1message == body) {
+          gautofollowupStat.autofollowup.firstfollowup.status = "sent";
+          await gautofollowupStat.save();
+        } 
       }
       if(gautofollowupStat.autofollowup.secondfollowup.status != undefined && gautofollowupStat.autofollowup.secondfollowup.status != "" && gautofollowupStat.autofollowup.secondfollowup.status == "unsent") {
-        gautofollowupStat.autofollowup.secondfollowup.status = "sent";
-        await gautofollowupStat.save();
+        if(gautofollowupStat.autofollowup.secondfollowup.reply2message == body) {
+          gautofollowupStat.autofollowup.secondfollowup.status = "sent";
+          await gautofollowupStat.save();
+        }
       }
       if(gautofollowupStat.autofollowup.thirdfollowup.status != undefined && gautofollowupStat.autofollowup.thirdfollowup.status != "" && gautofollowupStat.autofollowup.thirdfollowup.status == "unsent") {
-        gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
-        await gautofollowupStat.save();
+        if(gautofollowupStat.autofollowup.thirdfollowup.reply3message == body) {
+          gautofollowupStat.autofollowup.thirdfollowup.status = "sent";
+          await gautofollowupStat.save();
+        }
       }
     }
     
