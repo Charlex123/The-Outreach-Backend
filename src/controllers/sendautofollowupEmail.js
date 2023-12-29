@@ -204,6 +204,7 @@ const loadAutoFollowUp = async () => {
       console.error(`Ooops!!! something occurred: ${error}`);
     }
   } 
+  
 }
 loadAutoFollowUp()
 
