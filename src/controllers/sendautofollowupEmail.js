@@ -89,74 +89,86 @@ const loadAutoFollowUp = async () => {
             });
           }
 
-          if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
-            console.log('rrrrr1',followupreply1type)
-            if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
-              if(moment().isSameOrAfter(followupreply1time)) {
-                console.log('hella after time',moment(followupreply1time))
+          if(followupreply1status == "unsent") {
+            if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
+              console.log('rrrrr1',followupreply1type)
+              if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
+                if(moment().isSameOrAfter(followupreply1time)) {
+                  console.log('hella after time',moment(followupreply1time))
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                }
+                // else {
+                //   console.log('hella before time',moment(followupreply1time))
+                //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                // }
+                // send first autofollowupreport
+                // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                // console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
+                // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+                //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+                // }
+                
+              }else {
+                console.log('timer zz1 occurred ---')
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
-              // else {
-              //   console.log('hella before time',moment(followupreply1time))
-              //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-              // }
-              // send first autofollowupreport
-              // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-              // console.log('get first sent report aaa',Object.keys(getfirstautofol_upsentReport).length)
-              // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-              //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-              // }
-              
-            }else {
-              console.log('timer zz1 occurred ---')
-              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-            }
-          } 
-    
-          if(followupreply2type && followupreply2type !== "" && followupreply2type === "r") {
-            if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
-              if(moment().isSameOrAfter(followupreply2time)) {
-                console.log('hella after time 2',moment(followupreply2time))
+            } 
+          }else {
+            console.log('auto follow up 1 has been sent',followupreply1status)
+          }
+
+          if(followupreply2status == "unsent") {
+            if(followupreply2type && followupreply2type !== "" && followupreply2type === "r") {
+              if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
+                if(moment().isSameOrAfter(followupreply2time)) {
+                  console.log('hella after time 2',moment(followupreply2time))
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                }
+                // else {
+                //   console.log('hella before time 2',moment(followupreply2time))
+                //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                // }
+                // send first autofollowupreport
+                // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                // console.log('get first sent report',getfirstautofol_upsentReport)
+                // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+                //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+                // }
+                
+              }else {
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
-              // else {
-              //   console.log('hella before time 2',moment(followupreply2time))
-              //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-              // }
-              // send first autofollowupreport
-              // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-              // console.log('get first sent report',getfirstautofol_upsentReport)
-              // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-              //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-              // }
-              
-            }else {
-              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
+          }else {
+            console.log('auto follow up 2 has been sent',followupreply2status)
           }
           
-          if(followupreply3type && followupreply3type !== "" && followupreply3type === "r") {
-            if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
-              
-              if(moment().isSameOrAfter(followupreply3time)) {
-                console.log('hella after time 3',moment(followupreply3time))
+          if(followupreply3status == "unsent") {
+            if(followupreply3type && followupreply3type !== "" && followupreply3type === "r") {
+              if(followupreply3time && followupreply3time !== "" && followupreply3time !== undefined && followupreply3time !== null) {
+                
+                if(moment().isSameOrAfter(followupreply3time)) {
+                  console.log('hella after time 3',moment(followupreply3time))
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                }
+                // else {
+                //   console.log('hella before time 3',moment(followupreply3time))
+                //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                // }
+                // send first autofollowupreport
+                // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
+                // console.log('get first sent report',getfirstautofol_upsentReport)
+                // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
+                //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
+                // }
+                
+              }else {
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
-              // else {
-              //   console.log('hella before time 3',moment(followupreply3time))
-              //   sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
-              // }
-              // send first autofollowupreport
-              // const getfirstautofol_upsentReport = await firstreportsentSchema.find({"useremail":useremail,"firstautofollowupemailreport":"unsent"});
-              // console.log('get first sent report',getfirstautofol_upsentReport)
-              // if(Object.keys(getfirstautofol_upsentReport).length > 0) {
-              //   sendfirstautofollowupsentReport(thread_Id,campaign_Id,message_Id,userappkey,gmail,useremail, accessToken, refreshToken,redlinktexta,redlinkurla,autofollowup_Id);
-              // }
-              
-            }else {
-              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
-          } 
+          }else {
+            console.log('auto follow up 3 has been sent',followupreply3status)
+          }
       
         }else {
           console.log("user not found")
