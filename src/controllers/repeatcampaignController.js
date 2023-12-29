@@ -507,7 +507,6 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
               console.error('Error adding email to label:', err);
             } else {
               console.log('Email added to label:');
-              firstsentreport_(email)
             }
           });
         }
