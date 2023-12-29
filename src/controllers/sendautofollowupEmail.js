@@ -203,8 +203,7 @@ const loadAutoFollowUp = async () => {
     } catch (error) {
       console.error(`Ooops!!! something occurred: ${error}`);
     }
-  } 
-  
+  }  
 }
 loadAutoFollowUp()
 
