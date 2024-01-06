@@ -363,10 +363,11 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
           let deliveredto = campaign.recipientsdeliveredto;
           let deliveredtocount = campaign.recipientsdeliveredtocount;
           let mailsperday = campaign.schedule.speed.mailsPerDay;
+          let rptcount = campaign.repeatcount;
           let campaignrecipients = campaign.emailrecipients;
           let campaignrecipientscount = campaign.recipientscount;
           const recipient = to;
-  
+
           let rmrecipientsarray = rmrecipients.split(',');
           let campaignrecipientsarray = campaignrecipients.split(',');
           let recipientsdeliveredtoarray = deliveredto.split(',');
@@ -423,13 +424,17 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
           campaign.recipientsdeliveredtocount = deliveredtocount;
           campaign.remainingrecipientscount = rmrecipientscount;
           campaign.remainingrecipients = rmrecipientsarray.toString();
+
+          if(rmrecipientscount == 0 && (campaignrecipientscount == deliveredtocount)) {
+            campaign.repeatcount = rptcount+1;
+          }
             
           const updatedCampgn = await campaign.save();
           if(updatedCampgn) {
   
             const getautofollowup = await campaignSchema.aggregate([ 
               {$match: {'campaignId':campaignId_}},
-              { $project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt","timezone":"$timezone" }},
+              {$project:{"_id":0,"userId":"$userId","autofollowup": "$autofollowup","tracking": "$tracking","created":"$createdAt","timezone":"$timezone" }},
               {$sort: {"emailsubject": -1}},
               {$limit: 1}
             ])
