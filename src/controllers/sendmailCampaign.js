@@ -154,7 +154,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
 
                         // Extract the message ID
                         const messageId = res.data.message.id;
-
                         resolve(messageId);
                     });
                 } else {
@@ -420,14 +419,14 @@ const mailCampaign = asyncHandler(async (req, res) => {
                   (sendErr, sendResponse) => {
                     createdraftModelSchema(draft_id)
                       
-                    // if (sendErr) {
-                    //   console.error('Error sending draft:', sendErr);
-                    // } else {
-                    //   console.log('Draft sent:', sendResponse.data);
-                    //   createdraftModelSchema(draft_id)
-                    //   adddrafttodraftLabel(draft_id,campaignrecipients, gmail, subject, useremail);
+                    if (sendErr) {
+                      console.error('Error sending draft:', sendErr);
+                    } else {
+                      console.log('Draft sent:', sendResponse.data);
+                      createdraftModelSchema(draft_id)
+                      adddrafttodraftLabel(draft_id,campaignrecipients, gmail, subject, useremail);
                       
-                    // }
+                    }
                   }
                 );
               }
@@ -537,7 +536,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
                       draftId: draftResponse.data.id,
                     },
                     (sendErr, sendResponse) => {
-                      // adddrafttodraftLabel(draft_id,campaignrecipients, gmail, subject, useremail);
+                      adddrafttodraftLabel(draft_id,campaignrecipients, gmail, subject, useremail);
                       // firstdraftsentreport_(useremail)
                       // if (sendErr) {
                       //   console.error('Error sending first draft report:', sendErr);
@@ -557,8 +556,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
           })
 
         }
-        // 385965910519
-        
 
         } else {
           res.status(404);
@@ -958,9 +955,13 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
         }
       }
 
-      const labelId = await getLabelIdByName(gmail,"Outreach Sent");
-      if(labelId) {
-        addEmailToLabel(labelId, messageId,email);
+      const sentlabelId = await getLabelIdByName(gmail,"Outreach Sent");
+      const scheduledlabelId = await getLabelIdByName(gmail,"Outreach Scheduled");
+      if(sentlabelId) {
+        addEmailToLabel(sentlabelId, messageId,email);
+      }
+      if(scheduledlabelId) {
+        addEmailToLabel(scheduledlabelId, messageId,email);
       }
       // Function to add an email to a label.
       function addEmailToLabel(labelId, messageId,email) {
@@ -995,89 +996,87 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
 };
 
 
-// async function adddrafttodraftLabel(draftid,campaignrecipients, gmail, subject, from) {
+async function adddrafttodraftLabel(draftid,campaignrecipients, gmail, subject, from) {
 
-//   try{
+  try{
 
-//     // Retrieve the email threads in the user's mailbox
-//     let query = subject; 
-//     const draft = await gmail.users.drafts.get({
-//       userId: 'me',
-//       id: draftid,
-//     });
+    // Retrieve the email threads in the user's mailbox
+    let query = subject; 
+    const draft = await gmail.users.drafts.get({
+      userId: 'me',
+      id: draftid,
+    });
 
-//     if (draft) {
+    if (draft) {
       
-//       // Function to get the labelId by label name.
-//       async function getLabelIdByName(gmail,labelName) {
+      // Function to get the labelId by label name.
+      async function getLabelIdByName(gmail,labelName) {
         
-//         try {
-//           const response = await gmail.users.labels.list({
-//             userId: 'me',
-//           });
+        try {
+          const response = await gmail.users.labels.list({
+            userId: 'me',
+          });
           
-//           const labels = response.data.labels;
-//           const label = labels.find((l) => l.name === labelName);
+          const labels = response.data.labels;
+          const label = labels.find((l) => l.name === labelName);
 
-//           if (label) {
-//             return label.id;
-//           } else {
-//             throw new Error(`Label "${labelName}" not found.`);
-//           }
-//         } catch (err) {
-//           throw new Error('Error listing labels:', err);
-//         }
-//       }
+          if (label) {
+            return label.id;
+          } else {
+            throw new Error(`Label "${labelName}" not found.`);
+          }
+        } catch (err) {
+          throw new Error('Error listing labels:', err);
+        }
+      }
 
-//       const labelId = await getLabelIdByName(gmail,"Outreach Drafts");
-//       if(labelId) {
-//         firstdraftsentreport_(from)
-//       }
-//       // Function to add an email to a label.
-//       function addDraftToLabel(labelId, draftid, from) {
-//         // Specify the email ID and label you want to add the email to.
-//         const draftId = draftid;
+      const labelId = await getLabelIdByName(gmail,"Outreach Drafts");
+      if(labelId) {
+        firstdraftsentreport_(from)
+      }
+      // Function to add an email to a label.
+      // Specify the email ID and label you want to add the email to.
+      const draftId = draftid;
 
-//         gmail.users.drafts.update({
-//           userId: 'me',
-//           id: draftId,
-//           resource: {
-//             addLabelIds: [labelId],
-//           },
-//         }, (err, response) => {
-//           if (err) {
-//             console.error('Error adding email to label:', err);
-//           } else {
-//             console.log('Email added to label:', response);
-            
-//           }
-//         });
-//       }
+      gmail.users.drafts.update({
+        userId: 'me',
+        id: draftId,
+        resource: {
+          addLabelIds: [labelId],
+        },
+      }, (err, response) => {
+        if (err) {
+          console.error('Error adding email to label:', err);
+        } else {
+          console.log('Email added to label:', response);
+          
+        }
+      });
       
       
-//     } else {
-//       console.log('No messages found.');
-//     }
+    } else {
+      console.log('No messages found.');
+    }
 
-//   }catch(error) {
-//     console.log(error)
-//   }
+  }catch(error) {
+    console.log(error)
+  }
 
   
-// };
+};
 
-// async function firstdraftsentreport_(from) {
-//   const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstdraftreport: "unsent"});
-//   console.log('first report sent schemma')
-//   if (checkreport.length > 0) {
-//     checkreport.verified = true;
-//     const updatedfirstsentdraftreport = await firstreportsentSchema.updateOne({ 'useremail': from, firstdraftreport: "unsent" },{$set: {firstdraftreport: 'sent'}});
-//     if(updatedfirstsentdraftreport) {
-//       console.log('updated first draft report',updatedfirstsentdraftreport)
-//     }
+async function firstdraftsentreport_(from) {
+  const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstdraftreport: "unsent"});
+  console.log('first report sent schemma')
+  if (checkreport.length > 0) {
+    checkreport.verified = true;
+    const updatedfirstsentdraftreport = await firstreportsentSchema.updateOne({ 'useremail': from, firstdraftreport: "unsent" },{$set: {firstdraftreport: 'sent'}});
+    if(updatedfirstsentdraftreport) {
+      console.log('updated first draft report',updatedfirstsentdraftreport)
+    }
     
-//     }
-// }
+    }
+}
 
 // async function firstsentreport_(from) {
 //   const checkreport = await firstreportsentSchema.findOne({'useremail': from},{firstmailsentreport: "unsent"});
