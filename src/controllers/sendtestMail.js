@@ -281,7 +281,7 @@ const testMail = asyncHandler(async (req, res) => {
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,testmailrecipient,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(name,gmail,testmailrecipient,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -542,7 +542,7 @@ const testMail = asyncHandler(async (req, res) => {
 
             for (const recipient of recipientLists) {
               try {
-                sendmailCamp(gmail,testmailrecipient,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
+                sendmailCamp(name,gmail,testmailrecipient,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
                 console.log(`Email sent to ${recipient}`);
               } catch (error) {
                 console.error(`Error sending email to ${recipient}: ${error}`);
@@ -575,7 +575,7 @@ const testMail = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(gmail,testmailrecipient,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(name,gmail,testmailrecipient,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
@@ -600,10 +600,55 @@ async function sendmailCamp(gmail,testmailrecipient,draftId,recipient,body,subje
   });
 
   const mailOptions = {
-    from: useremail,
+    from: {
+      name: name,
+      address: useremail
+    },
     to: recipient,
     subject: subject,
-    html: `<div class="getap-op"><img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager"><p>${body}<div style="margin: 2rem auto 1rem auto">${redlinker}</div></p></div>`,
+    html: `<html>
+              <head>
+                <style>
+                body {
+                  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                  text-align: center;width: 100%;
+                }
+                .getap-op {
+                  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                  text-align: left;width: 60%;margin-left: 0;
+                }
+                p {
+                  text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                }
+                div {
+                  text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                }
+                span {
+                  text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                }
+                a.redlink {
+                  text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                  color: white;
+                }
+                a.unsubscribe {
+                  text-align: left;color: #4682B4;
+                }
+                </style>
+              </head>
+              <body>
+                <div class="getap-op">
+                  <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
+                  <div>
+                    <span>${body}</span>
+                  </div>
+                  <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
+                  <br>
+                  <div style="margin-top: .2rem">
+                    You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
+                  </div>
+                </div>
+              </body>
+            </html>`,
     "testmailrecipient":testmailrecipient,
     "gmail":gmail,
     "body_": body,

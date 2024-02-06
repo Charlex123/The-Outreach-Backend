@@ -267,30 +267,39 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
     subject: subject,
     html: `<html>
               <head>
-                <style>
-                body {
-                  font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: .5rem auto .5rem auto;
-                  text-align: center;
-                }
-                p {
-                  text-align: left;
-                }
-                span {
-                  text-align: left;
-                }
-                a.redlink {
-                  text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
-                  color: white;
-                }
-                a.unsubscribe {
-                  text-align: left;color: #4682B4;
-                }
-                </style>
+              <style>
+              body {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                text-align: center;width: 100%;
+              }
+              .getap-op {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                text-align: left;width: 60%;margin-left: 0;
+              }
+              p {
+                text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+              }
+              div {
+                text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+              }
+              span {
+                text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+              }
+              a.redlink {
+                text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                color: white;
+              }
+              a.unsubscribe {
+                text-align: left;color: #4682B4;
+              }
+              </style>
               </head>
               <body>
                 <div class="getap-op">
                   <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${message_Id}/image.png" style="display: none" class="kioper" alt="imager">
-                  <p>${body}</p>
+                  <div>
+                    <span>${body}</span>
+                  </div>
                   <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
                   <br>
                   <div style="margin-top: .2rem">

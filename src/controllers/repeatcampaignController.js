@@ -149,76 +149,22 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         console.log('start mail sending ran')
         let currentIndex = startcount;
 
-        if(delay_ === "1") {
-          
-            function sendToEachRecipient() {
-              // Check if there are more elements to process
-              if (currentIndex < remrecptstosendmailto) {
-                const recipient = recipientLists[currentIndex];
-                sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-                // Increment the index for the next iteration
-                currentIndex++;
-              } else {
-                // If all elements have been processed, stop the interval
-                clearInterval(intervalId);
-                console.log("Finished processing all items.");
-              }
-            }
-            sendToEachRecipient(); // Run it once immediately
-            intervalId = setInterval(sendToEachRecipient, 10000); // Run it every 10 secs
-          
-        }else if(delay_ === "2") {
-          function sendToEachRecipient() {
-            // Check if there are more elements to process
-            if (currentIndex < remrecptstosendmailto) {
-              const recipient = recipientLists[currentIndex];
-              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-              // Increment the index for the next iteration
-              currentIndex++;
-            } else {
-              // If all elements have been processed, stop the interval
-              clearInterval(intervalId);
-              console.log("Finished processing all items.");
-            }
+        function sendToEachRecipient() {
+          // Check if there are more elements to process
+          if (currentIndex < remrecptstosendmailto) {
+            const recipient = recipientLists[currentIndex];
+            sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
+            // Increment the index for the next iteration
+            currentIndex++;
+          } else {
+            // If all elements have been processed, stop the interval
+            clearInterval(intervalId);
+            console.log("Finished processing all items.");
           }
-          sendToEachRecipient(); // Run it once immediately
-          intervalId = setInterval(sendToEachRecipient, 60000); // Run it every 10 secs
-          
-        }else if(delay_ === "3") {
-          function sendToEachRecipient() {
-            // Check if there are more elements to process
-            if (currentIndex < remrecptstosendmailto) {
-              const recipient = recipientLists[currentIndex];
-              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-              // Increment the index for the next iteration
-              currentIndex++;
-            } else {
-              // If all elements have been processed, stop the interval
-              clearInterval(intervalId);
-              console.log("Finished processing all items.");
-            }
-          }
-          sendToEachRecipient(); // Run it once immediately
-          intervalId = setInterval(sendToEachRecipient, 300000); // Run it every 10 secs
-          
-        }else if(delay_ === "5") {
-          function sendToEachRecipient() {
-            // Check if there are more elements to process
-            if (currentIndex < remrecptstosendmailto) {
-              const recipient = recipientLists[currentIndex];
-              sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,mailsperday,gmail,campaignrecipients,draftId,recipient,campaignbody, subject,accessToken, refreshToken, useremail, userappkey,redlinktext,redlinkurl,campaignId_);
-              // Increment the index for the next iteration
-              currentIndex++;
-            } else {
-              // If all elements have been processed, stop the interval
-              clearInterval(intervalId);
-              console.log("Finished processing all items.");
-            }
-          }
-          sendToEachRecipient(); // Run it once immediately
-          intervalId = setInterval(sendToEachRecipient, 600000); // Run it every 10 minutes
         }
-
+        intervalId = setInterval(sendToEachRecipient, delay_ * 1000); // Run it every 10 secs
+        sendToEachRecipient(); // Run it once immediately
+        
       }
     }
   
@@ -262,29 +208,38 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
       html: `<html>
                 <head>
                   <style>
-                    body {
-                      font-family: 'Tahoma';font-size: 16px;line-height: 0.8px;margin: .5rem auto .5rem auto;
-                      text-align: center;
-                    }
-                    p {
-                      text-align: left;
-                    }
-                    span {
-                      text-align: left;
-                    }
-                    a.redlink {
-                      text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
-                      color: white;
-                    }
-                    a.unsubscribe {
-                      text-align: left;color: #4682B4;
-                    }
+                  body {
+                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                    text-align: center;width: 100%;
+                  }
+                  .getap-op {
+                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                    text-align: left;width: 60%;margin-left: 0;
+                  }
+                  p {
+                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                  }
+                  div {
+                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                  }
+                  span {
+                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                  }
+                  a.redlink {
+                    text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                    color: white;
+                  }
+                  a.unsubscribe {
+                    text-align: left;color: #4682B4;
+                  }
                   </style>
                 </head>
                 <body>
                   <div class="getap-op">
                     <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
-                    <p>${body}</p>
+                    <div>
+                      <span>${body}</span>
+                    </div>
                     <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
                     <br>
                     <div style="margin-top: .2rem">

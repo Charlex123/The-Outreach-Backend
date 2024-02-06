@@ -179,7 +179,7 @@ const campaignSchema = new mongoose.Schema({
         default: null
       },
       delay: {
-        type: String
+        type: Number
       }
     },
     repeat: {
