@@ -584,10 +584,6 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
                     <span>${body}</span>
                   </div>
                   <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
-                  <br>
-                  <div style="margin-top: .2rem">
-                    You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
-                  </div>
                 </div>
               </body>
             </html>`,
