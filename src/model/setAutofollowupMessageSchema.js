@@ -10,6 +10,9 @@ const autofollowupMessageSchema = new mongoose.Schema({
   email: {
     type: String,
   },
+  autofollowupsubject: {
+    type: String
+  },
   autofollowupmessage: {
     type: String
   },
