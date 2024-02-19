@@ -38,6 +38,7 @@ const { Emailtracking } = require('./controllers/Emailtracking/index');
 // ::::::::::::: Routes ::::::::::::::::::::
 const labelRoute = require('./routes/labelRoute')
 const sendmailcampaignRoute = require('./routes/sendmailcampaignRoute')
+const setautofollowupmessageRoute = require('./routes/setautofollowupmessageRoute')
 const sendtestmailRoute = require('./routes/sendtestmailRoute')
 const autofollowupcampaignRoute = require('./routes/autofollowupmailRoute')
 const repeatcampaignRoute = require('./routes/repeatcampaignRoute')
@@ -62,6 +63,7 @@ app.use('/label',labelRoute );
 app.use('/testmails',sendtestmailRoute );
 app.use('/campaigns',sendmailcampaignRoute );
 app.use('/campaigns',autofollowupcampaignRoute );
+app.use('/autofollowups',setautofollowupmessageRoute );
 app.use('/user',authenticateuserRoute );
 app.use('/campaignopens',openedcampaignsRoute );
 app.use('/repeatcampaign',repeatcampaignRoute );
