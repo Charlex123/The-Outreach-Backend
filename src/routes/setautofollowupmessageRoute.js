@@ -1,5 +1,5 @@
-const autofollowupcampaignRoute = require('express').Router();
+const setautofollowupmessageRoute = require('express').Router();
 const { setAutoFollowUpMessage } = require('../controllers/setautofollowupMessageController');
-autofollowupcampaignRoute.post('/setautofollowupmessage',setAutoFollowUpMessage);
+setautofollowupmessageRoute.post('/setautofollowupmessage',setAutoFollowUpMessage);
 
-module.exports=autofollowupcampaignRoute;
+module.exports=setautofollowupmessageRoute;
