@@ -13,8 +13,8 @@ const getAutoFollowUpMessage = asyncHandler(async (req, res) => {
         autofollowupsubject: 1,_id: 0
       });
       if (verifyafm) {
-          verifyafm.verified = true;
-          res.json({afMessage: verifyafm});
+          res.json({verifyafm});
+          console.log("ver ree",verifyafm)
         } else {
           res.json({ message: "User Not Found" });
           // throw new Error("User Not Found");
