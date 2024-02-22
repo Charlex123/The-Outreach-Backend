@@ -547,21 +547,21 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
               <head>
                 <style>
                   body {
-                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 14px;line-height: 22.8px;margin: .5rem 0 .5rem 0;
                     text-align: center;width: 100%;
                   }
                   .getap-op {
-                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 16px;line-height: 20.8px;margin: .5rem 0 .5rem 0;
+                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 14px;line-height: 22.8px;margin: .5rem 0 .5rem 0;
                     text-align: left;width: 60%;margin-left: 0;
                   }
                   p {
-                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
                   }
                   div {
-                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
                   }
                   span {
-                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 16px;
+                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
                   }
                   a.redlink {
                     text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
