@@ -27,8 +27,8 @@ const defaultthread_Id = `${
 const mailCampaign = asyncHandler(async (req, res) => {
   try {
       // const autofolinterval1 = req.body.followupreply1interval; 
-      const autofoltime1 = req.body.followupreply1time;
-      const autofollowuptime1 = moment(autofoltime1);
+      // const autofoltime1 = req.body.followupreply1time;
+      const autofollowuptime1 = moment().add(24,'hours');
 
       // const autofolinterval2 = req.body.followupreply2interval; 
       const autofoltime2 = req.body.followupreply2time;

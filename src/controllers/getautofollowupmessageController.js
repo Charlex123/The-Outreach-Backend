@@ -10,7 +10,7 @@ const getAutoFollowUpMessage = asyncHandler(async (req, res) => {
         email: email_
       },
       {
-        autofollowupsubject: 1,_id: 0
+        autofollowupsubject: 1,autofollowupmessage: 1,_id: 0
       });
       if (verifyafm) {
           res.json({verifyafm});
