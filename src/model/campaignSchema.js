@@ -112,9 +112,6 @@ const campaignSchema = new mongoose.Schema({
         reply1type: {
           type: String,
         },
-        reply1interval: {
-          type: Number
-        },
         reply1time: {
           type: Date,
           default: null

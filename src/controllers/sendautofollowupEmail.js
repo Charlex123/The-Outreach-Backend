@@ -37,10 +37,12 @@ const loadAutoFollowUp = async () => {
       const followupreply1message = autofollowup.autofollowup.firstfollowup.reply1message;
       const followupreply1status = autofollowup.autofollowup.firstfollowup.status;
       const followupreply2type = autofollowup.autofollowup.secondfollowup.reply2type;
+      const followupreply2interval = autofollowup.autofollowup.secondfollowup.reply2interval;
       const followupreply2time = autofollowup.autofollowup.secondfollowup.reply2time;
       const followupreply2message = autofollowup.autofollowup.secondfollowup.reply2message;
       const followupreply2status = autofollowup.autofollowup.secondfollowup.status;
       const followupreply3type = autofollowup.autofollowup.thirdfollowup.reply3type;
+      const followupreply3interval = autofollowup.autofollowup.secondfollowup.reply2interval;
       const followupreply3time = autofollowup.autofollowup.thirdfollowup.reply3time;
       const followupreply3message = autofollowup.autofollowup.thirdfollowup.reply3message;
       const followupreply3status = autofollowup.autofollowup.thirdfollowup.status;
@@ -261,6 +263,8 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
       address: useremail
     },
     to: recipient,
+    "In-Reply-To": thread_Id,
+    References: thread_Id,
     subject: subject,
     html: `<html>
               <head>

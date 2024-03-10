@@ -33,20 +33,18 @@ const mailCampaign = asyncHandler(async (req, res) => {
       // const autofolinterval2 = req.body.followupreply2interval;
       let autofollowuptime2;
       const autofoltime2 = req.body.followupreply2time;
+      const autofolinterval2 = req.body.followupreply2interval;
       if(autofoltime2 && autofoltime2 !== null) {
-        autofollowuptime2 = moment(autofoltime2);
-      }else {
-        autofollowuptime2 = moment().add(1000,'years');
+        autofollowuptime2 = moment(autofoltime2).add(autofolinterval2,'days');
       }
       
 
       // const autofolinterval3 = req.body.followupreply3interval; 
       let autofollowuptime3;
       const autofoltime3 = req.body.followupreply3time;
+      const autofolinterval3 = req.body.followupreply3interval;
       if(autofoltime3 && autofoltime3 !== null) {
-        autofollowuptime3 = moment(autofoltime3);
-      }else {
-        autofollowuptime3 = moment().add(1000,'years');
+        autofollowuptime3 = moment(autofoltime3).add(autofolinterval3,'days');
       }
       
       console.log('autofollowuptime1',autofollowuptime1)
@@ -69,9 +67,11 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const followupreply1time = autofollowuptime1;
       const followupreply1message = req.body.followupreply1message;
       const followupreply2type = req.body.followupreply2type;
+      const followupreply2interval = req.body.followupreply2interval;
       const followupreply2time = autofollowuptime2;
       const followupreply2message = req.body.followupreply2message;
       const followupreply3type = req.body.followupreply3type;
+      const followupreply3interval = req.body.followupreply3interval;
       const followupreply3time = autofollowuptime3;
       const followupreply3message = req.body.followupreply3message;
       const scheduletime = req.body.scheduletime;
@@ -240,12 +240,14 @@ const mailCampaign = asyncHandler(async (req, res) => {
               },
               secondfollowup: {
                 reply2type: followupreply2type,
+                reply2interval : followupreply2interval,
                 reply2time: followupreply2time,
                 reply2message: followupreply2message,
                 status: "unsent",
               },
               thirdfollowup: {
                 reply3type: followupreply3type,
+                reply3interval : followupreply3interval,
                 reply3time: followupreply3time,
                 reply3message: followupreply3message,
                 status: "unsent",
@@ -411,12 +413,14 @@ const mailCampaign = asyncHandler(async (req, res) => {
                 },
                 secondfollowup: {
                   reply2type: followupreply2type,
+                  reply2interval : followupreply2interval,
                   reply2time: followupreply2time,
                   reply2message: followupreply2message,
                   status: "unsent",
                 },
                 thirdfollowup: {
                   reply3type: followupreply3type,
+                  reply3interval : followupreply3interval,
                   reply3time: followupreply3time,
                   reply3message: followupreply3message,
                   status: "unsent",
