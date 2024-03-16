@@ -25,7 +25,7 @@ const autofollowupSchema = new mongoose.Schema({
   campaignId: {
     type: Number
   },
-  emailId: {
+  messageId: {
     type: String,
     required: true
   },

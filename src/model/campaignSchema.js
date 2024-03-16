@@ -11,7 +11,7 @@ const campaignSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  emailId: {
+  messageId: {
     type: String,
     required: true
   },

@@ -369,7 +369,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
             }
           }
           
-          campaign.emailId = messageId;
+          campaign.messageId = messageId;
           campaign.threadId = threadId; 
           campaign.recipientsdeliveredto = recipientsdeliveredtoarray.toString();
           campaign.recipientsdeliveredtocount = deliveredtocount;
@@ -400,7 +400,7 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
               userId: _id,
               autofollowupId: autofollowup_Id,
               campaignId: campaignId_,
-              emailId: messageId,
+              messageId: messageId,
               threadId: threadId,
               emailaddress: email,
               name: name,
@@ -450,11 +450,10 @@ async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtoco
         // Function to add an email to a label.
         function addEmailToLabel(labelId, messageId,email) {
           // Specify the email ID and label you want to add the email to.
-          const emailId = messageId;
   
           gmail.users.messages.modify({
             userId: 'me',
-            id: emailId,
+            id: messageId,
             resource: {
               addLabelIds: [labelId],
             },

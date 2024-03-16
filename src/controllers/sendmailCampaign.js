@@ -28,14 +28,15 @@ const mailCampaign = asyncHandler(async (req, res) => {
   try {
       // const autofolinterval1 = req.body.followupreply1interval; 
       // const autofoltime1 = req.body.followupreply1time;
-      const autofollowuptime1 = moment().add(24,'hours');
-
+      const autofollowuptime1 = moment().add(30,'minutes');
       // const autofolinterval2 = req.body.followupreply2interval;
       let autofollowuptime2;
       const autofoltime2 = req.body.followupreply2time;
       const autofolinterval2 = req.body.followupreply2interval;
       if(autofoltime2 && autofoltime2 !== null) {
         autofollowuptime2 = moment(autofoltime2).add(autofolinterval2,'days');
+      }else {
+        autofollowuptime2 = moment().add(autofolinterval2,'days');
       }
       
 
@@ -45,6 +46,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
       const autofolinterval3 = req.body.followupreply3interval;
       if(autofoltime3 && autofoltime3 !== null) {
         autofollowuptime3 = moment(autofoltime3).add(autofolinterval3,'days');
+      }else {
+        autofollowuptime3 = moment().add(autofolinterval3,'days');
       }
       
       console.log('autofollowuptime1',autofollowuptime1)
@@ -52,7 +55,6 @@ const mailCampaign = asyncHandler(async (req, res) => {
       console.log('autofollowuptime3',autofollowuptime3);
 
       process.env.TZ = req.body.timezone;
-
       const name = req.body.name;
       const redlinktext_ = req.body.redlinktext;
       const redlinkurl_ = req.body.redlinkurl;
@@ -216,7 +218,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
           const newMailCampaign = await campaignSchema.create({
             userId: _id,
             campaignId: campagn_Id,
-            emailId: draftId,
+            messageId: draftId,
             threadId: defaultthread_Id,
             emailaddress: useremail,
             emailsubject: emailsubject,
@@ -283,54 +285,20 @@ const mailCampaign = asyncHandler(async (req, res) => {
               sendfirstmailsentReport(gmail,useremail, req.body.accessToken, req.body.refreshToken);
             }
 
-            let sendtorecptscount;
-            
-            if((recipientLists.length - mailsperday) <= 0) {
-              sendtorecptscount = recipientLists.length;
-            }else {
-              sendtorecptscount = mailsperday;
-            }
-
-            for (let sr = 0; sr < sendtorecptscount; sr++) {
-                senttorecipients.push(recipientLists[sr]);
-            }
             
             if(scheduletime == "Now") {
               startmailSending();
-              console.log('scheduletime Now ran')
+              console.log('scheduletime Now ran');
             }else if(scheduletime == "FiveMinutes"){
-              setTimeout(startmailSending,5*60*1000)
+              setTimeout(startmailSending,5*60*1000);
             }else if(scheduletime == "OneHour"){
-              setTimeout(startmailSending,1*60*60*1000)
+              setTimeout(startmailSending,1*60*60*1000);
             }else if(scheduletime == "ThreeHours"){
-              setTimeout(startmailSending,3*60*60*1000)
+              setTimeout(startmailSending,3*60*60*1000);
             }
-          
             // call send function
             function startmailSending() {
-              console.log('start mail sending ran')
-              let currentIndex = 0;
-              let intervalId;
-              function sendToEachRecipient() {
-                // Check if there are more elements to process
-                if (currentIndex < sendtorecptscount) {
-                  const recipient = recipientLists[currentIndex];
-                  sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
-                  // Increment the index for the next iteration
-                  currentIndex++;
-                } else {
-                  // If all elements have been processed, stop the interval
-                  clearInterval(intervalId);
-                  console.log('next run ran first')
-                  console.log("Finished processing delay 1 recpts.");
-                }
-              }
-              intervalId = setInterval(sendToEachRecipient, delay_* 1000); // Run it every 10 secs
-              sendToEachRecipient(); // Run it once immediately
-              
-              res.json({
-                message: "Campaign successfully created"
-              })
+                sendmailCamp(recipientLists,mailsperday,delay_,timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,req.body.mailcampaignbody, req.body.mailcampaignsubject, req.body.accessToken, req.body.refreshToken, req.body.useremail, req.body.userAppKey,req.body.redlinktext,req.body.redlinkurl,campaignId_);
             }
           }
         }else if(action == '2') {
@@ -389,7 +357,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
             const newMailCampaignDraft = await DraftSchema.create({
               userId: _id,
               campaignId: campagn_Id,
-              emailId: draftId,
+              messageId: draftId,
               threadId: defaultthread_Id,
               emailaddress: useremail,
               emailsubject: emailsubject,
@@ -524,8 +492,23 @@ const mailCampaign = asyncHandler(async (req, res) => {
 });
 
 
-async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,recipient,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
+async function sendmailCamp(recipientLists,mailsperday,delay_,timezone,skipweekends,repeatinterval,repeattimes,name,senttorecipients,mailsperday,gmail,campaignrecipients,draftId,body,subject,accesstoken,refreshtoken,useremail,userappkey,redlinktexta,redlinkurla,campaignId_) {
 
+  let delay__ = delay_ * 1000;
+  let sendtorecptscount;
+            
+  if((recipientLists.length - mailsperday) <= 0) {
+    sendtorecptscount = recipientLists.length;
+  }else {
+    sendtorecptscount = mailsperday;
+  }
+
+  for (let sr = 0; sr < sendtorecptscount; sr++) {
+      senttorecipients.push(recipientLists[sr]);
+  }
+  
+  console.log("sent to recipients",senttorecipients)
+  
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
 
@@ -550,95 +533,95 @@ async function sendmailCamp(timezone,skipweekends,repeatinterval,repeattimes,nam
     }
   });
 
-  const mailOptions = {
-    from: {
-      name: name,
-      address: useremail
-    },
-    "email": useremail,
-    to: recipient,
-    subject: subject,
-    html: `<html>
-              <head>
-                <style>
-                  body {
-                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 14px;line-height: 22.8px;margin: .5rem 0 .5rem 0;
-                    text-align: center;width: 100%;
-                  }
-                  .getap-op {
-                    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 14px;line-height: 22.8px;margin: .5rem 0 .5rem 0;
-                    text-align: left;width: 60%;margin-left: 0;
-                  }
-                  p {
-                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
-                  }
-                  div {
-                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
-                  }
-                  span {
-                    text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
-                  }
-                  a.redlink {
-                    text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
-                    color: white;
-                  }
-                  a.unsubscribe {
-                    text-align: left;color: #4682B4;
-                  }
-                </style>
-              </head>
-              <body>
-                <div class="getap-op">
-                  <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
-                  <div>
-                    <span>${body}</span>
-                  </div>
-                  <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
-                </div>
-              </body>
-            </html>`,
-    "campaignrecipients":campaignrecipients,
-    "gmail":gmail,
-    "body_": body,
-    campaignId_: campaignId_,
-    "mailsperday": mailsperday,
-    "name": name,
-    "senttorecipients":senttorecipients
-  };
+  // Loop through recipients and send original emails with delay
+  senttorecipients.forEach((recipient, index) => {
+    setTimeout(() => {
+        const mailOptions = {
+          from: {
+            name: name,
+            address: useremail
+          },
+          "email": useremail,
+          to: recipient,
+          subject: subject,
+          html: `<html>
+                    <head>
+                      <style>
+                        body {
+                          font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 14px;line-height: 22.8px;margin: .5rem 0 .5rem 0;
+                          text-align: center;width: 100%;
+                        }
+                        .getap-op {
+                          font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;font-size: 14px;line-height: 22.8px;margin: .5rem 0 .5rem 0;
+                          text-align: left;width: 60%;margin-left: 0;
+                        }
+                        p {
+                          text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
+                        }
+                        div {
+                          text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
+                        }
+                        span {
+                          text-align: left;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 14px;
+                        }
+                        a.redlink {
+                          text-align: center;padding: 3px 12px 3px 12px;background-color: #191970;border-radius: 4px;
+                          color: white;
+                        }
+                        a.unsubscribe {
+                          text-align: left;color: #4682B4;
+                        }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="getap-op">
+                        <img src="${config.BACKEND_URL}/campaignopens/${userappkey}/${campaignId_}/image.png" style="display: none" class="kioper" alt="imager">
+                        <div>
+                          <span>${body}</span>
+                        </div>
+                        <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
+                      </div>
+                    </body>
+                  </html>`,
+          "campaignrecipients":campaignrecipients,
+          "gmail":gmail,
+          "body_": body,
+          campaignId_: campaignId_,
+          "mailsperday": mailsperday,
+          "name": name,
+          "senttorecipients":senttorecipients
+        };
 
-  const campaigndet = await campaignSchema.findOne({'campaignId':campaignId_});
-  if (campaigndet) {
+        if(skipweekends == true) {
+          let day = date.getDay();
+          if((day == 6) || (day ==7)) {
 
-    campaigndet.nextRun = moment().add(1,'day');
-    await campaigndet.save();
-
-    if(skipweekends == true) {
-      let day = date.getDay();
-      if((day == 6) || (day ==7)) {
-
-      }else {
-        // Delivering mail with sendMail method
-        transporter.sendMail(mailOptions, (error) => {
-          if (error) {
-            console.error(error);
-          } else {
-            updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+          }else {
+            // Delivering mail with sendMail method
+            transporter.sendMail(mailOptions, (error,info) => {
+              if (error) {
+                console.error(error);
+              } else {
+                console.log('Email sent:', info.response,info.messageId);
+                updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_,info.messageId)
+              }
+            });
           }
-        });
-      }
-    }else {
-      // skip weekeds false
-      // Delivering mail with sendMail method
-      transporter.sendMail(mailOptions, (error) => {
-        if (error) {
-          console.error(error);
-        } else {
-          updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_)
+        }else {
+          // skip weekeds false
+          // Delivering mail with sendMail method
+          transporter.sendMail(mailOptions, (error,info) => {
+            if (error) {
+              console.error(error);
+            } else {
+              console.log('Email sent:', info.response,info.messageId);
+              updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_,info.messageId)
+            }
+          });
         }
-      });
-    }
-    
-  }
+        
+      }, index * delay__); // Send emails every 60 seconds
+    });
     
 }
 
@@ -737,11 +720,10 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
       // Function to add an email to a label.
       function addEmailToLabel(labelId, messageId,from) {
         // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
 
         gmail.users.messages.modify({
           userId: 'me',
-          id: emailId,
+          id: messageId,
           resource: {
             addLabelIds: [labelId],
           },
@@ -761,18 +743,21 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(name,gmail, email, subject, to, body,campaignId_) {
+async function updateEmailCampaignId(name,gmail, email, subject, to, body,campaignId_,messageId) {
 
   try{
     // Retrieve the email threads in the user's mailbox
     
-    let query = subject; 
     const response = await gmail.users.messages.list({
       userId: 'me',
-      q: query,
+      q: `rfc822msgid:${messageId}`,
     });
 
     const messages = response.data.messages;
+
+    console.log("mail messageId",messageId)
+    console.log("mail send details",messages);
+
 
     if (messages[0]) {
       const messageId = messages[0].id;
@@ -781,6 +766,9 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
 
       if (campaign) {
+
+        campaign.nextRun = moment().add(1,'day');
+        await campaign.save();
 
         let rmrecipientscount = campaign.remainingrecipientscount;
         let rmrecipients = campaign.remainingrecipients;
@@ -841,7 +829,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           }
         }
         
-        campaign.emailId = messageId;
+        campaign.messageId = messageId;
         campaign.threadId = threadId; 
         campaign.recipientsdeliveredto = recipientsdeliveredtoarray.toString();
         campaign.recipientsdeliveredtocount = deliveredtocount;
@@ -868,7 +856,7 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
             userId: _id,
             autofollowupId: autofollowup_Id,
             campaignId: campaignId_,
-            emailId: messageId,
+            messageId: messageId,
             threadId: threadId,
             emailaddress: email,
             name: name,
@@ -922,11 +910,10 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
       // Function to add an email to a label.
       function addEmailToLabel(labelId, messageId,email) {
         // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
 
         gmail.users.messages.modify({
           userId: 'me',
-          id: emailId,
+          id: messageId,
           resource: {
             addLabelIds: [labelId],
           },

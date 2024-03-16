@@ -43,7 +43,7 @@ agenda.define('send test email', async () => {
         const campaignrecipients = campaignd.emailrecipients;
         const campaignbody = campaignd.emailbody;
         const subject = campaignd.emailsubject;
-        const draftId = campaignd.emailId;
+        const draftId = campaignd.messageId;
         const useremail = campaignd.emailaddress;
         const redlinktext = campaignd.redlinktext;
         const redlinkurl = campaignd.redlinkurl;
@@ -404,7 +404,7 @@ agenda.define('send test email', async () => {
             }
           }
           
-          campaign.emailId = messageId;
+          campaign.messageId = messageId;
           campaign.threadId = threadId; 
           campaign.recipientsdeliveredto = recipientsdeliveredtoarray.toString();
           campaign.recipientsdeliveredtocount = deliveredtocount;
@@ -431,7 +431,7 @@ agenda.define('send test email', async () => {
               userId: _id,
               autofollowupId: autofollowup_Id,
               campaignId: campaignId_,
-              emailId: messageId,
+              messageId: messageId,
               threadId: threadId,
               emailaddress: email,
               name: name,
@@ -480,11 +480,9 @@ agenda.define('send test email', async () => {
         // Function to add an email to a label.
         function addEmailToLabel(labelId, messageId,email) {
           // Specify the email ID and label you want to add the email to.
-          const emailId = messageId;
-  
           gmail.users.messages.modify({
             userId: 'me',
-            id: emailId,
+            id: messageId,
             resource: {
               addLabelIds: [labelId],
             },

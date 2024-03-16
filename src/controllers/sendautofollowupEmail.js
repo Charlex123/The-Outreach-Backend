@@ -19,10 +19,10 @@ const loadAutoFollowUp = async () => {
   
   const getautofollowups = await autofollowSchema.find({$or:[{"autofollowup.firstfollowup.status":"unsent"},{"autofollowup.secondfollowup.status":"unsent"},{"autofollowup.thirdfollowup.status":"unsent"}]});
   for (const autofollowup of getautofollowups) {
-    console.log('autofollowup --- auto follow upppp')
+    
     try {
       const autofollowup_Id = autofollowup.autofollowupId;
-      const message_Id = autofollowup.emailId;
+      const message_Id = autofollowup.messageId;
       const thread_Id = autofollowup.threadId;
       const campaign_Id = autofollowup.campaignId;
       const recipient = autofollowup.emailrecipient;
@@ -80,7 +80,6 @@ const loadAutoFollowUp = async () => {
 
           const checkfirstreportsent = await firstreportsentSchema.findOne({useremail: useremail});
 
-          console.log('check first report sent length',Object.keys(checkfirstreportsent).length)
           if(!checkfirstreportsent || Object.keys(checkfirstreportsent).length === 0) {
             const newmailReport = await firstreportsentSchema.create({
               userId: _id,
@@ -263,8 +262,9 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
       address: useremail
     },
     to: recipient,
-    "In-Reply-To": thread_Id,
-    References: thread_Id,
+    "In-Reply-To": message_Id,
+    References: message_Id,
+    threadId: message_Id,
     subject: subject,
     html: `<html>
               <head>
@@ -303,9 +303,6 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
                   </div>
                   <div style="margin: 1rem auto 1rem auto;text-align: center">${redlinker}</div>
                   <br>
-                  <div style="margin-top: .2rem">
-                    You can <a href='https://theoutreach.co/unsubscribe'>unsubscribe</a> to this email by clicking the above link
-                  </div>
                 </div>
               </body>
             </html>`,
@@ -461,11 +458,11 @@ async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowup
 //       // Function to add an email to a label.
 //       function addEmailToLabel(labelId, messageId, to) {
 //         // Specify the email ID and label you want to add the email to.
-//         const emailId = messageId;
+//         const messageId = messageId;
 
 //         gmail.users.messages.modify({
 //           userId: 'me',
-//           id: emailId,
+//           id: messageId,
 //           resource: {
 //             addLabelIds: [labelId],
 //           },
@@ -498,8 +495,8 @@ async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowup
 //     }
 //   }
 
-  // async function autofollowupsentSuccess(useremail,emailId,threadId,campaignId) {
-  //   const updatedautofollowupcampaign = await campaignSchema.updateOne({'emailaddress':useremail,'emailId': emailId,'threadId': threadId,'campaignId': campaignId},{$set: {"autofollowup.status": 'sent'}});
+  // async function autofollowupsentSuccess(useremail,messageId,threadId,campaignId) {
+  //   const updatedautofollowupcampaign = await campaignSchema.updateOne({'emailaddress':useremail,'messageId': messageId,'threadId': threadId,'campaignId': campaignId},{$set: {"autofollowup.status": 'sent'}});
   //   if(updatedautofollowupcampaign) {
   //     console.log('updated autofollow up campaign success')
   //   }

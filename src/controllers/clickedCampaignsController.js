@@ -11,7 +11,7 @@ const clickedCampaigns = asyncHandler(async (req, res) => {
       
     const user_AppKey = req.params.userAppKey;
     const campaign_Id = req.params.campaignId;
-    const email_ID = req.params.emailId;
+    const email_ID = req.params.messageId;
     const redurllink = req.params.redlinkurl;
     console.log('user p', user_AppKey)
     console.log('user red link', redurllink)

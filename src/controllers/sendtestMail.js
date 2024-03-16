@@ -31,13 +31,14 @@ const testMail = asyncHandler(async (req, res) => {
       // const autofolinterval1 = req.body.followupreply1interval; 
       // const autofoltime1 = req.body.followupreply1time;
       const autofollowuptime1 = moment().add(24,'hours');
-
       // const autofolinterval2 = req.body.followupreply2interval;
       let autofollowuptime2;
       const autofoltime2 = req.body.followupreply2time;
       const autofolinterval2 = req.body.followupreply2interval;
       if(autofoltime2 && autofoltime2 !== null) {
         autofollowuptime2 = moment(autofoltime2).add(autofolinterval2,'days');
+      }else {
+        autofollowuptime2 = moment().add(autofolinterval2,'days');
       }
       
 
@@ -47,6 +48,8 @@ const testMail = asyncHandler(async (req, res) => {
       const autofolinterval3 = req.body.followupreply3interval;
       if(autofoltime3 && autofoltime3 !== null) {
         autofollowuptime3 = moment(autofoltime3).add(autofolinterval3,'days');
+      }else {
+        autofollowuptime3 = moment().add(autofolinterval3,'days');
       }
       
       console.log('autofollowuptime1',autofollowuptime1)
@@ -216,7 +219,7 @@ const testMail = asyncHandler(async (req, res) => {
           const newMailCampaign = await campaignSchema.create({
             userId: _id,
             campaignId: campagn_Id,
-            emailId: draftId,
+            messageId: draftId,
             threadId: defaultthread_Id,
             emailaddress: useremail,
             emailsubject: emailsubject,
@@ -357,7 +360,7 @@ const testMail = asyncHandler(async (req, res) => {
             const newMailCampaignDraft = await DraftSchema.create({
               userId: _id,
               campaignId: campagn_Id,
-              emailId: draftId,
+              messageId: draftId,
               threadId: defaultthread_Id,
               emailaddress: useremail,
               emailsubject: emailsubject,
@@ -478,7 +481,7 @@ const testMail = asyncHandler(async (req, res) => {
           const newMailCampaign = await campaignSchema.create({
             userId: _id,
             campaignId: campagn_Id,
-            emailId: draftId,
+            messageId: draftId,
             threadId: defaultthread_Id,
             emailaddress: useremail,
             emailsubject: emailsubject,
@@ -760,11 +763,10 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
       // Function to add an email to a label.
       function addEmailToLabel(labelId, messageId,from) {
         // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
-
+        
         gmail.users.messages.modify({
           userId: 'me',
-          id: emailId,
+          id: messageId,
           resource: {
             addLabelIds: [labelId],
           },
@@ -803,7 +805,7 @@ async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to
 
       const campaign = await campaignSchema.findOne({'campaignId':campaignId_});
       if (campaign) {
-        campaign.emailId = messageId;
+        campaign.messageId = messageId;
         campaign.threadId = threadId; 
         
         const updatedCampgn = await campaign.save();
@@ -825,7 +827,7 @@ async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to
             userId: _id,
             autofollowupId: autofollowup_Id,
             campaignId: campaignId_,
-            emailId: messageId,
+            messageId: messageId,
             threadId: threadId,
             emailaddress: from,
             emailsubject: subject,
@@ -872,11 +874,10 @@ async function updateEmailCampaignId(testmailrecipient, gmail, from, subject, to
       // Function to add an email to a label.
       function addEmailToLabel(labelId, messageId,from) {
         // Specify the email ID and label you want to add the email to.
-        const emailId = messageId;
-
+        
         gmail.users.messages.modify({
           userId: 'me',
-          id: emailId,
+          id: messageId,
           resource: {
             addLabelIds: [labelId],
           },
