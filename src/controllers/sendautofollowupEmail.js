@@ -264,7 +264,7 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
     to: recipient,
     "In-Reply-To": message_Id,
     References: message_Id,
-    threadId: message_Id,
+    threadId: thread_Id,
     subject: subject,
     html: `<html>
               <head>

@@ -685,7 +685,7 @@ async function sendfirstmailsentReport(gmail,useremail,accesstoken,refreshtoken,
     }
   });
 
-  let body = "Mail sent successful report body";
+  let body = "Mail sent successful";
   let subject = "Sent report success"; 
   const mailOptions = {
     from: "aliakbar512006@gmail.com",
