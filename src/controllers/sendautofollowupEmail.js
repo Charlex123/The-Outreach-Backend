@@ -306,6 +306,10 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
                 </div>
               </body>
             </html>`,
+            headers: {
+              'In-Reply-To': message_Id,
+              'References': message_Id
+          },
     autofollowupId: autofollowup_Id
   };
 
