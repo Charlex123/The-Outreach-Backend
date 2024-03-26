@@ -3,7 +3,9 @@ const asyncHandler = require("express-async-handler");
 const campaignSchema = require('../model/campaignSchema');
 const DraftSchema = require("../model/DraftSchema");
 const autofollowSchema = require("../model/autofollowSchema");
+const AutoFollowUpMessage = require("../model/autofollowupMessageSchema");
 const firstreportsentSchema = require("../model/firstreportsentSchema");
+const { sendautofollowupCamp } = require("./sendautofollowupEmail")
 const User = require("../model/user");
 const { google } = require('googleapis');
 const moment = require('moment');
@@ -28,7 +30,10 @@ const mailCampaign = asyncHandler(async (req, res) => {
   try {
       // const autofolinterval1 = req.body.followupreply1interval; 
       // const autofoltime1 = req.body.followupreply1time;
-      const autofollowuptime1 = moment().add(24,'hours');
+      const autofollowuptime1 = moment().add(10,'minutes');
+
+      console.log("now",moment());
+      console.log("10 minutes time",moment().add(10,'minutes'));
       // const autofolinterval2 = req.body.followupreply2interval;
       let autofollowuptime2;
       const autofoltime2 = req.body.followupreply2time;
@@ -36,10 +41,9 @@ const mailCampaign = asyncHandler(async (req, res) => {
       if(autofoltime2 && autofoltime2 !== null) {
         autofollowuptime2 = moment(autofoltime2).add(autofolinterval2,'days');
       }else {
-        autofollowuptime2 = moment().add(autofolinterval2,'days');
+        autofollowuptime2 = null;
       }
       
-
       // const autofolinterval3 = req.body.followupreply3interval; 
       let autofollowuptime3;
       const autofoltime3 = req.body.followupreply3time;
@@ -47,7 +51,7 @@ const mailCampaign = asyncHandler(async (req, res) => {
       if(autofoltime3 && autofoltime3 !== null) {
         autofollowuptime3 = moment(autofoltime3).add(autofolinterval3,'days');
       }else {
-        autofollowuptime3 = moment().add(autofolinterval3,'days');
+        autofollowuptime3 = null;
       }
       
       console.log('autofollowuptime1',autofollowuptime1)
@@ -542,6 +546,8 @@ async function sendmailCamp(recipientLists,mailsperday,delay_,timezone,skipweeke
             address: useremail
           },
           "email": useremail,
+          accessToken: accesstoken,
+          refreshToken: refreshtoken,
           to: recipient,
           subject: subject,
           html: `<html>
@@ -588,6 +594,9 @@ async function sendmailCamp(recipientLists,mailsperday,delay_,timezone,skipweeke
           "body_": body,
           campaignId_: campaignId_,
           "mailsperday": mailsperday,
+          userappkey: userappkey,
+          redlinktexta: redlinktexta,
+          redlinkurla: redlinkurla,
           "name": name,
           "senttorecipients":senttorecipients
         };
@@ -602,8 +611,8 @@ async function sendmailCamp(recipientLists,mailsperday,delay_,timezone,skipweeke
               if (error) {
                 console.error(error);
               } else {
-                console.log('Email sent:', info.response,info.messageId);
-                updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_,info.messageId)
+                console.log('Email sent:', info.response,"+ ----",info.messageId);
+                updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_,info.messageId,mailOptions.accessToken,mailOptions.refreshToken,mailOptions.userappkey,mailOptions.redlinktexta,mailOptions.redlinkurla)
               }
             });
           }
@@ -614,8 +623,8 @@ async function sendmailCamp(recipientLists,mailsperday,delay_,timezone,skipweeke
             if (error) {
               console.error(error);
             } else {
-              console.log('Email sent:', info.response,info.messageId);
-              updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_,info.messageId)
+              console.log('Email sent:', info.response,"+ ----",info.messageId);
+              updateEmailCampaignId(mailOptions.name,mailOptions.gmail,mailOptions.email,mailOptions.subject,mailOptions.to,mailOptions.body_,mailOptions.campaignId_,info.messageId,mailOptions.accessToken,mailOptions.refreshToken,mailOptions.userappkey,mailOptions.redlinktexta,mailOptions.redlinkurla)
             }
           });
         }
@@ -743,21 +752,21 @@ async function addfirstreportsentmailtoLabel(gmail,from,subject,to,body) {
 }
 
 
-async function updateEmailCampaignId(name,gmail, email, subject, to, body,campaignId_,messageId) {
+async function updateEmailCampaignId(name,gmail, email, subject, to, body,campaignId_,messageId, accessToken,refreshToken,userappkey,redlinktexta,redlinkurla) {
 
   try{
     // Retrieve the email threads in the user's mailbox
     
     const response = await gmail.users.messages.list({
       userId: 'me',
-      q: `rfc822msgid:${messageId}`,
+      q: subject,
     });
 
     const messages = response.data.messages;
 
-    console.log("mail messageId",messageId)
+    console.log("mail messageId --",messageId)
     console.log("mail send details",messages);
-
+    const message__Id = messageId;
 
     if (messages[0]) {
       const messageId = messages[0].id;
@@ -847,6 +856,8 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
           ])
   
           let getautofollowup_ = getautofollowup[0].autofollowup;
+          let getautofollowup2interval = getautofollowup[0].autofollowup.secondfollowup.reply2interval;
+          let getautofollowup3interval = getautofollowup[0].autofollowup.thirdfollowup.reply3interval;
           let _id = getautofollowup[0].userId;
           let mailtsentdate  = getautofollowup[0].created;
           let tracking_  = getautofollowup[0].tracking;
@@ -871,6 +882,50 @@ async function updateEmailCampaignId(name,gmail, email, subject, to, body,campai
   
           
           newautofollowUp.save();
+
+          // check for autoreplymessage
+          let afsubject1;
+          let afmessage1;
+          let afsubject2;
+          let afmessage2;
+          let afsubject3;
+          let afmessage3;
+          const getafm = await AutoFollowUpMessage.findOne({email: email});
+
+          if(getafm) {
+              afsubject1 = subject;
+              afmessage1 = getafm.autofollowupmessage;
+              afsubject2 = subject;
+              afmessage2 = getafm.autofollowupmessage;
+              afsubject3 = subject;
+              afmessage3 = getafm.autofollowupmessage;
+          }else {
+              afsubject1 = subject;
+              afmessage1 = followupreply1message;
+              afsubject2 = subject;
+              afmessage2 = followupreply2message;
+              afsubject3 = subject;
+              afmessage3 = followupreply3message;
+          }
+
+          // autofollow up 1 timeout
+          setTimeout(function() {
+            sendautofollowupCamp(name,threadId,campaignId_,messageId,gmail,accessToken,refreshToken,afsubject1,to,afmessage1,email,userappkey,redlinktexta,redlinkurla,autofollowup_Id);
+          }, 86400000)
+          // autofollow up 2 timeout
+          if(getautofollowup2interval) {
+            setTimeout(function() {
+              sendautofollowupCamp(name,threadId,campaignId_,messageId,gmail,accessToken,refreshToken,afsubject2,to,afmessage2,email,userappkey,redlinktexta,redlinkurla,autofollowup_Id);
+            }, getautofollowup2interval * 86400 * 1000)
+          }
+          
+          // autofollow up 3 timeout
+          if(getautofollowup3interval) {
+            setTimeout(function() {
+              sendautofollowupCamp(name,threadId,campaignId_,messageId,gmail,accessToken,refreshToken,afsubject3,to,afmessage3,email,userappkey,redlinktexta,redlinkurla,autofollowup_Id);
+            }, getautofollowup3interval * 86400 * 1000)
+          }
+
         }
 
       } else {

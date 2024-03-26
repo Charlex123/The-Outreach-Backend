@@ -12,6 +12,7 @@ const nodemailer = require("nodemailer");
 const v4 = require("uuid");
 const { get } = require("lodash");
 const cron = require("node-cron");
+const AutoFollowUpMessage = require("../model/autofollowupMessageSchema");
 
 dotenv.config();
 
@@ -28,7 +29,7 @@ const loadAutoFollowUp = async () => {
       const recipient = autofollowup.emailrecipient;
       const name = autofollowup.name;
       const useremail = autofollowup.emailaddress;
-      const subject = autofollowup.emailrecipient;
+      const subject = autofollowup.emailsubject;
       const campaignsenttime = autofollowup.mailsentDate;
       const redlinktexta = autofollowup.tracking.redlinktext;
       const redlinkurla = autofollowup.tracking.redlinkurl;
@@ -87,13 +88,37 @@ const loadAutoFollowUp = async () => {
             });
           }
 
+          // check for autoreplymessage
+          let afsubject1;
+          let afmessage1;
+          let afsubject2;
+          let afmessage2;
+          let afsubject3;
+          let afmessage3;
+          const getafm = await AutoFollowUpMessage.findOne({email: useremail});
+
+          if(getafm) {
+              afsubject1 = subject;
+              afmessage1 = getafm.autofollowupmessage;
+              afsubject2 = subject;
+              afmessage2 = getafm.autofollowupmessage;
+              afsubject3 = subject;
+              afmessage3 = getafm.autofollowupmessage;
+          }else {
+              afsubject1 = subject;
+              afmessage1 = followupreply1message;
+              afsubject2 = subject;
+              afmessage2 = followupreply2message;
+              afsubject3 = subject;
+              afmessage3 = followupreply3message;
+          }
+
           if(followupreply1status == "unsent") {
             if(followupreply1type && followupreply1type !== "" && followupreply1type === "r") {
-              console.log('rrrrr1',followupreply1type)
               if(followupreply1time && followupreply1time !== "" && followupreply1time !== undefined && followupreply1time !== null) {
                 if(moment().isSameOrAfter(followupreply1time)) {
                   console.log('hella after time',moment(followupreply1time))
-                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject1,recipient,afmessage1,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
                 // else {
                 //   console.log('hella before time',moment(followupreply1time))
@@ -107,12 +132,12 @@ const loadAutoFollowUp = async () => {
                 // }
                 
               }else {
-                console.log('timer zz1 occurred ---')
-                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply1message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                console.log("time 1 is not not")
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject1,recipient,afmessage1,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
             } 
           }else {
-            console.log('auto follow up 1 has been sent',followupreply1status)
+            // console.log('auto follow up 1 has been sent',followupreply1status)
           }
 
           if(followupreply2status == "unsent") {
@@ -120,7 +145,7 @@ const loadAutoFollowUp = async () => {
               if(followupreply2time && followupreply2time !== "" && followupreply2time !== undefined && followupreply2time !== null) {
                 if(moment().isSameOrAfter(followupreply2time)) {
                   console.log('hella after time 2',moment(followupreply2time))
-                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject2,recipient,afmessage2,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
                 // else {
                 //   console.log('hella before time 2',moment(followupreply2time))
@@ -134,7 +159,7 @@ const loadAutoFollowUp = async () => {
                 // }
                 
               }else {
-                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply2message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject2,recipient,afmessage2,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
             }
           }else {
@@ -147,7 +172,7 @@ const loadAutoFollowUp = async () => {
                 
                 if(moment().isSameOrAfter(followupreply3time)) {
                   console.log('hella after time 3',moment(followupreply3time))
-                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                  sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject3,recipient,afmessage3,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
                 }
                 // else {
                 //   console.log('hella before time 3',moment(followupreply3time))
@@ -161,7 +186,7 @@ const loadAutoFollowUp = async () => {
                 // }
                 
               }else {
-                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,followupreply3message,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject3,recipient,afmessage3,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
             }
           }else {
@@ -230,8 +255,7 @@ loadAutoFollowUp()
 // }
 
 async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,subject,recipient,body,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id) {
-
-  console.log('send autofollow up email ran --')
+  
   let redlinktexter = redlinktexta;
   let redlinkurler = redlinkurla;
 
@@ -261,6 +285,7 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
       name: name,
       address: useremail
     },
+    "email": useremail,
     to: recipient,
     "In-Reply-To": message_Id,
     References: message_Id,
@@ -306,10 +331,6 @@ async function sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,
                 </div>
               </body>
             </html>`,
-            headers: {
-              'In-Reply-To': message_Id,
-              'References': message_Id
-          },
     autofollowupId: autofollowup_Id
   };
 
@@ -523,4 +544,4 @@ async function updateautofollowupsentStatus(emailaddress,campaignId,autofollowup
     })();    
 })
 
-module.exports = { autofollowUpCampaign  };
+module.exports = { autofollowUpCampaign, sendautofollowupCamp  };
