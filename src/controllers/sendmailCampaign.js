@@ -30,10 +30,8 @@ const mailCampaign = asyncHandler(async (req, res) => {
   try {
       // const autofolinterval1 = req.body.followupreply1interval; 
       // const autofoltime1 = req.body.followupreply1time;
-      const autofollowuptime1 = moment().add(10,'minutes');
+      const autofollowuptime1 = moment().add(24,'hours');
 
-      console.log("now",moment());
-      console.log("10 minutes time",moment().add(10,'minutes'));
       // const autofolinterval2 = req.body.followupreply2interval;
       let autofollowuptime2;
       const autofoltime2 = req.body.followupreply2time;
