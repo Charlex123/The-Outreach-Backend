@@ -9,6 +9,7 @@ const moment = require('moment');
 const dotenv = require('dotenv');
 const config = require('../config');
 const nodemailer = require("nodemailer");
+const Agenda = require("agenda");
 const v4 = require("uuid");
 const { get } = require("lodash");
 const cron = require("node-cron");
@@ -16,7 +17,13 @@ const AutoFollowUpMessage = require("../model/autofollowupMessageSchema");
 
 dotenv.config();
 
-const loadAutoFollowUp = async () => {
+const agenda = new Agenda({
+  db: {
+    address: process.env.DATABASE_URL
+  },
+});
+
+agenda.define('loadAutoFollowUp', async () => {
   
   const getautofollowups = await autofollowSchema.find({$or:[{"autofollowup.firstfollowup.status":"unsent"},{"autofollowup.secondfollowup.status":"unsent"},{"autofollowup.thirdfollowup.status":"unsent"}]});
   for (const autofollowup of getautofollowups) {
@@ -132,9 +139,10 @@ const loadAutoFollowUp = async () => {
                 // }
                 
               }else {
-                console.log("time 1 is not not")
-                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject1,recipient,afmessage1,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
+                sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject1,recipient,afmessage1,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id);
               }
+            }else {
+              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject1,recipient,afmessage1,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             } 
           }else {
             // console.log('auto follow up 1 has been sent',followupreply1status)
@@ -161,6 +169,8 @@ const loadAutoFollowUp = async () => {
               }else {
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject2,recipient,afmessage2,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
+            }else {
+              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject2,recipient,afmessage2,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
             }
           }else {
             console.log('auto follow up 2 has been sent',followupreply2status)
@@ -188,6 +198,8 @@ const loadAutoFollowUp = async () => {
               }else {
                 sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject3,recipient,afmessage3,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id)
               }
+            }else {
+              sendautofollowupCamp(name,thread_Id,campaign_Id,message_Id,gmail,accessToken,refreshToken,afsubject3,recipient,afmessage3,useremail,userappkey,redlinktexta,redlinkurla,autofollowup_Id);
             }
           }else {
             console.log('auto follow up 3 has been sent',followupreply3status)
@@ -227,8 +239,12 @@ const loadAutoFollowUp = async () => {
       console.error(`Ooops!!! something occurred: ${error}`);
     }
   }  
-}
-loadAutoFollowUp()
+});
+
+(async () => {
+  await agenda.start();
+  await agenda.every('1 minute', 'loadAutoFollowUp');
+})();
 
 // const loadautofollowUpCampaign = asyncHandler(async () => {
 //   try {
