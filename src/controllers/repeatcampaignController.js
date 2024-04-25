@@ -22,7 +22,7 @@ const agenda = new Agenda({
   },
 });
 
-agenda.define('loadCampData', async () => {
+const loadCampData = async () => {
   const campd = await campaignSchema.find();
   if(campd) {
     for (const campaignd of campd) {
@@ -72,12 +72,12 @@ agenda.define('loadCampData', async () => {
       
     }
   }
-});
-
-(async () => {
-  await agenda.start();
-  await agenda.every('1 minute', 'loadCampData');
-})(); 
+};
+loadCampData();
+// (async () => {
+//   await agenda.start();
+//   await agenda.every('1 minute', 'loadCampData');
+// })(); 
 
 
 async function processMailData(nxtrun,recpcount,rmrecptcount,recptsdeliveredtocount,skipweekends,repeatinterval,repeattimes,mailsperday,schedtime,campaignId_,delay_,name,campaignrecipients,campaignbody,subject,useremail,redlinktext,redlinkurl,delivertorecipients,deliveredtorecipientscount,remainingrecipients,remainingrecipientscount,recipientscount) {
